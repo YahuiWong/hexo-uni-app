@@ -13,7 +13,13 @@
       "@uni-helper/uni-app-types"
     ]
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
+ "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "typings/**/*.d.ts"   // ← 添加这行
+  ],
   "vueCompilerOptions": {
     "nativeTags": ["block", "component", "template", "slot"]
   }

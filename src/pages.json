@@ -1,15 +1,44 @@
 {
+	"easycom": {
+    "autoscan": true,
+    "custom": {
+      // 支持 u-parse、u-button 等标准组件
+      "^u-(.*)": "uview-plus/components/u-$1/u-$1.vue",
+      // 支持 up- 前缀组件（如 up-button）
+      "^up-(.*)": "uview-plus/components/up-$1/up-$1.vue",
+      // 支持 u-- 前缀（部分特殊组件）
+      "^u--(.*)": "uview-plus/components/u-$1/u-$1.vue"
+    }
+  	},
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+				"navigationBarTitleText": "雅珲网"
+			}
+		},
+		{
+			"path": "pages/post/detail",
+			"style": {
+				"navigationBarTitleText": "文章详情"
+			}
+		},
+		{
+			"path": "pages/category/list",
+			"style": {
+				"navigationBarTitleText": "分类"
+			}
+		},
+		{
+			"path": "pages/tag/list",
+			"style": {
+				"navigationBarTitleText": "标签"
 			}
 		}
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
+		"navigationBarTitleText": "雅珲网",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8"
 	}
