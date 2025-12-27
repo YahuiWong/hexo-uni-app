@@ -54,6 +54,12 @@
 			}
 		},
 		{
+			"path": "pages/post/detailraw",
+			"style": {
+				"navigationBarTitleText": "文章详情"
+			}
+		},
+		{
 			"path": "pages/category/posts",
 			"style": {
 				"navigationBarTitleText": "分类文章"
@@ -63,6 +69,13 @@
 			"path": "pages/tag/posts",
 			"style": {
 				"navigationBarTitleText": "标签文章"
+			}
+		},
+		{
+			"path": "pages/tag/cloudlist",
+			"style": {
+				"navigationBarTitleText": "3D标签云",
+				"navigationStyle": "custom"
 			}
 		},
 		{

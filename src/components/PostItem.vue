@@ -89,7 +89,7 @@ const toDetail = () => {
 
   // 跳转到详情页
   uni.navigateTo({
-    url: `/pages/post/detail?url=${encodeURIComponent(targetUrl)}`
+    url: `/pages/post/detailraw?url=${encodeURIComponent(targetUrl)}`
   });
 };
 

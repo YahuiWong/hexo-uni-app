@@ -1,5 +1,13 @@
 <template>
   <view class="container">
+    <!-- 顶部切换按钮 -->
+    <view class="header-actions">
+      <view class="switch-btn" @click="toCloudView">
+        <u-icon name="share" size="18" color="#007aff" />
+        <text class="switch-text">3D视图</text>
+      </view>
+    </view>
+
     <!-- 加载中 -->
     <view v-if="loading" class="loading">
       <u-loading-icon mode="spinner" size="40" color="#007aff" />
@@ -96,6 +104,13 @@ const toTag = (tag: Tag) => {
     url: `/pages/tag/posts?name=${encodeURIComponent(tag.name)}&slug=${encodeURIComponent(tag.slug)}`
   });
 };
+
+const toCloudView = () => {
+  // 跳转到3D标签云页面
+  uni.navigateTo({
+    url: '/pages/tag/cloudlist'
+  });
+};
 </script>
 
 <style scoped>
@@ -104,6 +119,34 @@ const toTag = (tag: Tag) => {
   background: #f5f5f5;
   padding: 30rpx;
   padding-bottom: calc(30rpx + env(safe-area-inset-bottom));
+}
+
+.header-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20rpx;
+}
+
+.switch-btn {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 12rpx 24rpx;
+  background: #fff;
+  border-radius: 50rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+  transition: all 0.3s;
+}
+
+.switch-btn:active {
+  transform: scale(0.95);
+  opacity: 0.8;
+}
+
+.switch-text {
+  font-size: 26rpx;
+  color: #007aff;
+  font-weight: 500;
 }
 
 .loading {

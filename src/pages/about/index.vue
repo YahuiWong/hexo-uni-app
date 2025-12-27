@@ -137,7 +137,7 @@
 
     <!-- 版权信息 -->
     <view class="footer">
-      <text class="copyright">© 2024 {{ siteInfo.title || '雅珲网' }}</text>
+      <text class="copyright">© {{ currentYear }} {{ siteInfo.title || '雅珲网' }}</text>
       <text class="version">v1.0.0</text>
       <text class="powered">Powered by UniApp & Hexo</text>
     </view>
@@ -145,7 +145,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { onShow } from '@dcloudio/uni-app';
 import { api } from '@/api';
 
@@ -164,6 +164,8 @@ const stats = ref({
   categories: 0,
   tags: 0
 });
+
+const currentYear = computed(() => new Date().getFullYear());
 
 onShow(() => {
   loadSiteInfo();

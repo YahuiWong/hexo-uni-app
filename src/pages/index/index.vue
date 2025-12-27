@@ -146,7 +146,7 @@ onReachBottom(() => {
 
 const toPost = (url: string) => {
   uni.navigateTo({
-    url: `/pages/post/detail?url=${encodeURIComponent(url)}`
+    url: `/pages/post/detailraw?url=${encodeURIComponent(url)}`
   });
 };
 

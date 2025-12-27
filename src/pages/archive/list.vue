@@ -249,7 +249,7 @@ const toPost = (post: PostData) => {
   }
 
   uni.navigateTo({
-    url: `/pages/post/detail?url=${encodeURIComponent(targetUrl)}`
+    url: `/pages/post/detailraw?url=${encodeURIComponent(targetUrl)}`
   });
 };
 
