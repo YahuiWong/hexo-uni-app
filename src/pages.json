@@ -4,8 +4,8 @@
     "custom": {
       // 支持 u-parse、u-button 等标准组件
       "^u-(.*)": "uview-plus/components/u-$1/u-$1.vue",
-      // 支持 up- 前缀组件（如 up-button）
-      "^up-(.*)": "uview-plus/components/up-$1/up-$1.vue",
+      // 支持 up- 前缀组件，映射到 u- 组件（uview-plus内部兼容）
+      "^up-(.*)": "uview-plus/components/u-$1/u-$1.vue",
       // 支持 u-- 前缀（部分特殊组件）
       "^u--(.*)": "uview-plus/components/u-$1/u-$1.vue"
     }

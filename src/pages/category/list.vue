@@ -1,41 +1,150 @@
 <template>
-  <view class="content">
-    <image class="logo" src="/static/logo.png" />
-    <view class="text-area">
-      <text class="title">{{ title }}</text>
+  <view class="container">
+    <!-- 加载中 -->
+    <view v-if="loading" class="loading">
+      <u-loading-icon mode="spinner" size="40" color="#007aff" />
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <!-- 分类列表 -->
+    <view v-else class="category-list">
+      <view
+        v-for="category in categories"
+        :key="category.name"
+        class="category-item"
+        @click="toCategory(category.name)"
+      >
+        <view class="category-info">
+          <u-icon name="folder" size="40" color="#007aff" />
+          <view class="category-content">
+            <text class="category-name">{{ category.name }}</text>
+            <text class="category-count">{{ category.count }} 篇文章</text>
+          </view>
+        </view>
+        <u-icon name="arrow-right" size="20" color="#999" />
+      </view>
+
+      <!-- 空状态 -->
+      <view v-if="!categories.length" class="empty">
+        <u-icon name="inbox" size="80" color="#ccc" />
+        <text class="empty-text">暂无分类</text>
+      </view>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-const title = ref('Hello')
+import { ref, onMounted } from 'vue';
+import { api } from '@/api';
+
+interface Category {
+  name: string;
+  slug: string;
+  count: number;
+  path?: string;
+}
+
+const loading = ref(true);
+const categories = ref<Category[]>([]);
+
+onMounted(async () => {
+  try {
+    const res = await api.getCategories();
+    categories.value = res.data || [];
+  } catch (err) {
+    console.error('加载分类失败', err);
+    uni.showToast({ title: '加载失败', icon: 'none' });
+  } finally {
+    loading.value = false;
+  }
+});
+
+const toCategory = (name: string) => {
+  uni.showToast({
+    title: `点击了分类: ${name}`,
+    icon: 'none'
+  });
+  // TODO: 跳转到分类文章列表页
+  // uni.navigateTo({ url: `/pages/category/posts?name=${encodeURIComponent(name)}` });
+};
 </script>
 
-<style>
-.content {
+<style scoped>
+.container {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+.loading {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 200rpx 0;
 }
 
-.logo {
-  height: 200rpx;
-  width: 200rpx;
-  margin-top: 200rpx;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 50rpx;
+.loading-text {
+  margin-top: 30rpx;
+  font-size: 28rpx;
+  color: #999;
 }
 
-.text-area {
+.category-list {
+  padding: 20rpx;
+}
+
+.category-item {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
   display: flex;
-  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  transition: all 0.3s;
 }
 
-.title {
-  font-size: 36rpx;
-  color: #8f8f94;
+.category-item:active {
+  transform: scale(0.98);
+  opacity: 0.8;
+}
+
+.category-info {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.category-content {
+  margin-left: 20rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.category-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.category-count {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 200rpx 0;
+}
+
+.empty-text {
+  margin-top: 30rpx;
+  font-size: 28rpx;
+  color: #999;
 }
 </style>
