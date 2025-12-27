@@ -42,6 +42,12 @@
    - 智能日期格式化（今天、昨天、N天前等）
    - 图片懒加载
 
+6. **CI/CD 自动部署**
+   - GitHub Actions 自动化工作流
+   - 推送代码自动构建和上传微信小程序
+   - 支持手动触发部署，可指定版本号
+   - 完整的错误处理和日志输出
+
 ## 技术栈
 
 - UniApp 3.x（Vue3 Composition API）
@@ -56,13 +62,21 @@
 
 ```
 hexo-uni-app/
+├── .github/               # GitHub 配置
+│   └── workflows/         # GitHub Actions 工作流
+│       └── deploy-weixin.yml  # 微信小程序自动部署
 ├── docs/                  # 📚 技术文档
 │   ├── README.md          # 文档索引
 │   ├── architecture.md    # 项目架构文档
 │   ├── uview-plus-integration.md  # UI库集成指南
 │   ├── post-detail-page.md        # 详情页实现文档
 │   ├── vitest-testing.md          # 测试框架文档
-│   └── url-routing.md             # URL路由处理文档
+│   ├── url-routing.md             # URL路由处理文档
+│   ├── 20-微信小程序CI配置指南.md  # CI/CD配置文档
+│   └── 21-代码混淆使用指南.md      # 代码混淆文档
+├── scripts/               # 构建脚本
+│   ├── upload-weixin.js   # 微信小程序上传脚本
+│   └── obfuscate.js       # 代码混淆脚本（可选）
 ├── src/
 │   ├── __tests__/         # 测试文件
 │   │   ├── detail.test.ts # 详情页测试（30个用例）
@@ -100,6 +114,8 @@ hexo-uni-app/
 | [🔗 URL 路由处理](./docs/url-routing.md) | 路由解析、多级fallback策略 |
 | [🧪 Vitest 测试](./docs/vitest-testing.md) | 测试框架配置、编写规范、调试技巧 |
 | [📱 小程序兼容性](./docs/miniprogram-compatibility.md) | 小程序平台兼容性问题和解决方案 |
+| [🚀 微信小程序CI配置](./docs/20-微信小程序CI配置指南.md) | GitHub Actions自动部署配置 |
+| [🔒 代码混淆方案](./docs/21-代码混淆使用指南.md) | JavaScript代码混淆保护（可选） |
 
 **推荐阅读顺序**：架构文档 → uview-plus集成 → URL路由 → 测试文档
 
@@ -152,6 +168,16 @@ pnpm build:h5
 pnpm build:mp-weixin
 ```
 
+### 微信小程序自动部署
+
+项目已配置 GitHub Actions CI/CD，支持自动构建和上传到微信小程序平台：
+
+**自动触发**：推送代码到 `main` 分支时自动构建和上传
+
+**手动触发**：在 GitHub Actions 页面手动触发，可指定版本号和描述
+
+详细配置步骤请查看：[微信小程序CI配置指南](./docs/20-微信小程序CI配置指南.md)
+
 ## API 接口说明
 
 项目使用的 API 接口：
@@ -191,6 +217,21 @@ pnpm build:mp-weixin
 6. ✅ **页面样式和交互优化**
 7. ✅ **加载状态和错误处理**
 
+8. ✅ **GitHub Actions CI/CD 配置**（微信小程序自动部署）
+   - 问题：需要手动构建和上传微信小程序
+   - 解决：配置 GitHub Actions 自动化工作流
+   - 详见：[微信小程序CI配置指南](./docs/20-微信小程序CI配置指南.md)
+
+9. ✅ **miniprogram-ci 上传错误**（lru-cache 构造函数错误）
+   - 问题：`_lruCache is not a constructor` 错误
+   - 解决：禁用 miniprogram-ci 编译优化，由 UniApp 处理编译
+   - 详见：[微信小程序CI配置指南](./docs/20-微信小程序CI配置指南.md)
+
+10. ✅ **3D标签云小程序兼容性**（正式版加载失败）
+    - 问题：requestAnimationFrame 在小程序中不完全支持
+    - 解决：添加 setTimeout 降级方案，增强错误提示
+    - 详见：[小程序兼容性文档](./docs/06-小程序兼容性.md)
+
 ## 开发进度
 
 - [x] 项目初始化和配置
@@ -204,6 +245,8 @@ pnpm build:mp-weixin
 - [x] **详情页面完全重构**（rich-text + 字数统计）
 - [x] **URL 路由处理优化**（解决文章无法打开问题）
 - [x] **技术文档编写**（6 份完整文档）
+- [x] **GitHub Actions CI/CD 配置**（自动构建上传微信小程序）
+- [x] **小程序兼容性修复**（3D标签云、requestAnimationFrame）
 - [ ] 分类文章列表页（待开发）
 - [ ] 标签文章列表页（待开发）
 - [ ] 搜索功能（待开发）
@@ -245,8 +288,10 @@ pnpm build:mp-weixin
 1. 确保后端 API 支持跨域或配置了正确的代理
 2. 图片路径需要是完整的 URL
 3. 富文本内容使用原生 `rich-text` 组件渲染（已替代 u-parse）
-4. 小程序环境需要配置域名白名单
+4. 小程序环境需要配置域名白名单（将 `https://blog.yahui.wang` 添加到请求合法域名）
 5. 部分文章可能缺少 `url` 字段，已通过多级 fallback 策略处理
+6. GitHub Actions 自动部署需要配置 `WEIXIN_APPID` 和 `WEIXIN_PRIVATE_KEY` secrets
+7. 3D 标签云在小程序中使用 setTimeout 降级方案，确保兼容性
 
 ## 参考链接
 
@@ -271,6 +316,6 @@ pnpm build:mp-weixin
 
 ---
 
-**最后更新**: 2024-12-27
+**最后更新**: 2025-12-28
 **维护者**: [YahuiWong](https://github.com/YahuiWong)
-**版本**: v1.0.0
+**版本**: v1.1.0
