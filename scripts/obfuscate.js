@@ -35,12 +35,31 @@ const obfuscatorOptions = {
   identifierNamesGenerator: 'hexadecimal', // 使用十六进制命名（_0x1a2b）
   renameGlobals: false,                 // 不重命名全局变量（避免破坏 wx API）
 
-  // 字符串保护
+  // 字符串保护 - 关键修改：保留模块路径
   stringArray: true,                    // 将字符串提取到数组中
-  stringArrayThreshold: 0.8,            // 80% 的字符串放入数组
+  stringArrayThreshold: 0.5,            // 降低到 50%（避免混淆模块路径）
   stringArrayEncoding: ['base64'],      // 字符串使用 base64 编码
   stringArrayWrappersCount: 2,          // 字符串数组包装器数量
   stringArrayWrappersChainedCalls: true, // 链式调用包装器
+
+  // 保留字符串 - 保护模块路径和 wx API
+  reservedStrings: [
+    // 保留所有相对路径和绝对路径
+    '\\.\\.\\/.*',        // ../xxx
+    '\\.\\/.*',           // ./xxx
+    '\\/.*\\.js',         // /xxx.js
+    '\\/.*\\.json',       // /xxx.json
+    '.*\\.vue',           // xxx.vue
+    // 保留微信 API
+    '^wx\\.',             // wx.xxx
+    // 保留 uni API
+    '^uni\\.',            // uni.xxx
+    // 保留 Vue API
+    '^ref$',
+    '^reactive$',
+    '^computed$',
+    '^watch$',
+  ],
 
   // 死代码注入
   deadCodeInjection: true,              // 注入死代码（干扰逆向）
@@ -54,7 +73,7 @@ const obfuscatorOptions = {
   debugProtection: false,               // 不启用调试保护（会影响性能）
 
   // 性能优化
-  splitStrings: true,                   // 分割字符串
+  splitStrings: false,                  // 关闭字符串分割（避免破坏路径）
   splitStringsChunkLength: 10,          // 每 10 个字符分割
 
   // 保留注释
