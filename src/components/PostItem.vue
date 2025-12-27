@@ -1,5 +1,5 @@
 <template>
-  <view class="post-item" @click="toDetail(post.url)">
+  <view class="post-item" @click="toDetail(post)">
     <image
       v-if="post.cover"
       :src="post.cover"
@@ -35,21 +35,50 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   post: {
     title: string;
     excerpt: string;
     date: string;
     cover?: string;
-    url: string;
+    url?: string;
+    slug?: string;
+    api?: string;
     tags?: string[];
     categories?: string[];
   };
 }>();
 
-const toDetail = (url: string) => {
+const toDetail = (post: any) => {
+  let targetUrl = post.url;
+
+  // 如果没有 url 字段，尝试根据其他信息构建
+  if (!targetUrl) {
+    if (post.api) {
+      // 从 api 字段提取路径：api/posts/2025/04/09/note-docker-compose.json -> 2025/04/09/note-docker-compose
+      targetUrl = post.api.replace(/^api\/posts\//, '').replace(/\.json$/, '');
+    } else if (post.date && post.slug) {
+      // 根据日期和 slug 构建标准路径
+      const date = new Date(post.date);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      targetUrl = `${year}/${month}/${day}/${post.slug}`;
+    } else if (post.slug) {
+      // 只有 slug，直接使用
+      targetUrl = post.slug;
+    }
+  }
+
+  if (!targetUrl) {
+    console.error('无法获取文章 URL', post);
+    uni.showToast({ title: '无法打开文章', icon: 'none' });
+    return;
+  }
+
+  // 跳转到详情页
   uni.navigateTo({
-    url: `/pages/post/detail?url=${encodeURIComponent(url)}`
+    url: `/pages/post/detail?url=${encodeURIComponent(targetUrl)}`
   });
 };
 
