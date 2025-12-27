@@ -81,9 +81,18 @@ ci.upload({
   },
   onProgressUpdate: (info) => {
     // 上传进度回调
-    console.log(`📤 上传进度: ${info.percent}%`);
-    if (info._msg) {
-      console.log(`   消息: ${info._msg}`);
+    if (info.percent !== undefined && info.percent !== null) {
+      console.log(`📤 上传进度: ${info.percent}%`);
+    } else if (info._msg) {
+      console.log(`📤 上传状态: ${info._msg}`);
+    } else if (info.status) {
+      console.log(`📤 上传状态: ${info.status}`);
+    } else {
+      // 只显示有用的信息
+      const keys = Object.keys(info).filter(k => !k.startsWith('_'));
+      if (keys.length > 0) {
+        console.log(`📤 上传中...`, keys.map(k => `${k}: ${info[k]}`).join(', '));
+      }
     }
   },
 })
