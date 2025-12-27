@@ -22,8 +22,8 @@ const VERSION = process.env.VERSION || '1.0.0';
 const DESCRIPTION = process.env.DESCRIPTION || '自动构建版本';
 
 // 项目路径
-const projectPath = path.join(__dirname, './dist/build/mp-weixin');
-const privateKeyPath = path.join(__dirname, './CI/private.wx4cb194f334bcdb16.key');
+const projectPath = path.join(__dirname, '/dist/build/mp-weixin');
+const privateKeyPath = path.join(__dirname, '/CI/private.wx4cb194f334bcdb16.key');
 
 // 验证配置
 if (!APPID) {
