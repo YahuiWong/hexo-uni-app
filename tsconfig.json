@@ -11,7 +11,24 @@
       "@dcloudio/types",
       "miniprogram-api-typings",
       "@uni-helper/uni-app-types"
-    ]
+    ],
+    // TypeScript 严格模式配置
+    "strict": true,                           // 启用所有严格类型检查选项
+    "noImplicitAny": true,                    // 不允许隐式 any 类型
+    "strictNullChecks": true,                 // 严格的 null 检查
+    "strictFunctionTypes": true,              // 严格的函数类型检查
+    "strictBindCallApply": true,              // 严格的 bind/call/apply 检查
+    "strictPropertyInitialization": true,     // 严格的属性初始化检查
+    "noImplicitThis": true,                   // 不允许 this 有隐式 any 类型
+    "alwaysStrict": true,                     // 始终以严格模式解析
+    // 额外的类型检查
+    "noUnusedLocals": true,                   // 检查未使用的局部变量
+    "noUnusedParameters": true,               // 检查未使用的参数
+    "noImplicitReturns": true,                // 检查函数是否所有代码路径都有返回值
+    "noFallthroughCasesInSwitch": true,       // 检查 switch 语句的 fallthrough
+    "esModuleInterop": true,                  // 启用 ESModule 互操作性
+    "skipLibCheck": true,                     // 跳过库文件的类型检查（提升性能）
+    "forceConsistentCasingInFileNames": true  // 强制文件名大小写一致
   },
  "include": [
     "src/**/*.ts",

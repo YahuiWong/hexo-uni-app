@@ -76,6 +76,14 @@
           <text class="footer-label">更新于：</text>
           <text class="footer-value">{{ fullDate(post.updated) }}</text>
         </view>
+
+        <!-- 分享按钮 -->
+        <view class="share-section">
+          <view class="share-btn" @click="showSharePanel = true">
+            <u-icon name="share" size="18" color="#007aff" />
+            <text class="share-btn-text">分享文章</text>
+          </view>
+        </view>
       </view>
     </view>
 
@@ -92,15 +100,26 @@
         重新加载
       </u-button>
     </view>
+
+    <!-- 分享面板 -->
+    <SharePanel
+      v-model:show="showSharePanel"
+      :title="post.title || ''"
+      :url="shareUrl"
+      :content="post.description || post.excerpt || ''"
+      :imageUrl="post.cover"
+    />
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { onLoad } from '@dcloudio/uni-app';
+import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import { marked } from 'marked';
 import hljs from 'highlight.js/lib/core';
+import SharePanel from '@/components/SharePanel.vue';
+import type { PostDetail } from '@/types';
 
 // 导入常用语言的高亮支持
 import javascript from 'highlight.js/lib/languages/javascript';
@@ -129,25 +148,41 @@ hljs.registerLanguage('go', go);
 
 // 配置 marked
 marked.setOptions({
-  highlight: function(code, lang) {
-    if (lang && hljs.getLanguage(lang)) {
-      try {
-        return hljs.highlight(code, { language: lang }).value;
-      } catch (err) {
-        console.error('代码高亮失败', err);
-      }
-    }
-    return code;
-  },
   breaks: true,
   gfm: true,
-});
+}) as any;
+
+// 自定义高亮函数（marked 的扩展）
+const highlightCode = (code: string, lang: string): string => {
+  if (lang && hljs.getLanguage(lang)) {
+    try {
+      return hljs.highlight(code, { language: lang }).value;
+    } catch (err) {
+      console.error('代码高亮失败', err);
+    }
+  }
+  return code;
+};
 
 // 数据
-const post = ref<any>({});
+const post = ref<PostDetail>({} as PostDetail);
 const loading = ref(true);
 const currentUrl = ref('');
 const renderedContent = ref('');
+const showSharePanel = ref(false);
+
+// 分享链接（完整 URL）
+const shareUrl = computed(() => {
+  if (!post.value.url) return '';
+
+  // 如果已经是完整 URL
+  if (post.value.url.startsWith('http')) {
+    return post.value.url;
+  }
+
+  // 拼接完整 URL
+  return `https://blog.yahui.wang${post.value.url}`;
+});
 
 // 渲染 Markdown
 const renderMarkdown = (rawContent: string): string => {
@@ -205,7 +240,7 @@ const styleHtml = (html: string): string => {
   result = result.replace(/<code>/gi, `<code style="background:#e7f7ef;color:${colors.accent};padding:4rpx 10rpx;border-radius:4rpx;font-size:90%;font-family:Consolas,Monaco,monospace">`);
 
   // pre 内的 code 特殊处理
-  result = result.replace(/<pre([^>]*?)>([\s\S]*?)<\/pre>/gi, (match, preAttrs, preContent) => {
+  result = result.replace(/<pre([^>]*?)>([\s\S]*?)<\/pre>/gi, (_match, preAttrs, preContent) => {
     const cleanedContent = preContent.replace(
       /<code([^>]*?)style="[^"]*?"/gi,
       '<code$1 style="background:transparent;color:inherit;padding:0;font-size:inherit"'
@@ -379,6 +414,24 @@ const fullDate = (dateStr: string) => {
     minute: '2-digit',
   });
 };
+
+// 微信小程序分享到好友
+onShareAppMessage(() => {
+  return {
+    title: post.value.title || '文章分享',
+    path: `/pages/post/detailraw?url=${encodeURIComponent(currentUrl.value)}`,
+    imageUrl: post.value.cover || ''
+  };
+});
+
+// 微信小程序分享到朋友圈
+onShareTimeline(() => {
+  return {
+    title: post.value.title || '文章分享',
+    query: `url=${encodeURIComponent(currentUrl.value)}`,
+    imageUrl: post.value.cover || ''
+  };
+});
 </script>
 
 <style scoped>
@@ -536,6 +589,38 @@ const fullDate = (dateStr: string) => {
 .footer-value {
   font-size: 24rpx;
   color: #666;
+}
+
+.share-section {
+  margin-top: 30rpx;
+  padding-top: 30rpx;
+  border-top: 1rpx solid #f0f0f0;
+  display: flex;
+  justify-content: center;
+}
+
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 16rpx 40rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50rpx;
+  box-shadow: 0 4rpx 12rpx rgba(102, 126, 234, 0.3);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.share-btn:active {
+  opacity: 0.8;
+  transform: scale(0.95);
+}
+
+.share-btn-text {
+  font-size: 28rpx;
+  color: #fff;
+  font-weight: 500;
+  line-height: 1;
 }
 
 .empty {
