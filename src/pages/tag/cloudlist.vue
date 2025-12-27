@@ -84,13 +84,23 @@ onMounted(async () => {
   try {
     const res = await api.getTags();
     tags.value = res.data || [];
+
     if (tags.value.length > 0) {
       initTagCloud();
       startAutoRotate();
+    } else {
+      console.warn('标签列表为空');
     }
-  } catch (err) {
+  } catch (err: any) {
     console.error('加载标签失败', err);
-    uni.showToast({ title: '加载失败', icon: 'none' });
+
+    // 提供更详细的错误信息
+    const errorMsg = err?.errMsg || err?.message || '加载失败，请检查网络';
+    uni.showToast({
+      title: errorMsg,
+      icon: 'none',
+      duration: 3000
+    });
   } finally {
     loading.value = false;
   }
@@ -189,14 +199,26 @@ const startAutoRotate = () => {
       angleY.value += 0.2;
       updateTagPositions();
     }
-    animationFrame = requestAnimationFrame(rotate);
+
+    // 小程序兼容性处理
+    if (typeof requestAnimationFrame !== 'undefined') {
+      animationFrame = requestAnimationFrame(rotate);
+    } else {
+      // 降级到 setTimeout（小程序可能不支持 requestAnimationFrame）
+      animationFrame = setTimeout(rotate, 16) as any;
+    }
   };
   rotate();
 };
 
 const stopAutoRotate = () => {
   if (animationFrame) {
-    cancelAnimationFrame(animationFrame);
+    // 小程序兼容性处理
+    if (typeof cancelAnimationFrame !== 'undefined') {
+      cancelAnimationFrame(animationFrame);
+    } else {
+      clearTimeout(animationFrame);
+    }
     animationFrame = null;
   }
 };
