@@ -74,22 +74,40 @@ export function useShare(config?: PageShareConfig | (() => PageShareConfig)) {
   onShareAppMessage(() => {
     const cfg = getConfig();
 
-    return {
+    const shareData: any = {
       title: cfg.title || defaultConfig.title,
-      path: cfg.path || defaultConfig.path,
-      imageUrl: cfg.imageUrl || defaultConfig.imageUrl
+      path: cfg.path || defaultConfig.path
     };
+
+    // 只在有图片时才添加 imageUrl
+    if (cfg.imageUrl) {
+      shareData.imageUrl = cfg.imageUrl;
+    }
+
+    console.log('[分享给好友] 配置:', shareData);
+    return shareData;
   });
 
   // 配置分享到朋友圈
   onShareTimeline(() => {
     const cfg = getConfig();
 
-    return {
-      title: cfg.title || defaultConfig.title,
-      query: cfg.query || '',
-      imageUrl: cfg.imageUrl || defaultConfig.imageUrl
+    const shareData: any = {
+      title: cfg.title || defaultConfig.title
     };
+
+    // 添加查询参数
+    if (cfg.query) {
+      shareData.query = cfg.query;
+    }
+
+    // 只在有图片时才添加 imageUrl
+    if (cfg.imageUrl) {
+      shareData.imageUrl = cfg.imageUrl;
+    }
+
+    console.log('[分享到朋友圈] 配置:', shareData);
+    return shareData;
   });
 
   return {
@@ -118,11 +136,17 @@ export function useIndexShare() {
 export function usePostShare(getPostData: () => { title?: string; url?: string; cover?: string }) {
   return useShare(() => {
     const post = getPostData();
-    return {
+    const shareConfig: PageShareConfig = {
       title: post.title || '文章分享',
-      path: post.url ? `/pages/post/detailraw?url=${encodeURIComponent(post.url)}` : '/pages/index/index',
-      imageUrl: post.cover || ''
+      path: post.url ? `/pages/post/detailraw?url=${encodeURIComponent(post.url)}` : '/pages/index/index'
     };
+
+    // 只在有封面图时才添加
+    if (post.cover) {
+      shareConfig.imageUrl = post.cover;
+    }
+
+    return shareConfig;
   });
 }
 
