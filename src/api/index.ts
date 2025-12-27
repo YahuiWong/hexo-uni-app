@@ -1,4 +1,4 @@
-const BASE_URL = '/api-blog';  // 开发时走代理，生产时改回真实域名
+const BASE_URL = 'https://blog.yahui.wang/api';  // 开发时走代理，生产时改回真实域名
 
 interface ApiResponse<T> {
   data: T;

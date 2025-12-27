@@ -1,5 +1,5 @@
 <template>
-  <view class="post-item" @click="toDetail(post)">
+  <view class="post-item" @click="toDetail">
     <image
       v-if="post.cover"
       :src="post.cover"
@@ -49,7 +49,16 @@ const props = defineProps<{
   };
 }>();
 
-const toDetail = (post: any) => {
+const toDetail = () => {
+  // 直接使用 props.post，避免参数传递问题（小程序兼容性）
+  const post = props.post;
+
+  if (!post) {
+    console.error('文章数据为空');
+    uni.showToast({ title: '文章数据错误', icon: 'none' });
+    return;
+  }
+
   let targetUrl = post.url;
 
   // 如果没有 url 字段，尝试根据其他信息构建
@@ -75,6 +84,8 @@ const toDetail = (post: any) => {
     uni.showToast({ title: '无法打开文章', icon: 'none' });
     return;
   }
+
+  console.log('跳转到详情页，URL:', targetUrl);
 
   // 跳转到详情页
   uni.navigateTo({
