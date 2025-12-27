@@ -182,8 +182,9 @@ const shareUrl = computed(() => {
     return post.value.url;
   }
 
-  // 拼接完整 URL
-  return `https://blog.yahui.wang${post.value.url}`;
+  // 拼接完整 URL - 确保 URL 以斜杠开头
+  const url = post.value.url.startsWith('/') ? post.value.url : `/${post.value.url}`;
+  return `https://blog.yahui.wang${url}`;
 });
 
 // 渲染 Markdown

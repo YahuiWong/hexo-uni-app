@@ -20,7 +20,7 @@
             @click="handleShareItem('weixin')"
           >
             <view class="share-icon weixin-icon">
-              <u-icon name="chat" size="28" color="#fff" />
+              <u-icon name="chat" size="32" color="#fff" />
             </view>
             <text class="share-label">微信</text>
           </view>
@@ -32,7 +32,7 @@
             @click="handleShareItem('moment')"
           >
             <view class="share-icon moment-icon">
-              <u-icon name="moments" size="28" color="#fff" />
+              <u-icon name="moments" size="32" color="#fff" />
             </view>
             <text class="share-label">朋友圈</text>
           </view>
@@ -43,7 +43,7 @@
             @click="handleShareItem('copy')"
           >
             <view class="share-icon copy-icon">
-              <u-icon name="copy" size="28" color="#fff" />
+              <u-icon name="copy-document" size="32" color="#fff" />
             </view>
             <text class="share-label">复制链接</text>
           </view>
@@ -55,7 +55,7 @@
             @click="handleShareItem('poster')"
           >
             <view class="share-icon poster-icon">
-              <u-icon name="photo" size="28" color="#fff" />
+              <u-icon name="photo" size="32" color="#fff" />
             </view>
             <text class="share-label">生成海报</text>
           </view>
