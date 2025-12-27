@@ -46,5 +46,13 @@ export const api = {
   // 标签文章列表（分页）
   getTagPosts(slug: string, page: number = 1): Promise<ApiResponse<any>> {
     return uni.request({ url: `${BASE_URL}/tags/${slug}/page.${page}.json` }).then(res => res.data as any);
+  },
+
+  // 搜索
+  search(keyword: string): Promise<ApiResponse<any>> {
+    return uni.request({
+      url: `${BASE_URL}/search.json`,
+      data: { keyword }
+    }).then(res => res.data as any);
   }
 };

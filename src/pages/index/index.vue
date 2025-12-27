@@ -24,6 +24,10 @@
 
     <!-- 导航栏 -->
     <view class="nav-bar">
+      <view class="nav-item" @click="toPage('/pages/search/index')">
+        <u-icon name="search" size="24" color="#ff9500" />
+        <text class="nav-text">搜索</text>
+      </view>
       <view class="nav-item" @click="toPage('/pages/category/list')">
         <u-icon name="folder" size="24" color="#007aff" />
         <text class="nav-text">分类</text>

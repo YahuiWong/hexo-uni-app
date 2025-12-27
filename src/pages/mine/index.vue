@@ -30,6 +30,14 @@
     <!-- 功能列表 -->
     <view class="menu-section">
       <view class="menu-group">
+        <view class="menu-item" @click="toSearch">
+          <view class="menu-left">
+            <u-icon name="search" size="20" color="#ff9500" />
+            <text class="menu-text">搜索文章</text>
+          </view>
+          <u-icon name="arrow-right" size="16" color="#ccc" />
+        </view>
+
         <view class="menu-item" @click="toAbout">
           <view class="menu-left">
             <u-icon name="info-circle" size="20" color="#007aff" />
@@ -124,6 +132,12 @@ const loadStats = async () => {
   } catch (err) {
     console.error('加载统计信息失败', err);
   }
+};
+
+const toSearch = () => {
+  uni.navigateTo({
+    url: '/pages/search/index'
+  });
 };
 
 const toAbout = () => {

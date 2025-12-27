@@ -52,6 +52,12 @@
 			"style": {
 				"navigationBarTitleText": "标签文章"
 			}
+		},
+		{
+			"path": "pages/search/index",
+			"style": {
+				"navigationBarTitleText": "搜索"
+			}
 		}
 	],
 	"tabBar": {
