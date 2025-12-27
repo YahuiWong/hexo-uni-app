@@ -51,8 +51,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onReachBottom } from 'vue';
-import { onLoad } from '@dcloudio/uni-app';
+import { ref } from 'vue';
+import { onLoad, onReachBottom } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import PostItem from '@/components/PostItem.vue';
 
