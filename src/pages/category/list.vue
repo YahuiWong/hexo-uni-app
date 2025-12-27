@@ -36,6 +36,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { api } from '@/api';
+import { useCategoryShare } from '@/composables/useShare';
+
+// 配置页面分享
+useCategoryShare();
 
 interface Category {
   name: string;

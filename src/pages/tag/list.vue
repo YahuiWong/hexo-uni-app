@@ -40,6 +40,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { api } from '@/api';
+import { useTagShare } from '@/composables/useShare';
+
+// 配置页面分享
+useTagShare();
 
 interface Tag {
   name: string;

@@ -148,6 +148,10 @@
 import { ref, computed } from 'vue';
 import { onShow } from '@dcloudio/uni-app';
 import { api } from '@/api';
+import { useAboutShare } from '@/composables/useShare';
+
+// 配置页面分享
+useAboutShare();
 
 const siteInfo = ref<any>({
   title: '雅珲网',

@@ -114,12 +114,13 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
+import { onLoad } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import { marked } from 'marked';
 import hljs from 'highlight.js/lib/core';
 import SharePanel from '@/components/SharePanel.vue';
 import type { PostDetail } from '@/types';
+import { usePostShare } from '@/composables/useShare';
 
 // 导入常用语言的高亮支持
 import javascript from 'highlight.js/lib/languages/javascript';
@@ -152,24 +153,19 @@ marked.setOptions({
   gfm: true,
 }) as any;
 
-// 自定义高亮函数（marked 的扩展）
-const highlightCode = (code: string, lang: string): string => {
-  if (lang && hljs.getLanguage(lang)) {
-    try {
-      return hljs.highlight(code, { language: lang }).value;
-    } catch (err) {
-      console.error('代码高亮失败', err);
-    }
-  }
-  return code;
-};
-
 // 数据
 const post = ref<PostDetail>({} as PostDetail);
 const loading = ref(true);
 const currentUrl = ref('');
 const renderedContent = ref('');
 const showSharePanel = ref(false);
+
+// 配置页面分享
+usePostShare(() => ({
+  title: post.value.title,
+  url: currentUrl.value,
+  cover: post.value.cover
+}));
 
 // 分享链接（完整 URL）
 const shareUrl = computed(() => {
@@ -414,24 +410,6 @@ const fullDate = (dateStr: string) => {
     minute: '2-digit',
   });
 };
-
-// 微信小程序分享到好友
-onShareAppMessage(() => {
-  return {
-    title: post.value.title || '文章分享',
-    path: `/pages/post/detailraw?url=${encodeURIComponent(currentUrl.value)}`,
-    imageUrl: post.value.cover || ''
-  };
-});
-
-// 微信小程序分享到朋友圈
-onShareTimeline(() => {
-  return {
-    title: post.value.title || '文章分享',
-    query: `url=${encodeURIComponent(currentUrl.value)}`,
-    imageUrl: post.value.cover || ''
-  };
-});
 </script>
 
 <style scoped>

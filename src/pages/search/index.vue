@@ -81,6 +81,10 @@ import { ref, onMounted } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import PostItem from '@/components/PostItem.vue';
+import { useSearchShare } from '@/composables/useShare';
+
+// 配置页面分享
+useSearchShare();
 
 const keyword = ref('');
 const searching = ref(false);

@@ -84,6 +84,10 @@ import { onReachBottom } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import PostItemComponent from '@/components/PostItem.vue';
 import type { SwiperItem, PostItem } from '@/types';
+import { useIndexShare } from '@/composables/useShare';
+
+// 配置页面分享
+useIndexShare();
 
 const swiperList = ref<SwiperItem[]>([]);
 const posts = ref<PostItem[]>([]);

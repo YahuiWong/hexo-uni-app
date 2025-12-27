@@ -97,6 +97,10 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { api } from '@/api';
+import { useArchiveShare } from '@/composables/useShare';
+
+// 配置页面分享
+useArchiveShare();
 
 interface PostData {
   title: string;
