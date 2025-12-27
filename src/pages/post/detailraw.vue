@@ -165,32 +165,44 @@ const renderMarkdown = (rawContent: string): string => {
   return html;
 };
 
-// 为 HTML 添加样式
+// 为 HTML 添加样式 - 简约清新风格
 const styleHtml = (html: string): string => {
   let result = html;
 
-  // 标题样式
-  result = result.replace(/<h1>/gi, '<h1 style="font-size:44rpx;font-weight:bold;margin:40rpx 0 20rpx;line-height:1.4;color:#000;padding-bottom:16rpx;border-bottom:2rpx solid #eee">');
-  result = result.replace(/<h2>/gi, '<h2 style="font-size:38rpx;font-weight:bold;margin:35rpx 0 18rpx;line-height:1.4;color:#000;padding-bottom:12rpx;border-bottom:1rpx solid #f0f0f0">');
-  result = result.replace(/<h3>/gi, '<h3 style="font-size:34rpx;font-weight:bold;margin:30rpx 0 16rpx;line-height:1.4;color:#000">');
-  result = result.replace(/<h4>/gi, '<h4 style="font-size:32rpx;font-weight:bold;margin:28rpx 0 14rpx;line-height:1.4;color:#000">');
-  result = result.replace(/<h5>/gi, '<h5 style="font-size:30rpx;font-weight:bold;margin:26rpx 0 12rpx;line-height:1.4;color:#000">');
-  result = result.replace(/<h6>/gi, '<h6 style="font-size:30rpx;font-weight:bold;margin:24rpx 0 12rpx;line-height:1.4;color:#000">');
+  // 清新配色
+  const colors = {
+    primary: '#2c3e50',      // 主文字色（深灰蓝）
+    secondary: '#546e7a',    // 次要文字色
+    accent: '#42b983',       // 强调色（清新绿）
+    link: '#3498db',         // 链接色（柔和蓝）
+    border: '#e8e8e8',       // 边框色（浅灰）
+    codeBg: '#f6f8fa',       // 代码背景（浅灰）
+    quoteBg: '#f9fafb',      // 引用块背景
+    tableBg: '#fafbfc',      // 表格背景
+  };
 
-  // 段落样式
-  result = result.replace(/<p>/gi, '<p style="line-height:1.8;margin:20rpx 0;text-align:justify;color:#333">');
+  // 标题样式 - 简约清新
+  result = result.replace(/<h1>/gi, `<h1 style="font-size:42rpx;font-weight:600;margin:50rpx 0 30rpx;line-height:1.4;color:${colors.primary};padding-bottom:16rpx;border-bottom:3rpx solid ${colors.accent}">`);
+  result = result.replace(/<h2>/gi, `<h2 style="font-size:38rpx;font-weight:600;margin:45rpx 0 25rpx;line-height:1.4;color:${colors.primary};padding-bottom:12rpx;border-bottom:2rpx solid ${colors.border}">`);
+  result = result.replace(/<h3>/gi, `<h3 style="font-size:34rpx;font-weight:600;margin:40rpx 0 20rpx;line-height:1.4;color:${colors.primary}">`);
+  result = result.replace(/<h4>/gi, `<h4 style="font-size:32rpx;font-weight:600;margin:35rpx 0 18rpx;line-height:1.4;color:${colors.secondary}">`);
+  result = result.replace(/<h5>/gi, `<h5 style="font-size:30rpx;font-weight:600;margin:30rpx 0 16rpx;line-height:1.4;color:${colors.secondary}">`);
+  result = result.replace(/<h6>/gi, `<h6 style="font-size:28rpx;font-weight:600;margin:28rpx 0 14rpx;line-height:1.4;color:${colors.secondary}">`);
 
-  // 图片样式
-  result = result.replace(/<img([^>]*?)>/gi, '<img$1 style="width:100%;height:auto;display:block;margin:30rpx 0;border-radius:8rpx;box-shadow:0 4rpx 12rpx rgba(0,0,0,0.1)">');
+  // 段落样式 - 舒适阅读
+  result = result.replace(/<p>/gi, `<p style="line-height:1.8;margin:24rpx 0;color:#4a4a4a;font-size:30rpx;text-align:justify">`);
 
-  // 引用块样式
-  result = result.replace(/<blockquote>/gi, '<blockquote style="border-left:6rpx solid #007aff;padding:20rpx 24rpx;background:#f7f9fa;margin:30rpx 0;color:#555;border-radius:0 8rpx 8rpx 0">');
+  // 图片样式 - 柔和圆角
+  result = result.replace(/<img([^>]*?)>/gi, `<img$1 style="width:100%;height:auto;display:block;margin:40rpx 0;border-radius:12rpx;box-shadow:0 4rpx 16rpx rgba(0,0,0,0.06)">`);
 
-  // 代码块样式
-  result = result.replace(/<pre>/gi, '<pre style="background:#282c34;color:#abb2bf;padding:24rpx;border-radius:8rpx;overflow-x:auto;margin:30rpx 0;font-size:26rpx;line-height:1.6;box-shadow:0 2rpx 8rpx rgba(0,0,0,0.15)">');
+  // 引用块样式 - 清新简约
+  result = result.replace(/<blockquote>/gi, `<blockquote style="border-left:4rpx solid ${colors.accent};padding:20rpx 24rpx;background:${colors.quoteBg};margin:30rpx 0;color:${colors.secondary};border-radius:0 8rpx 8rpx 0;font-size:28rpx">`);
 
-  // 行内代码样式
-  result = result.replace(/<code>/gi, '<code style="background:#f5f5f5;color:#e74c3c;padding:4rpx 10rpx;border-radius:4rpx;font-size:90%;font-family:Consolas,Monaco,monospace">');
+  // 代码块样式 - 柔和配色
+  result = result.replace(/<pre>/gi, `<pre style="background:${colors.codeBg};color:#24292f;padding:24rpx;border-radius:8rpx;border:1rpx solid ${colors.border};overflow-x:auto;margin:30rpx 0;font-size:26rpx;line-height:1.6;font-family:Consolas,Monaco,monospace">`);
+
+  // 行内代码样式 - 清新强调
+  result = result.replace(/<code>/gi, `<code style="background:#e7f7ef;color:${colors.accent};padding:4rpx 10rpx;border-radius:4rpx;font-size:90%;font-family:Consolas,Monaco,monospace">`);
 
   // pre 内的 code 特殊处理
   result = result.replace(/<pre([^>]*?)>([\s\S]*?)<\/pre>/gi, (match, preAttrs, preContent) => {
@@ -201,26 +213,26 @@ const styleHtml = (html: string): string => {
     return `<pre${preAttrs}>${cleanedContent}</pre>`;
   });
 
-  // 链接样式
-  result = result.replace(/<a([^>]*?)>/gi, '<a$1 style="color:#007aff;text-decoration:underline;word-break:break-all">');
+  // 链接样式 - 柔和蓝色
+  result = result.replace(/<a([^>]*?)>/gi, `<a$1 style="color:${colors.link};text-decoration:none;border-bottom:1rpx solid ${colors.link};word-break:break-all;transition:all 0.2s">`);
 
-  // 列表样式
-  result = result.replace(/<ul>/gi, '<ul style="margin:20rpx 0;padding-left:40rpx">');
-  result = result.replace(/<ol>/gi, '<ol style="margin:20rpx 0;padding-left:40rpx">');
-  result = result.replace(/<li>/gi, '<li style="margin:12rpx 0;line-height:1.8">');
+  // 列表样式 - 清晰层次
+  result = result.replace(/<ul>/gi, `<ul style="margin:24rpx 0;padding-left:40rpx;color:#4a4a4a">`);
+  result = result.replace(/<ol>/gi, `<ol style="margin:24rpx 0;padding-left:40rpx;color:#4a4a4a">`);
+  result = result.replace(/<li>/gi, `<li style="margin:12rpx 0;line-height:1.8;font-size:30rpx">`);
 
-  // 表格样式
-  result = result.replace(/<table>/gi, '<table style="width:100%;border-collapse:collapse;margin:30rpx 0;font-size:28rpx">');
-  result = result.replace(/<thead>/gi, '<thead style="background:#f5f7fa">');
-  result = result.replace(/<th>/gi, '<th style="padding:20rpx 16rpx;text-align:left;font-weight:bold;color:#333;border-bottom:2rpx solid #e8e8e8">');
-  result = result.replace(/<td>/gi, '<td style="padding:16rpx;border-bottom:1rpx solid #f0f0f0;color:#666">');
+  // 表格样式 - 简约清新
+  result = result.replace(/<table>/gi, `<table style="width:100%;border-collapse:collapse;margin:30rpx 0;font-size:28rpx;border-radius:8rpx;overflow:hidden;box-shadow:0 2rpx 12rpx rgba(0,0,0,0.04)">`);
+  result = result.replace(/<thead>/gi, `<thead style="background:${colors.tableBg}">`);
+  result = result.replace(/<th>/gi, `<th style="padding:20rpx 16rpx;text-align:left;font-weight:600;color:${colors.primary};border-bottom:2rpx solid ${colors.border}">`);
+  result = result.replace(/<td>/gi, `<td style="padding:16rpx;border-bottom:1rpx solid ${colors.border};color:#4a4a4a">`);
 
-  // 水平线样式
-  result = result.replace(/<hr>/gi, '<hr style="border:none;border-top:2rpx solid #eee;margin:40rpx 0">');
+  // 水平线样式 - 淡雅
+  result = result.replace(/<hr>/gi, `<hr style="border:none;border-top:1rpx solid ${colors.border};margin:50rpx 0;opacity:0.5">`);
 
-  // 粗体、斜体样式
-  result = result.replace(/<strong>/gi, '<strong style="font-weight:bold;color:#000">');
-  result = result.replace(/<em>/gi, '<em style="font-style:italic">');
+  // 粗体、斜体样式 - 突出但柔和
+  result = result.replace(/<strong>/gi, `<strong style="font-weight:600;color:${colors.primary}">`);
+  result = result.replace(/<em>/gi, `<em style="font-style:italic;color:${colors.secondary}">`);
 
   return result;
 };
@@ -371,7 +383,7 @@ const fullDate = (dateStr: string) => {
 
 <style scoped>
 .detail-container {
-  background: #f5f5f5;
+  background: #f8f9fa;
   min-height: 100vh;
 }
 
@@ -398,7 +410,7 @@ const fullDate = (dateStr: string) => {
   width: 100%;
   height: 450rpx;
   display: block;
-  background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+  background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
 }
 
 .article-header {
@@ -407,8 +419,8 @@ const fullDate = (dateStr: string) => {
 
 .title {
   font-size: 48rpx;
-  font-weight: bold;
-  color: #000;
+  font-weight: 600;
+  color: #2c3e50;
   line-height: 1.4;
   display: block;
   margin-bottom: 30rpx;
@@ -417,7 +429,7 @@ const fullDate = (dateStr: string) => {
 .meta-info {
   display: flex;
   flex-wrap: wrap;
-  gap: 20rpx;
+  gap: 16rpx;
   margin-bottom: 30rpx;
 }
 
@@ -425,11 +437,14 @@ const fullDate = (dateStr: string) => {
   display: flex;
   align-items: center;
   gap: 6rpx;
+  padding: 8rpx 16rpx;
+  background: #f8f9fa;
+  border-radius: 20rpx;
 }
 
 .meta-text {
   font-size: 24rpx;
-  color: #999;
+  color: #546e7a;
   line-height: 1;
 }
 
@@ -445,13 +460,13 @@ const fullDate = (dateStr: string) => {
   align-items: center;
   gap: 4rpx;
   padding: 8rpx 16rpx;
-  background: #e3f2fd;
+  background: #e7f7ef;
   border-radius: 20rpx;
 }
 
 .tag-text {
   font-size: 24rpx;
-  color: #007aff;
+  color: #42b983;
   line-height: 1;
 }
 
@@ -466,13 +481,13 @@ const fullDate = (dateStr: string) => {
   align-items: center;
   gap: 4rpx;
   padding: 8rpx 16rpx;
-  background: #e8f5e9;
+  background: #e3f2fd;
   border-radius: 20rpx;
 }
 
 .category-text {
   font-size: 24rpx;
-  color: #34c759;
+  color: #3498db;
   line-height: 1;
 }
 
@@ -483,18 +498,19 @@ const fullDate = (dateStr: string) => {
 
 .description-text {
   font-size: 28rpx;
-  color: #666;
+  color: #546e7a;
   line-height: 1.6;
   font-style: italic;
 }
 
 .content-wrapper {
   padding: 30rpx;
+  background: #fff;
 }
 
 .markdown-content {
   font-size: 30rpx;
-  color: #333;
+  color: #4a4a4a;
   line-height: 1.8;
   word-break: break-word;
 }
