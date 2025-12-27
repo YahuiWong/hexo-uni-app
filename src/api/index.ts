@@ -54,5 +54,21 @@ export const api = {
       url: `${BASE_URL}/search.json`,
       data: { keyword }
     }).then(res => res.data as any);
+  },
+
+  // 归档列表
+  getArchives(): Promise<ApiResponse<any>> {
+    return uni.request({ url: `${BASE_URL}/archives.json` }).then(res => res.data as any);
+  },
+
+  // 年份归档
+  getYearArchive(year: number, page: number = 1): Promise<ApiResponse<any>> {
+    return uni.request({ url: `${BASE_URL}/archives/${year}/page.${page}.json` }).then(res => res.data as any);
+  },
+
+  // 月份归档
+  getMonthArchive(year: number, month: number, page: number = 1): Promise<ApiResponse<any>> {
+    const monthStr = String(month).padStart(2, '0');
+    return uni.request({ url: `${BASE_URL}/archives/${year}/${monthStr}/page.${page}.json` }).then(res => res.data as any);
   }
 };

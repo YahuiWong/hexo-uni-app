@@ -15,7 +15,7 @@
         :style="getTagStyle(tag.count)"
         @click="toTag(tag)"
       >
-        <u-icon name="tag" :size="getIconSize(tag.count)" color="#fff" />
+        <u-icon name="tags" :size="getIconSize(tag.count)" color="#fff" />
         <text class="tag-name">{{ tag.name }}</text>
         <text class="tag-count">{{ tag.count }}</text>
       </view>
@@ -103,6 +103,7 @@ const toTag = (tag: Tag) => {
   min-height: 100vh;
   background: #f5f5f5;
   padding: 30rpx;
+  padding-bottom: calc(30rpx + env(safe-area-inset-bottom));
 }
 
 .loading {

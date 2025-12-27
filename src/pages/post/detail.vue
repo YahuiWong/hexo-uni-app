@@ -42,7 +42,7 @@
         <!-- 标签 -->
         <view v-if="post.tags && post.tags.length" class="tags-section">
           <view v-for="(tag, idx) in post.tags" :key="idx" class="tag-item">
-            <u-icon name="tag" size="12" color="#007aff" />
+            <u-icon name="tags"  size="12" color="#007aff" />
             <text class="tag-text">{{ tag.name || tag }}</text>
           </view>
         </view>

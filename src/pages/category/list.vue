@@ -71,6 +71,7 @@ const toCategory = (category: Category) => {
 .container {
   min-height: 100vh;
   background: #f5f5f5;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .loading {

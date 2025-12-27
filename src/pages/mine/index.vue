@@ -77,7 +77,7 @@
     <!-- 版本信息 -->
     <view class="footer">
       <text class="version">版本 v1.0.0</text>
-      <text class="copyright">© 2024 雅珲网</text>
+      <text class="copyright">© 2025 雅珲网</text>
     </view>
   </view>
 </template>
@@ -141,21 +141,15 @@ const toSearch = () => {
 };
 
 const toAbout = () => {
-  uni.showToast({
-    title: '关于功能开发中',
-    icon: 'none'
+  uni.navigateTo({
+    url: '/pages/about/index'
   });
-  // TODO: 跳转到关于页面
-  // uni.navigateTo({ url: '/pages/about/index' });
 };
 
 const toArchive = () => {
-  uni.showToast({
-    title: '归档功能开发中',
-    icon: 'none'
+  uni.navigateTo({
+    url: '/pages/archive/list'
   });
-  // TODO: 跳转到归档页面
-  // uni.navigateTo({ url: '/pages/archive/list' });
 };
 
 const toggleTheme = () => {

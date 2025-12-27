@@ -14,7 +14,7 @@
       <!-- 标签 -->
       <view v-if="post.tags && post.tags.length" class="tags">
         <view v-for="(tag, idx) in post.tags.slice(0, 3)" :key="idx" class="tag">
-          <u-icon name="tag" size="12" color="#999" />
+          <u-icon name="tags" size="12" color="#999" />
           <text class="tag-text">{{ tag }}</text>
         </view>
       </view>

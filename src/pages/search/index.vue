@@ -45,7 +45,7 @@
 
     <!-- 搜索建议 -->
     <view v-if="keyword && !searching && results.length === 0 && !searched" class="suggestion">
-      <u-icon name="lightbulb" size="20" color="#ff9500" />
+      <u-icon name="bulb" size="20" color="#ff9500" />
       <text class="suggestion-text">输入关键词，按回车搜索</text>
     </view>
 
@@ -192,12 +192,12 @@ const searchPosts = async (kw: string) => {
   try {
     // 先获取第一页，了解总页数
     const firstPage = await api.getPosts(1);
-    if (firstPage.data) {
-      allPosts.push(...firstPage.data);
+    if (firstPage.data?.posts) {
+      allPosts.push(...firstPage.data.posts);
     }
 
     // 如果有更多页，继续加载（最多加载10页）
-    const maxPages = Math.min(10, firstPage.total || 1);
+    const maxPages = Math.min(10, firstPage.data?.total || 1);
     const promises = [];
     for (let i = 2; i <= maxPages; i++) {
       promises.push(api.getPosts(i));
@@ -205,8 +205,8 @@ const searchPosts = async (kw: string) => {
 
     const results = await Promise.all(promises);
     results.forEach(res => {
-      if (res.data) {
-        allPosts.push(...res.data);
+      if (res.data?.posts) {
+        allPosts.push(...res.data.posts);
       }
     });
   } catch (err) {

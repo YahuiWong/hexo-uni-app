@@ -28,11 +28,11 @@
         <u-icon name="search" size="24" color="#ff9500" />
         <text class="nav-text">搜索</text>
       </view>
-      <view class="nav-item" @click="toPage('/pages/category/list')">
-        <u-icon name="folder" size="24" color="#007aff" />
+      <view class="nav-item" @click="toTabPage('/pages/category/list')">
+        <u-icon name="grid" size="24" color="#007aff" />
         <text class="nav-text">分类</text>
       </view>
-      <view class="nav-item" @click="toPage('/pages/tag/list')">
+      <view class="nav-item" @click="toTabPage('/pages/tag/list')">
         <u-icon name="tags" size="24" color="#34c759" />
         <text class="nav-text">标签</text>
       </view>
@@ -80,6 +80,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { onReachBottom } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import PostItemComponent from '@/components/PostItem.vue';
 import type { SwiperItem, PostItem } from '@/types';
@@ -136,6 +137,13 @@ const loadMore = () => {
   }
 };
 
+// 触底加载更多
+onReachBottom(() => {
+  if (hasMore.value && !loadingMore.value) {
+    loadPosts(currentPage.value + 1);
+  }
+});
+
 const toPost = (url: string) => {
   uni.navigateTo({
     url: `/pages/post/detail?url=${encodeURIComponent(url)}`
@@ -145,12 +153,17 @@ const toPost = (url: string) => {
 const toPage = (url: string) => {
   uni.navigateTo({ url });
 };
+
+const toTabPage = (url: string) => {
+  uni.switchTab({ url });
+};
 </script>
 
 <style scoped>
 .container {
   min-height: 100vh;
   background: #f5f5f5;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .swiper {

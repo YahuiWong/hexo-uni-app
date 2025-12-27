@@ -30,6 +30,18 @@
 			}
 		},
 		{
+			"path": "pages/archive/list",
+			"style": {
+				"navigationBarTitleText": "归档"
+			}
+		},
+		{
+			"path": "pages/about/index",
+			"style": {
+				"navigationBarTitleText": "关于"
+			}
+		},
+		{
 			"path": "pages/mine/index",
 			"style": {
 				"navigationBarTitleText": "我的"
@@ -58,6 +70,12 @@
 			"style": {
 				"navigationBarTitleText": "搜索"
 			}
+		},
+		{
+			"path": "pages/archive/posts",
+			"style": {
+				"navigationBarTitleText": "归档文章"
+			}
 		}
 	],
 	"tabBar": {
@@ -85,8 +103,14 @@
 				"selectedIconPath": "static/tabbar/tag-active.png"
 			},
 			{
-				"pagePath": "pages/mine/index",
-				"text": "我的",
+				"pagePath": "pages/archive/list",
+				"text": "归档",
+				"iconPath": "static/tabbar/archive.png",
+				"selectedIconPath": "static/tabbar/archive-active.png"
+			},
+			{
+				"pagePath": "pages/about/index",
+				"text": "关于",
 				"iconPath": "static/tabbar/mine.png",
 				"selectedIconPath": "static/tabbar/mine-active.png"
 			}

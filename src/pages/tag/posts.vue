@@ -3,7 +3,7 @@
     <!-- 头部 -->
     <view class="header">
       <view class="header-content">
-        <u-icon name="tag" size="40" :color="tagColor" />
+        <u-icon name="tags" size="40" :color="tagColor" />
         <view class="header-text">
           <text class="tag-name">{{ tagName }}</text>
           <text class="post-count">共 {{ total }} 篇文章</text>
