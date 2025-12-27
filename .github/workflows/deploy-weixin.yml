@@ -41,7 +41,7 @@ jobs:
       - name: 设置 pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 10
 
       # 4. 获取 pnpm store 目录
       - name: 获取 pnpm store 目录
