@@ -67,9 +67,9 @@ jobs:
       # - name: 安装 miniprogram-ci
       #   run: pnpm add -D miniprogram-ci
 
-      # 8. 构建微信小程序（含代码混淆）
+      # 8. 构建微信小程序
       - name: 构建微信小程序
-        run: pnpm run build:mp-weixin:secure
+        run: pnpm run build:mp-weixin
 
       # 9. 创建上传密钥文件
       - name: 创建上传密钥
