@@ -43,7 +43,7 @@
             @click="handleShareItem('copy')"
           >
             <view class="share-icon copy-icon">
-              <u-icon name="copy-document" size="32" color="#fff" />
+              <u-icon name="link" size="32" color="#fff" />
             </view>
             <text class="share-label">复制链接</text>
           </view>
