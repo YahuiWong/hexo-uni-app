@@ -94,7 +94,9 @@ const loadPosts = async () => {
 
   try {
     const res = await api.getTagPosts(tagSlug.value, currentPage.value);
-    const newPosts = res.data || [];
+
+    // API 返回格式：{ data: { posts: [...], total: 2, index: 1, info: {...} } }
+    const newPosts = res.data?.posts || [];
 
     if (newPosts.length === 0) {
       hasMore.value = false;
@@ -102,20 +104,17 @@ const loadPosts = async () => {
       posts.value = [...posts.value, ...newPosts];
       currentPage.value++;
 
-      // 如果返回的文章数量少于预期，说明没有更多了
-      if (newPosts.length < 10) {
+      // 检查是否还有更多页
+      const totalPages = res.data?.total || 0;
+      if (currentPage.value > totalPages) {
         hasMore.value = false;
       }
     }
 
-    // 更新总数（如果 API 返回了 total 字段）
-    if (res.total !== undefined) {
-      total.value = res.total;
-    } else {
-      total.value = posts.value.length;
-    }
+    // 更新总数（所有页的文章总数）
+    total.value = posts.value.length;
 
-    console.log(`加载第 ${currentPage.value - 1} 页，获取 ${newPosts.length} 篇文章`);
+    console.log(`加载第 ${currentPage.value - 1} 页，获取 ${newPosts.length} 篇文章，总页数 ${res.data?.total}`);
   } catch (err: any) {
     console.error('加载标签文章失败', err);
     uni.showToast({
