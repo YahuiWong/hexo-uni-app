@@ -22,15 +22,17 @@ const VERSION = process.env.VERSION || '1.0.0';
 const DESCRIPTION = process.env.DESCRIPTION || '自动构建版本';
 
 // 项目路径
-const projectPath = path.join(__dirname, '/dist/build/mp-weixin');
-const privateKeyPath = path.join(__dirname, '/CI/private.wx4cb194f334bcdb16.key');
+const projectPath = path.join(__dirname, '../dist/build/mp-weixin');
+const privateKeyPath = path.join(__dirname, '../private.key');
 
 // 验证配置
 if (!APPID) {
   console.error('❌ 错误: 缺少 APPID 环境变量');
   process.exit(1);
 }
-
+console.log('🔑 使用的 AppID:', APPID);
+console.log('🔑 使用的版本号:', VERSION);
+console.log('🔑 使用的版本描述:', DESCRIPTION);
 if (!fs.existsSync(privateKeyPath)) {
   console.error('❌ 错误: 找不到私钥文件 private.key');
   console.error('请确保在 GitHub Secrets 中配置了 WEIXIN_PRIVATE_KEY');
@@ -68,7 +70,7 @@ ci.upload({
   setting: {
     // 编译设置
     es6: true,                      // 是否启用 ES6 转 ES5
-    es7: true,                      // 是否启用增强编译
+    es7: false,                     // 是否启用增强编译（关闭以避免 lru-cache 错误）
     minify: true,                   // 是否压缩代码
     minifyJS: true,                 // 是否压缩 JS
     minifyWXML: true,              // 是否压缩 WXML
