@@ -40,7 +40,7 @@
       <!-- 网站地址 -->
       <view class="info-card">
         <view class="card-header">
-          <u-icon name="link" size="20" color="#5ac8fa" />
+          <u-icon name="share-square" size="20" color="#5ac8fa" />
           <text class="card-title">网站</text>
         </view>
         <view class="card-content">
