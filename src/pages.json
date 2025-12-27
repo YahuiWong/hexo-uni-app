@@ -10,17 +10,11 @@
       "^u--(.*)": "uview-plus/components/u-$1/u-$1.vue"
     }
   	},
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+	"pages": [
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "雅珲网"
-			}
-		},
-		{
-			"path": "pages/post/detail",
-			"style": {
-				"navigationBarTitleText": "文章详情"
+				"navigationBarTitleText": "首页"
 			}
 		},
 		{
@@ -30,15 +24,27 @@
 			}
 		},
 		{
-			"path": "pages/category/posts",
-			"style": {
-				"navigationBarTitleText": "分类文章"
-			}
-		},
-		{
 			"path": "pages/tag/list",
 			"style": {
 				"navigationBarTitleText": "标签"
+			}
+		},
+		{
+			"path": "pages/mine/index",
+			"style": {
+				"navigationBarTitleText": "我的"
+			}
+		},
+		{
+			"path": "pages/post/detail",
+			"style": {
+				"navigationBarTitleText": "文章详情"
+			}
+		},
+		{
+			"path": "pages/category/posts",
+			"style": {
+				"navigationBarTitleText": "分类文章"
 			}
 		},
 		{
@@ -48,6 +54,38 @@
 			}
 		}
 	],
+	"tabBar": {
+		"color": "#999999",
+		"selectedColor": "#007aff",
+		"backgroundColor": "#ffffff",
+		"borderStyle": "black",
+		"list": [
+			{
+				"pagePath": "pages/index/index",
+				"text": "首页",
+				"iconPath": "static/tabbar/home.png",
+				"selectedIconPath": "static/tabbar/home-active.png"
+			},
+			{
+				"pagePath": "pages/category/list",
+				"text": "分类",
+				"iconPath": "static/tabbar/category.png",
+				"selectedIconPath": "static/tabbar/category-active.png"
+			},
+			{
+				"pagePath": "pages/tag/list",
+				"text": "标签",
+				"iconPath": "static/tabbar/tag.png",
+				"selectedIconPath": "static/tabbar/tag-active.png"
+			},
+			{
+				"pagePath": "pages/mine/index",
+				"text": "我的",
+				"iconPath": "static/tabbar/mine.png",
+				"selectedIconPath": "static/tabbar/mine-active.png"
+			}
+		]
+	},
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "雅珲网",
