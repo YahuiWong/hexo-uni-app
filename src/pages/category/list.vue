@@ -12,7 +12,7 @@
         v-for="category in categories"
         :key="category.name"
         class="category-item"
-        @click="toCategory(category.name)"
+        @click="toCategory(category)"
       >
         <view class="category-info">
           <u-icon name="folder" size="40" color="#007aff" />
@@ -59,13 +59,11 @@ onMounted(async () => {
   }
 });
 
-const toCategory = (name: string) => {
-  uni.showToast({
-    title: `点击了分类: ${name}`,
-    icon: 'none'
+const toCategory = (category: Category) => {
+  // 跳转到分类文章列表页
+  uni.navigateTo({
+    url: `/pages/category/posts?name=${encodeURIComponent(category.name)}&slug=${encodeURIComponent(category.slug)}`
   });
-  // TODO: 跳转到分类文章列表页
-  // uni.navigateTo({ url: `/pages/category/posts?name=${encodeURIComponent(name)}` });
 };
 </script>
 

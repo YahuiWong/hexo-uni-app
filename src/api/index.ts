@@ -36,5 +36,15 @@ export const api = {
   // 标签列表
   getTags(): Promise<ApiResponse<any>> {
     return uni.request({ url: `${BASE_URL}/tags.json` }).then(res => res.data as any);
+  },
+
+  // 分类文章列表（分页）
+  getCategoryPosts(slug: string, page: number = 1): Promise<ApiResponse<any>> {
+    return uni.request({ url: `${BASE_URL}/categories/${slug}/page.${page}.json` }).then(res => res.data as any);
+  },
+
+  // 标签文章列表（分页）
+  getTagPosts(slug: string, page: number = 1): Promise<ApiResponse<any>> {
+    return uni.request({ url: `${BASE_URL}/tags/${slug}/page.${page}.json` }).then(res => res.data as any);
   }
 };

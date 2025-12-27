@@ -30,9 +30,21 @@
 			}
 		},
 		{
+			"path": "pages/category/posts",
+			"style": {
+				"navigationBarTitleText": "分类文章"
+			}
+		},
+		{
 			"path": "pages/tag/list",
 			"style": {
 				"navigationBarTitleText": "标签"
+			}
+		},
+		{
+			"path": "pages/tag/posts",
+			"style": {
+				"navigationBarTitleText": "标签文章"
 			}
 		}
 	],

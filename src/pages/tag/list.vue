@@ -13,7 +13,7 @@
         :key="tag.name"
         class="tag-item"
         :style="getTagStyle(tag.count)"
-        @click="toTag(tag.name)"
+        @click="toTag(tag)"
       >
         <u-icon name="tag" :size="getIconSize(tag.count)" color="#fff" />
         <text class="tag-name">{{ tag.name }}</text>
@@ -90,13 +90,11 @@ const getIconSize = (count: number) => {
   return 14 + ratio * 6; // 14-20
 };
 
-const toTag = (name: string) => {
-  uni.showToast({
-    title: `点击了标签: ${name}`,
-    icon: 'none'
+const toTag = (tag: Tag) => {
+  // 跳转到标签文章列表页
+  uni.navigateTo({
+    url: `/pages/tag/posts?name=${encodeURIComponent(tag.name)}&slug=${encodeURIComponent(tag.slug)}`
   });
-  // TODO: 跳转到标签文章列表页
-  // uni.navigateTo({ url: `/pages/tag/posts?name=${encodeURIComponent(name)}` });
 };
 </script>
 
