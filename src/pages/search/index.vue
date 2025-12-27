@@ -78,13 +78,14 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { onLoad } from '@dcloudio/uni-app';
+import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import PostItem from '@/components/PostItem.vue';
-import { useSearchShare } from '@/composables/useShare';
+import { getSearchShareConfig } from '@/composables/useShare';
 
 // 配置页面分享
-useSearchShare();
+onShareAppMessage(() => getSearchShareConfig());
+onShareTimeline(() => getSearchShareConfig());
 
 const keyword = ref('');
 const searching = ref(false);

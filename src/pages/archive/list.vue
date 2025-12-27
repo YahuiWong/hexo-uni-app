@@ -96,11 +96,13 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
+import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { api } from '@/api';
-import { useArchiveShare } from '@/composables/useShare';
+import { getArchiveShareConfig } from '@/composables/useShare';
 
 // 配置页面分享
-useArchiveShare();
+onShareAppMessage(() => getArchiveShareConfig());
+onShareTimeline(() => getArchiveShareConfig());
 
 interface PostData {
   title: string;

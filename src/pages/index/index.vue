@@ -80,14 +80,15 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { onReachBottom } from '@dcloudio/uni-app';
+import { onReachBottom, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import PostItemComponent from '@/components/PostItem.vue';
 import type { SwiperItem, PostItem } from '@/types';
-import { useIndexShare } from '@/composables/useShare';
+import { getIndexShareConfig } from '@/composables/useShare';
 
 // 配置页面分享
-useIndexShare();
+onShareAppMessage(() => getIndexShareConfig());
+onShareTimeline(() => getIndexShareConfig());
 
 const swiperList = ref<SwiperItem[]>([]);
 const posts = ref<PostItem[]>([]);

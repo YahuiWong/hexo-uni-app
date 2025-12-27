@@ -114,13 +114,13 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { onLoad } from '@dcloudio/uni-app';
+import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import { marked } from 'marked';
 import hljs from 'highlight.js/lib/core';
 import SharePanel from '@/components/SharePanel.vue';
 import type { PostDetail } from '@/types';
-import { usePostShare } from '@/composables/useShare';
+import { getPostShareConfig } from '@/composables/useShare';
 
 // 导入常用语言的高亮支持
 import javascript from 'highlight.js/lib/languages/javascript';
@@ -161,7 +161,13 @@ const renderedContent = ref('');
 const showSharePanel = ref(false);
 
 // 配置页面分享
-usePostShare(() => ({
+onShareAppMessage(() => getPostShareConfig({
+  title: post.value.title,
+  url: currentUrl.value,
+  cover: post.value.cover
+}));
+
+onShareTimeline(() => getPostShareConfig({
   title: post.value.title,
   url: currentUrl.value,
   cover: post.value.cover

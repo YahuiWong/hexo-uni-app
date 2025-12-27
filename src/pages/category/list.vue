@@ -35,11 +35,13 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { api } from '@/api';
-import { useCategoryShare } from '@/composables/useShare';
+import { getCategoryShareConfig } from '@/composables/useShare';
 
 // 配置页面分享
-useCategoryShare();
+onShareAppMessage(() => getCategoryShareConfig());
+onShareTimeline(() => getCategoryShareConfig());
 
 interface Category {
   name: string;

@@ -1,4 +1,3 @@
-import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { ref, computed } from 'vue';
 
 /**
@@ -14,27 +13,22 @@ export interface PageShareConfig {
 
 /**
  * 通用页面分享 Composable
- * 为页面自动配置微信小程序右上角分享功能
+ * 返回分享配置，需要在页面中手动调用 onShareAppMessage
  *
  * @param config 分享配置或返回配置的函数
- * @returns 分享配置的响应式数据
+ * @returns 分享配置对象，用于在页面中手动调用 onShareAppMessage
  *
  * @example
- * // 基础用法
- * useShare({
+ * // 在页面的 script setup 中
+ * import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
+ *
+ * const shareConfig = useShare({
  *   title: '页面标题',
- *   path: '/pages/index/index',
- *   imageUrl: 'https://example.com/image.jpg'
+ *   path: '/pages/index/index'
  * });
  *
- * @example
- * // 动态配置
- * const post = ref({ title: '文章标题', cover: 'xxx' });
- * useShare(() => ({
- *   title: post.value.title,
- *   path: `/pages/post/detail?id=${post.value.id}`,
- *   imageUrl: post.value.cover
- * }));
+ * onShareAppMessage(() => shareConfig.getShareConfig());
+ * onShareTimeline(() => shareConfig.getTimelineConfig());
  */
 export function useShare(config?: PageShareConfig | (() => PageShareConfig)) {
   // 默认配置
@@ -70,8 +64,8 @@ export function useShare(config?: PageShareConfig | (() => PageShareConfig)) {
     shareConfig.value = { ...shareConfig.value, ...newConfig };
   };
 
-  // 配置分享给好友
-  onShareAppMessage(() => {
+  // 获取分享给好友的配置
+  const getShareConfig = () => {
     const cfg = getConfig();
 
     const shareData: any = {
@@ -86,10 +80,10 @@ export function useShare(config?: PageShareConfig | (() => PageShareConfig)) {
 
     console.log('[分享给好友] 配置:', shareData);
     return shareData;
-  });
+  };
 
-  // 配置分享到朋友圈
-  onShareTimeline(() => {
+  // 获取分享到朋友圈的配置
+  const getTimelineConfig = () => {
     const cfg = getConfig();
 
     const shareData: any = {
@@ -108,117 +102,105 @@ export function useShare(config?: PageShareConfig | (() => PageShareConfig)) {
 
     console.log('[分享到朋友圈] 配置:', shareData);
     return shareData;
-  });
+  };
 
   return {
     shareConfig,
     shareTitle,
     sharePath,
     shareImage,
-    updateShareConfig
+    updateShareConfig,
+    getShareConfig,      // 用于 onShareAppMessage
+    getTimelineConfig    // 用于 onShareTimeline
   };
 }
 
 /**
- * 首页分享配置
+ * 获取首页分享配置
  */
-export function useIndexShare() {
-  return useShare({
+export function getIndexShareConfig() {
+  return {
     title: '雅珲网 - 技术博客',
-    path: '/pages/index/index',
-    desc: '分享优质技术文章'
-  });
+    path: '/pages/index/index'
+  };
 }
 
 /**
- * 文章详情页分享配置
+ * 获取文章详情页分享配置
  */
-export function usePostShare(getPostData: () => { title?: string; url?: string; cover?: string }) {
-  return useShare(() => {
-    const post = getPostData();
-    const shareConfig: PageShareConfig = {
-      title: post.title || '文章分享',
-      path: post.url ? `/pages/post/detailraw?url=${encodeURIComponent(post.url)}` : '/pages/index/index'
-    };
+export function getPostShareConfig(post: { title?: string; url?: string; cover?: string }) {
+  const config: any = {
+    title: post.title || '文章分享',
+    path: post.url ? `/pages/post/detailraw?url=${encodeURIComponent(post.url)}` : '/pages/index/index'
+  };
 
-    // 只在有封面图时才添加
-    if (post.cover) {
-      shareConfig.imageUrl = post.cover;
-    }
+  if (post.cover) {
+    config.imageUrl = post.cover;
+  }
 
-    return shareConfig;
-  });
+  return config;
 }
 
 /**
- * 分类页分享配置
+ * 获取分类页分享配置
  */
-export function useCategoryShare(getCategoryData?: () => { name?: string; slug?: string }) {
-  return useShare(() => {
-    if (!getCategoryData) {
-      return {
-        title: '文章分类 - 雅珲网',
-        path: '/pages/category/list'
-      };
-    }
-
-    const category = getCategoryData();
+export function getCategoryShareConfig(category?: { name?: string; slug?: string }) {
+  if (!category) {
     return {
-      title: category.name ? `${category.name} - 分类` : '文章分类',
-      path: category.slug ? `/pages/category/posts?slug=${category.slug}` : '/pages/category/list'
+      title: '文章分类 - 雅珲网',
+      path: '/pages/category/list'
     };
-  });
+  }
+
+  return {
+    title: category.name ? `${category.name} - 分类` : '文章分类',
+    path: category.slug ? `/pages/category/posts?slug=${category.slug}` : '/pages/category/list'
+  };
 }
 
 /**
- * 标签页分享配置
+ * 获取标签页分享配置
  */
-export function useTagShare(getTagData?: () => { name?: string; slug?: string }) {
-  return useShare(() => {
-    if (!getTagData) {
-      return {
-        title: '文章标签 - 雅珲网',
-        path: '/pages/tag/list'
-      };
-    }
-
-    const tag = getTagData();
+export function getTagShareConfig(tag?: { name?: string; slug?: string }) {
+  if (!tag) {
     return {
-      title: tag.name ? `${tag.name} - 标签` : '文章标签',
-      path: tag.slug ? `/pages/tag/posts?slug=${tag.slug}` : '/pages/tag/list'
+      title: '文章标签 - 雅珲网',
+      path: '/pages/tag/list'
     };
-  });
+  }
+
+  return {
+    title: tag.name ? `${tag.name} - 标签` : '文章标签',
+    path: tag.slug ? `/pages/tag/posts?slug=${tag.slug}` : '/pages/tag/list'
+  };
 }
 
 /**
- * 归档页分享配置
+ * 获取归档页分享配置
  */
-export function useArchiveShare() {
-  return useShare({
+export function getArchiveShareConfig() {
+  return {
     title: '文章归档 - 雅珲网',
-    path: '/pages/archive/list',
-    desc: '按时间浏览文章'
-  });
+    path: '/pages/archive/list'
+  };
 }
 
 /**
- * 关于页分享配置
+ * 获取关于页分享配置
  */
-export function useAboutShare() {
-  return useShare({
+export function getAboutShareConfig() {
+  return {
     title: '关于 - 雅珲网',
-    path: '/pages/about/index',
-    desc: '了解更多关于我们'
-  });
+    path: '/pages/about/index'
+  };
 }
 
 /**
- * 搜索页分享配置
+ * 获取搜索页分享配置
  */
-export function useSearchShare() {
-  return useShare({
+export function getSearchShareConfig() {
+  return {
     title: '搜索 - 雅珲网',
-    path: '/pages/search/index',
-    desc: '搜索感兴趣的文章'
-  });
+    path: '/pages/search/index'
+  };
 }

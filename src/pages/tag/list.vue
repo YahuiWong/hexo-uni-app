@@ -39,11 +39,13 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { api } from '@/api';
-import { useTagShare } from '@/composables/useShare';
+import { getTagShareConfig } from '@/composables/useShare';
 
 // 配置页面分享
-useTagShare();
+onShareAppMessage(() => getTagShareConfig());
+onShareTimeline(() => getTagShareConfig());
 
 interface Tag {
   name: string;

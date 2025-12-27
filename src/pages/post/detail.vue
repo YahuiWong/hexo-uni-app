@@ -97,9 +97,9 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { onLoad } from '@dcloudio/uni-app';
+import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { api } from '@/api';
-import { usePostShare } from '@/composables/useShare';
+import { getPostShareConfig } from '@/composables/useShare';
 
 // 数据
 const post = ref<any>({});
@@ -107,7 +107,13 @@ const loading = ref(true);
 const currentUrl = ref('');
 
 // 配置页面分享
-usePostShare(() => ({
+onShareAppMessage(() => getPostShareConfig({
+  title: post.value.title,
+  url: currentUrl.value,
+  cover: post.value.cover
+}));
+
+onShareTimeline(() => getPostShareConfig({
   title: post.value.title,
   url: currentUrl.value,
   cover: post.value.cover
