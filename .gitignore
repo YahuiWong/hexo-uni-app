@@ -12,6 +12,10 @@ node_modules
 dist
 *.local
 
+# 微信小程序密钥文件
+private.*.key
+private.key
+
 # Editor directories and files
 .idea
 *.suo
