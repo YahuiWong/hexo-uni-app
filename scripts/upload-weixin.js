@@ -68,15 +68,16 @@ ci.upload({
   version: VERSION,
   desc: DESCRIPTION,
   setting: {
-    // 编译设置
-    es6: true,                      // 是否启用 ES6 转 ES5
-    es7: false,                     // 是否启用增强编译（关闭以避免 lru-cache 错误）
-    minify: true,                   // 是否压缩代码
-    minifyJS: true,                 // 是否压缩 JS
-    minifyWXML: true,              // 是否压缩 WXML
-    minifyWXSS: true,              // 是否压缩 WXSS
-    codeProtect: false,            // 是否开启代码保护
-    autoPrefixWXSS: true,          // 是否自动补全 WXSS
+    // 完全禁用所有编译优化，避免 lru-cache 错误
+    // UniApp 已在构建时处理了所有编译工作
+    es6: false,                     // 禁用 ES6 转 ES5
+    es7: false,                     // 禁用增强编译
+    minify: false,                  // 禁用压缩
+    minifyJS: false,                // 禁用 JS 压缩
+    minifyWXML: false,              // 禁用 WXML 压缩
+    minifyWXSS: false,              // 禁用 WXSS 压缩
+    codeProtect: false,             // 禁用代码保护
+    autoPrefixWXSS: false,          // 禁用自动补全
   },
   onProgressUpdate: (info) => {
     // 上传进度回调
