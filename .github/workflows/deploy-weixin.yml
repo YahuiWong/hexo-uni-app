@@ -63,9 +63,9 @@ jobs:
       - name: 安装依赖
         run: pnpm install --frozen-lockfile
 
-      # 7. 安装微信小程序 CI 工具
-      - name: 安装 miniprogram-ci
-        run: pnpm add -D miniprogram-ci
+      # # 7. 安装微信小程序 CI 工具
+      # - name: 安装 miniprogram-ci
+      #   run: pnpm add -D miniprogram-ci
 
       # 8. 构建微信小程序（含代码混淆）
       - name: 构建微信小程序
