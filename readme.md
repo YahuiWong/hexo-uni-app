@@ -60,6 +60,12 @@
    - 全局 CSS 变量系统
    - 平滑过渡动画
 
+9. **性能优化**
+   - 图片懒加载（LazyImage 组件）
+   - 列表分页加载
+   - 防抖和节流优化
+   - 请求缓存机制
+
 ## 技术栈
 
 - UniApp 3.x（Vue3 Composition API）
@@ -96,9 +102,13 @@ hexo-uni-app/
 │   ├── api/               # API 接口封装
 │   │   └── index.ts       # 博客 API
 │   ├── composables/       # Vue Composables
-│   │   └── useTheme.ts    # 主题管理
+│   │   ├── useTheme.ts    # 主题管理
+│   │   └── useLazyImage.ts # 图片懒加载
 │   ├── components/        # 公共组件
-│   │   └── PostItem.vue   # 文章卡片组件
+│   │   ├── PostItem.vue   # 文章卡片组件
+│   │   ├── LazyImage.vue  # 懒加载图片组件
+│   │   ├── ShareButton.vue # 分享按钮
+│   │   └── SharePanel.vue  # 分享面板
 │   ├── pages/             # 页面
 │   │   ├── index/         # 首页（轮播图+文章列表）
 │   │   ├── post/          # 文章详情页
@@ -136,6 +146,7 @@ hexo-uni-app/
 | [🚀 微信小程序CI配置](./docs/20-微信小程序CI配置指南.md) | GitHub Actions自动部署配置 |
 | [🔒 代码混淆方案](./docs/21-代码混淆使用指南.md) | JavaScript代码混淆保护（可选） |
 | [🌙 夜间模式实现](./docs/22-夜间模式实现指南.md) | 深色模式/主题切换实现方案 |
+| [⚡ 性能优化指南](./docs/23-性能优化指南.md) | 图片懒加载、分享优化、虚拟列表 |
 
 **推荐阅读顺序**：架构文档 → uview-plus集成 → URL路由 → 测试文档
 
@@ -271,6 +282,7 @@ pnpm build:mp-weixin
 - [x] **标签文章列表页**（完整实现）
 - [x] **搜索功能**（全文搜索 + 历史记录）
 - [x] **夜间模式**（深色/浅色主题切换）
+- [x] **性能优化**（图片懒加载、分享功能完善）
 - [ ] 评论功能集成（可选）
 
 ## 测试覆盖
@@ -339,4 +351,4 @@ pnpm build:mp-weixin
 
 **最后更新**: 2025-12-28
 **维护者**: [YahuiWong](https://github.com/YahuiWong)
-**版本**: v1.1.0
+**版本**: v1.2.0
