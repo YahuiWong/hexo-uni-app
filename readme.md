@@ -48,6 +48,18 @@
    - 支持手动触发部署，可指定版本号
    - 完整的错误处理和日志输出
 
+7. **搜索功能**
+   - 全文搜索（标题、摘要）
+   - 搜索历史记录
+   - 实时搜索建议
+   - 搜索结果高亮
+
+8. **夜间模式**
+   - 浅色/深色主题切换
+   - 自动保存主题设置
+   - 全局 CSS 变量系统
+   - 平滑过渡动画
+
 ## 技术栈
 
 - UniApp 3.x（Vue3 Composition API）
@@ -83,13 +95,20 @@ hexo-uni-app/
 │   │   └── postitem.test.ts # PostItem测试（14个用例）
 │   ├── api/               # API 接口封装
 │   │   └── index.ts       # 博客 API
+│   ├── composables/       # Vue Composables
+│   │   └── useTheme.ts    # 主题管理
 │   ├── components/        # 公共组件
 │   │   └── PostItem.vue   # 文章卡片组件
 │   ├── pages/             # 页面
 │   │   ├── index/         # 首页（轮播图+文章列表）
 │   │   ├── post/          # 文章详情页
-│   │   ├── category/      # 分类列表页
-│   │   └── tag/           # 标签列表页
+│   │   ├── category/      # 分类列表页 + 文章列表
+│   │   ├── tag/           # 标签列表页 + 文章列表
+│   │   ├── search/        # 搜索页面
+│   │   ├── mine/          # 我的页面
+│   │   └── about/         # 关于页面
+│   ├── styles/            # 全局样式
+│   │   └── theme.css      # 主题样式（CSS 变量）
 │   ├── types/             # TypeScript 类型定义
 │   │   └── index.ts
 │   ├── App.vue            # 应用入口
@@ -116,6 +135,7 @@ hexo-uni-app/
 | [📱 小程序兼容性](./docs/miniprogram-compatibility.md) | 小程序平台兼容性问题和解决方案 |
 | [🚀 微信小程序CI配置](./docs/20-微信小程序CI配置指南.md) | GitHub Actions自动部署配置 |
 | [🔒 代码混淆方案](./docs/21-代码混淆使用指南.md) | JavaScript代码混淆保护（可选） |
+| [🌙 夜间模式实现](./docs/22-夜间模式实现指南.md) | 深色模式/主题切换实现方案 |
 
 **推荐阅读顺序**：架构文档 → uview-plus集成 → URL路由 → 测试文档
 
@@ -247,10 +267,11 @@ pnpm build:mp-weixin
 - [x] **技术文档编写**（6 份完整文档）
 - [x] **GitHub Actions CI/CD 配置**（自动构建上传微信小程序）
 - [x] **小程序兼容性修复**（3D标签云、requestAnimationFrame）
-- [ ] 分类文章列表页（待开发）
-- [ ] 标签文章列表页（待开发）
-- [ ] 搜索功能（待开发）
-- [ ] 夜间模式（待开发）
+- [x] **分类文章列表页**（完整实现）
+- [x] **标签文章列表页**（完整实现）
+- [x] **搜索功能**（全文搜索 + 历史记录）
+- [x] **夜间模式**（深色/浅色主题切换）
+- [ ] 评论功能集成（可选）
 
 ## 测试覆盖
 

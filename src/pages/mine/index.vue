@@ -83,9 +83,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, computed } from 'vue';
 import { onShow } from '@dcloudio/uni-app';
 import { api } from '@/api';
+import { useTheme } from '@/composables/useTheme';
+
+const { themeMode, toggleTheme: switchTheme } = useTheme();
 
 const siteInfo = ref<any>({
   title: '雅珲网',
@@ -98,7 +101,7 @@ const stats = ref({
   tags: 0
 });
 
-const isDark = ref(false);
+const isDark = computed(() => themeMode.value === 'dark');
 
 onShow(() => {
   loadSiteInfo();
@@ -126,9 +129,15 @@ const loadStats = async () => {
     const tagsRes = await api.getTags();
     stats.value.tags = tagsRes.data?.length || 0;
 
-    // 文章数量（从首页获取）
+    // 文章数量（从首页获取总数）
     const postsRes = await api.getPosts(1);
-    stats.value.posts = postsRes.data?.length || 0;
+    // 使用分页信息中的总文章数
+    if (postsRes.data?.info) {
+      // 假设每页10篇，总页数 * 10
+      stats.value.posts = (postsRes.data.total || 1) * (postsRes.data.posts?.length || 10);
+    } else {
+      stats.value.posts = postsRes.data?.posts?.length || 0;
+    }
   } catch (err) {
     console.error('加载统计信息失败', err);
   }
@@ -153,12 +162,12 @@ const toArchive = () => {
 };
 
 const toggleTheme = () => {
-  isDark.value = !isDark.value;
+  switchTheme();
   uni.showToast({
     title: isDark.value ? '已切换到深色模式' : '已切换到浅色模式',
-    icon: 'none'
+    icon: 'none',
+    duration: 1500
   });
-  // TODO: 实现主题切换
 };
 
 const clearCache = () => {
@@ -167,8 +176,12 @@ const clearCache = () => {
     content: '确定要清除缓存吗？',
     success: (res) => {
       if (res.confirm) {
-        // 清除本地存储
+        // 清除本地存储（保留主题设置）
+        const savedTheme = uni.getStorageSync('app_theme');
         uni.clearStorageSync();
+        if (savedTheme) {
+          uni.setStorageSync('app_theme', savedTheme);
+        }
         uni.showToast({
           title: '缓存已清除',
           icon: 'success'
@@ -182,7 +195,7 @@ const clearCache = () => {
 <style scoped>
 .container {
   min-height: 100vh;
-  background: #f5f5f5;
+  background: var(--bg-secondary);
   padding-bottom: calc(100rpx + env(safe-area-inset-bottom));
 }
 
@@ -223,11 +236,11 @@ const clearCache = () => {
 
 .stats-section {
   display: flex;
-  background: #fff;
+  background: var(--bg-primary);
   margin: -40rpx 30rpx 30rpx;
   border-radius: 16rpx;
   padding: 40rpx 0;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4rpx 20rpx var(--shadow-light);
 }
 
 .stat-item {
@@ -239,18 +252,18 @@ const clearCache = () => {
 }
 
 .stat-item:not(:last-child) {
-  border-right: 1rpx solid #f0f0f0;
+  border-right: 1rpx solid var(--border-primary);
 }
 
 .stat-value {
   font-size: 44rpx;
   font-weight: bold;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .stat-label {
   font-size: 24rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .menu-section {
@@ -258,7 +271,7 @@ const clearCache = () => {
 }
 
 .menu-group {
-  background: #fff;
+  background: var(--bg-primary);
   border-radius: 16rpx;
   margin-bottom: 30rpx;
   overflow: hidden;
@@ -269,7 +282,7 @@ const clearCache = () => {
   align-items: center;
   justify-content: space-between;
   padding: 30rpx;
-  border-bottom: 1rpx solid #f5f5f5;
+  border-bottom: 1rpx solid var(--border-primary);
   transition: background 0.3s;
 }
 
@@ -278,7 +291,7 @@ const clearCache = () => {
 }
 
 .menu-item:active {
-  background: #f8f8f8;
+  background: var(--bg-tertiary);
 }
 
 .menu-left {
@@ -289,7 +302,7 @@ const clearCache = () => {
 
 .menu-text {
   font-size: 30rpx;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .footer {
@@ -303,6 +316,6 @@ const clearCache = () => {
 .version,
 .copyright {
   font-size: 24rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 </style>
