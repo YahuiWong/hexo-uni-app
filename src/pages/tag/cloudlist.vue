@@ -83,7 +83,7 @@ const colors = [
 onMounted(async () => {
   try {
     const res = await api.getTags();
-    tags.value = res.data || [];
+    tags.value = res.data.filter((tag: Tag) => tag.count > 0) || [];
 
     if (tags.value.length > 0) {
       initTagCloud();

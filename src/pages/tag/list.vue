@@ -66,7 +66,7 @@ const colors = [
 onMounted(async () => {
   try {
     const res = await api.getTags();
-    tags.value = res.data || [];
+    tags.value = res.data.filter((tag: Tag) => tag.count > 0) || [];
   } catch (err) {
     console.error('加载标签失败', err);
     uni.showToast({ title: '加载失败', icon: 'none' });
