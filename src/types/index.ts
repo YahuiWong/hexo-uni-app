@@ -32,6 +32,7 @@ export interface PostItem {
   url: string;
   categories?: CategoryItem[];
   tags?: TagItem[];
+  api?:string;
 }
 
 /**

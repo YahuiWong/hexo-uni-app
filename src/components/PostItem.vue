@@ -35,19 +35,10 @@
 </template>
 
 <script setup lang="ts">
+import type { SwiperItem, PostItem } from '@/types';
 
 const props = defineProps<{
-  post: {
-    title: string;
-    excerpt: string;
-    date: string;
-    cover?: string;
-    url?: string;
-    slug?: string;
-    api?: string;
-    tags?: string[];
-    categories?: string[];
-  };
+  post: PostItem;
 }>();
 
 const toDetail = () => {
