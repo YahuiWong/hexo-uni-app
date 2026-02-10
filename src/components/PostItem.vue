@@ -9,13 +9,13 @@
     />
     <view class="info">
       <text class="title">{{ post.title }}</text>
-      <text class="excerpt">{{ post.excerpt }}</text>
+      <text class="excerpt">{{ post.excerpt.replace(/<[^>]*>/g, '') }}</text>
 
       <!-- 标签 -->
       <view v-if="post.tags && post.tags.length" class="tags">
         <view v-for="(tag, idx) in post.tags.slice(0, 3)" :key="idx" class="tag">
           <u-icon name="tags" size="12" color="#999" />
-          <text class="tag-text">{{ tag }}</text>
+          <text class="tag-text">{{ tag.name }}</text>
         </view>
       </view>
 
@@ -27,7 +27,7 @@
         </view>
         <view v-if="post.categories && post.categories.length" class="category-info">
           <u-icon name="folder" size="14" color="#007aff" />
-          <text class="category">{{ post.categories[0] }}</text>
+          <text class="category">{{ post.categories[0].name }}</text>
         </view>
       </view>
     </view>
@@ -35,6 +35,7 @@
 </template>
 
 <script setup lang="ts">
+
 const props = defineProps<{
   post: {
     title: string;
