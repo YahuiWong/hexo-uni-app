@@ -63,7 +63,8 @@
 
       <!-- Markdown 渲染内容 -->
       <view class="content-wrapper">
-        <rich-text :nodes="renderedContent" class="markdown-content" />
+        <mp-html :content="renderedContent" selectable="true" show-img-menu="true" />
+        <!-- <rich-text :nodes="renderedContent" class="markdown-content" /> -->
       </view>
 
       <!-- 底部信息 -->
@@ -121,7 +122,8 @@ import hljs from 'highlight.js/lib/core';
 import SharePanel from '@/components/SharePanel.vue';
 import type { PostDetail } from '@/types';
 import { getPostShareConfig } from '@/composables/useShare';
-
+import mpHtml from 'mp-html/dist/uni-app/components/mp-html/mp-html.vue';
+import { md2html } from '@/utils/md2html';
 // 导入常用语言的高亮支持
 import javascript from 'highlight.js/lib/languages/javascript';
 import typescript from 'highlight.js/lib/languages/typescript';
@@ -345,7 +347,7 @@ const loadPost = async (url: string) => {
 
     // 使用 raw 字段渲染 markdown
     if (post.value.raw) {
-      renderedContent.value = renderMarkdown(post.value.raw);
+      renderedContent.value = md2html(post.value.content);//renderMarkdown(post.value.raw);
     } else {
       // 降级到使用 content
       console.warn('没有 raw 字段，使用 content 字段');
