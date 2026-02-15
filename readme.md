@@ -263,6 +263,11 @@ pnpm build:mp-weixin
     - 解决：添加 setTimeout 降级方案，增强错误提示
     - 详见：[小程序兼容性文档](./docs/06-小程序兼容性.md)
 
+11. ✅ **Android 平台 Marked 兼容性问题**（Unicode 正则表达式报错）
+    - 问题：`marked` 库使用 `\p{L}` 等 Unicode 属性转义，Android 不支持
+    - 解决：使用 Babel 插件 `babel-plugin-transform-unicode-property-regex` 转译
+    - 详见：[Android 平台兼容性文档](./docs/24-Android平台marked兼容性问题.md)
+
 ## 开发进度
 
 - [x] 项目初始化和配置

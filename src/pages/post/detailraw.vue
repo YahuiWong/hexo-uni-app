@@ -61,10 +61,14 @@
         <text class="description-text">{{ post.description }}</text>
       </view>
 
-      <!-- Markdown 渲染内容 -->
+      <!-- 使用 mp-html 渲染 Markdown 转换后的 HTML -->
       <view class="content-wrapper">
-        <mp-html :content="renderedContent" selectable="true" show-img-menu="true" />
-        <!-- <rich-text :nodes="renderedContent" class="markdown-content" /> -->
+        <mp-html
+          :content="renderedContent"
+          :selectable="true"
+          :show-img-menu="true"
+          @imgtap="handleImageTap"
+        />
       </view>
 
       <!-- 底部信息 -->
@@ -92,12 +96,7 @@
     <view v-else class="empty">
       <u-icon name="close-circle" size="80" color="#ccc" />
       <text class="empty-text">文章加载失败</text>
-      <u-button
-        type="primary"
-        size="small"
-        @click="retry"
-        style="margin-top: 30rpx"
-      >
+      <u-button type="primary" size="small" @click="retry" style="margin-top: 30rpx">
         重新加载
       </u-button>
     </view>
@@ -117,63 +116,37 @@
 import { ref, computed } from 'vue';
 import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { api } from '@/api';
-import { marked } from 'marked';
-import hljs from 'highlight.js/lib/core';
+import { md2html } from '@/utils/md2html-safe';
+import { getPostShareConfig } from '@/composables/useShare';
 import SharePanel from '@/components/SharePanel.vue';
 import type { PostDetail } from '@/types';
-import { getPostShareConfig } from '@/composables/useShare';
+
+// 导入 mp-html 组件
+// @ts-ignore
 import mpHtml from 'mp-html/dist/uni-app/components/mp-html/mp-html.vue';
-import { md2html } from '@/utils/md2html';
-// 导入常用语言的高亮支持
-import javascript from 'highlight.js/lib/languages/javascript';
-import typescript from 'highlight.js/lib/languages/typescript';
-import python from 'highlight.js/lib/languages/python';
-import java from 'highlight.js/lib/languages/java';
-import bash from 'highlight.js/lib/languages/bash';
-import css from 'highlight.js/lib/languages/css';
-import html from 'highlight.js/lib/languages/xml';
-import json from 'highlight.js/lib/languages/json';
-import sql from 'highlight.js/lib/languages/sql';
-import go from 'highlight.js/lib/languages/go';
-
-// 注册语言
-hljs.registerLanguage('javascript', javascript);
-hljs.registerLanguage('typescript', typescript);
-hljs.registerLanguage('python', python);
-hljs.registerLanguage('java', java);
-hljs.registerLanguage('bash', bash);
-hljs.registerLanguage('css', css);
-hljs.registerLanguage('html', html);
-hljs.registerLanguage('xml', html);
-hljs.registerLanguage('json', json);
-hljs.registerLanguage('sql', sql);
-hljs.registerLanguage('go', go);
-
-// 配置 marked
-marked.setOptions({
-  breaks: true,
-  gfm: true,
-}) as any;
 
 // 数据
 const post = ref<PostDetail>({} as PostDetail);
 const loading = ref(true);
 const currentUrl = ref('');
-const renderedContent = ref('');
 const showSharePanel = ref(false);
 
 // 配置页面分享
-onShareAppMessage(() => getPostShareConfig({
-  title: post.value.title,
-  url: currentUrl.value,
-  cover: post.value.cover
-}));
+onShareAppMessage(() =>
+  getPostShareConfig({
+    title: post.value.title,
+    url: currentUrl.value,
+    cover: post.value.cover,
+  })
+);
 
-onShareTimeline(() => getPostShareConfig({
-  title: post.value.title,
-  url: currentUrl.value,
-  cover: post.value.cover
-}));
+onShareTimeline(() =>
+  getPostShareConfig({
+    title: post.value.title,
+    url: currentUrl.value,
+    cover: post.value.cover,
+  })
+);
 
 // 分享链接（完整 URL）
 const shareUrl = computed(() => {
@@ -184,106 +157,40 @@ const shareUrl = computed(() => {
     return post.value.url;
   }
 
-  // 拼接完整 URL - 确保 URL 以斜杠开头
+  // 拼接完整 URL
   const url = post.value.url.startsWith('/') ? post.value.url : `/${post.value.url}`;
   return `https://blog.yahui.wang${url}`;
 });
 
-// 渲染 Markdown
-const renderMarkdown = (rawContent: string): string => {
-  if (!rawContent) return '';
+// 渲染 Markdown 内容
+const renderedContent = computed(() => {
+  if (!post.value.raw) {
+    // 如果没有 raw 字段，降级使用 content
+    console.warn('没有 raw 字段，使用 content 字段');
+    return post.value.content || '';
+  }
 
-  // 移除 YAML frontmatter
-  let content = rawContent.replace(/^---[\s\S]*?---\n*/m, '');
+  try {
+    // 移除 YAML frontmatter
+    let markdown = post.value.raw.replace(/^---[\s\S]*?---\n*/m, '');
 
-  // 使用 marked 解析 markdown
-  let html = marked.parse(content) as string;
-
-  // 添加内联样式
-  html = styleHtml(html);
-
-  return html;
-};
-
-// 为 HTML 添加样式 - 简约清新风格
-const styleHtml = (html: string): string => {
-  let result = html;
-
-  // 清新配色
-  const colors = {
-    primary: '#2c3e50',      // 主文字色（深灰蓝）
-    secondary: '#546e7a',    // 次要文字色
-    accent: '#42b983',       // 强调色（清新绿）
-    link: '#3498db',         // 链接色（柔和蓝）
-    border: '#e8e8e8',       // 边框色（浅灰）
-    codeBg: '#f6f8fa',       // 代码背景（浅灰）
-    quoteBg: '#f9fafb',      // 引用块背景
-    tableBg: '#fafbfc',      // 表格背景
-  };
-
-  // 标题样式 - 简约清新
-  result = result.replace(/<h1>/gi, `<h1 style="font-size:42rpx;font-weight:600;margin:50rpx 0 30rpx;line-height:1.4;color:${colors.primary};padding-bottom:16rpx;border-bottom:3rpx solid ${colors.accent}">`);
-  result = result.replace(/<h2>/gi, `<h2 style="font-size:38rpx;font-weight:600;margin:45rpx 0 25rpx;line-height:1.4;color:${colors.primary};padding-bottom:12rpx;border-bottom:2rpx solid ${colors.border}">`);
-  result = result.replace(/<h3>/gi, `<h3 style="font-size:34rpx;font-weight:600;margin:40rpx 0 20rpx;line-height:1.4;color:${colors.primary}">`);
-  result = result.replace(/<h4>/gi, `<h4 style="font-size:32rpx;font-weight:600;margin:35rpx 0 18rpx;line-height:1.4;color:${colors.secondary}">`);
-  result = result.replace(/<h5>/gi, `<h5 style="font-size:30rpx;font-weight:600;margin:30rpx 0 16rpx;line-height:1.4;color:${colors.secondary}">`);
-  result = result.replace(/<h6>/gi, `<h6 style="font-size:28rpx;font-weight:600;margin:28rpx 0 14rpx;line-height:1.4;color:${colors.secondary}">`);
-
-  // 段落样式 - 舒适阅读
-  result = result.replace(/<p>/gi, `<p style="line-height:1.8;margin:24rpx 0;color:#4a4a4a;font-size:30rpx;text-align:justify">`);
-
-  // 图片样式 - 柔和圆角
-  result = result.replace(/<img([^>]*?)>/gi, `<img$1 style="width:100%;height:auto;display:block;margin:40rpx 0;border-radius:12rpx;box-shadow:0 4rpx 16rpx rgba(0,0,0,0.06)">`);
-
-  // 引用块样式 - 清新简约
-  result = result.replace(/<blockquote>/gi, `<blockquote style="border-left:4rpx solid ${colors.accent};padding:20rpx 24rpx;background:${colors.quoteBg};margin:30rpx 0;color:${colors.secondary};border-radius:0 8rpx 8rpx 0;font-size:28rpx">`);
-
-  // 代码块样式 - 柔和配色
-  result = result.replace(/<pre>/gi, `<pre style="background:${colors.codeBg};color:#24292f;padding:24rpx;border-radius:8rpx;border:1rpx solid ${colors.border};overflow-x:auto;margin:30rpx 0;font-size:26rpx;line-height:1.6;font-family:Consolas,Monaco,monospace">`);
-
-  // 行内代码样式 - 清新强调
-  result = result.replace(/<code>/gi, `<code style="background:#e7f7ef;color:${colors.accent};padding:4rpx 10rpx;border-radius:4rpx;font-size:90%;font-family:Consolas,Monaco,monospace">`);
-
-  // pre 内的 code 特殊处理
-  result = result.replace(/<pre([^>]*?)>([\s\S]*?)<\/pre>/gi, (_match, preAttrs, preContent) => {
-    const cleanedContent = preContent.replace(
-      /<code([^>]*?)style="[^"]*?"/gi,
-      '<code$1 style="background:transparent;color:inherit;padding:0;font-size:inherit"'
-    );
-    return `<pre${preAttrs}>${cleanedContent}</pre>`;
-  });
-
-  // 链接样式 - 柔和蓝色
-  result = result.replace(/<a([^>]*?)>/gi, `<a$1 style="color:${colors.link};text-decoration:none;border-bottom:1rpx solid ${colors.link};word-break:break-all;transition:all 0.2s">`);
-
-  // 列表样式 - 清晰层次
-  result = result.replace(/<ul>/gi, `<ul style="margin:24rpx 0;padding-left:40rpx;color:#4a4a4a">`);
-  result = result.replace(/<ol>/gi, `<ol style="margin:24rpx 0;padding-left:40rpx;color:#4a4a4a">`);
-  result = result.replace(/<li>/gi, `<li style="margin:12rpx 0;line-height:1.8;font-size:30rpx">`);
-
-  // 表格样式 - 简约清新
-  result = result.replace(/<table>/gi, `<table style="width:100%;border-collapse:collapse;margin:30rpx 0;font-size:28rpx;border-radius:8rpx;overflow:hidden;box-shadow:0 2rpx 12rpx rgba(0,0,0,0.04)">`);
-  result = result.replace(/<thead>/gi, `<thead style="background:${colors.tableBg}">`);
-  result = result.replace(/<th>/gi, `<th style="padding:20rpx 16rpx;text-align:left;font-weight:600;color:${colors.primary};border-bottom:2rpx solid ${colors.border}">`);
-  result = result.replace(/<td>/gi, `<td style="padding:16rpx;border-bottom:1rpx solid ${colors.border};color:#4a4a4a">`);
-
-  // 水平线样式 - 淡雅
-  result = result.replace(/<hr>/gi, `<hr style="border:none;border-top:1rpx solid ${colors.border};margin:50rpx 0;opacity:0.5">`);
-
-  // 粗体、斜体样式 - 突出但柔和
-  result = result.replace(/<strong>/gi, `<strong style="font-weight:600;color:${colors.primary}">`);
-  result = result.replace(/<em>/gi, `<em style="font-style:italic;color:${colors.secondary}">`);
-
-  return result;
-};
+    // 使用安全的 md2html 转换
+    return md2html(markdown);
+  } catch (err) {
+    console.error('Markdown 转换失败', err);
+    return '<p>内容渲染失败，请稍后重试</p>';
+  }
+});
 
 // 字数统计（基于 raw 内容）
 const wordCount = computed(() => {
   if (!post.value.raw) return 0;
+
   // 移除 frontmatter 和 markdown 语法
   const text = post.value.raw
     .replace(/^---[\s\S]*?---\n*/m, '')
     .replace(/[#*`~\[\]()]/g, '');
+
   return Math.ceil(text.length);
 });
 
@@ -293,11 +200,20 @@ const readingTime = computed(() => {
   return Math.ceil(wordCount.value / 300);
 });
 
+// 图片点击事件
+const handleImageTap = (e: any) => {
+  const { src } = e.detail;
+  previewImage(src);
+};
+
 // 图片预览
 const previewImage = (src: string) => {
   if (!src) return;
+
+  // 收集文章中的所有图片
   const images = post.value.images || [];
   const urls = images.length ? images : [src];
+
   uni.previewImage({
     urls,
     current: src,
@@ -343,15 +259,6 @@ const loadPost = async (url: string) => {
 
     if (!post.value.title) {
       throw new Error('文章数据无效');
-    }
-
-    // 使用 raw 字段渲染 markdown
-    if (post.value.raw) {
-      renderedContent.value = md2html(post.value.content);//renderMarkdown(post.value.raw);
-    } else {
-      // 降级到使用 content
-      console.warn('没有 raw 字段，使用 content 字段');
-      renderedContent.value = post.value.content || '';
     }
   } catch (err: any) {
     console.error('加载文章失败', err);
@@ -548,13 +455,6 @@ const fullDate = (dateStr: string) => {
   background: #fff;
 }
 
-.markdown-content {
-  font-size: 30rpx;
-  color: #4a4a4a;
-  line-height: 1.8;
-  word-break: break-word;
-}
-
 .article-footer {
   padding: 30rpx;
   border-top: 1rpx solid #f0f0f0;
@@ -623,5 +523,187 @@ const fullDate = (dateStr: string) => {
   margin-top: 30rpx;
   font-size: 28rpx;
   color: #999;
+}
+
+/* mp-html 自定义样式 */
+:deep(.mp-html) {
+  font-size: 30rpx;
+  line-height: 1.8;
+  color: #4a4a4a;
+}
+
+/* 代码块样式 - 清新配色 */
+:deep(.mp-html .code-block) {
+  background: #f6f8fa;
+  padding: 24rpx;
+  border-radius: 8rpx;
+  overflow-x: auto;
+  margin: 30rpx 0;
+  border: 1rpx solid #e8e8e8;
+}
+
+:deep(.mp-html .code-block code) {
+  color: #24292f;
+  font-size: 26rpx;
+  line-height: 1.6;
+  font-family: Consolas, Monaco, 'Courier New', monospace;
+  white-space: pre;
+  display: block;
+}
+
+/* 行内代码样式 */
+:deep(.mp-html .inline-code) {
+  background: #e7f7ef;
+  color: #42b983;
+  padding: 4rpx 10rpx;
+  border-radius: 4rpx;
+  font-size: 90%;
+  font-family: Consolas, Monaco, monospace;
+}
+
+/* 标题样式 */
+:deep(.mp-html h1) {
+  font-size: 42rpx;
+  font-weight: 600;
+  margin: 50rpx 0 30rpx;
+  color: #2c3e50;
+  border-bottom: 3rpx solid #42b983;
+  padding-bottom: 16rpx;
+}
+
+:deep(.mp-html h2) {
+  font-size: 38rpx;
+  font-weight: 600;
+  margin: 45rpx 0 25rpx;
+  color: #2c3e50;
+  border-bottom: 2rpx solid #e8e8e8;
+  padding-bottom: 12rpx;
+}
+
+:deep(.mp-html h3) {
+  font-size: 34rpx;
+  font-weight: 600;
+  margin: 40rpx 0 20rpx;
+  color: #2c3e50;
+}
+
+:deep(.mp-html h4) {
+  font-size: 32rpx;
+  font-weight: 600;
+  margin: 35rpx 0 18rpx;
+  color: #546e7a;
+}
+
+/* 段落样式 */
+:deep(.mp-html p) {
+  line-height: 1.8;
+  margin: 24rpx 0;
+  color: #4a4a4a;
+  text-align: justify;
+}
+
+/* 图片样式 */
+:deep(.mp-html img) {
+  max-width: 100%;
+  border-radius: 12rpx;
+  margin: 40rpx 0;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+/* 引用块样式 */
+:deep(.mp-html blockquote) {
+  border-left: 4rpx solid #42b983;
+  padding: 20rpx 24rpx;
+  background: #f9fafb;
+  margin: 30rpx 0;
+  color: #546e7a;
+  border-radius: 0 8rpx 8rpx 0;
+}
+
+/* 链接样式 */
+:deep(.mp-html a) {
+  color: #3498db;
+  text-decoration: none;
+  border-bottom: 1rpx solid #3498db;
+  word-break: break-all;
+}
+
+/* 列表样式 */
+:deep(.mp-html ul),
+:deep(.mp-html ol) {
+  margin: 24rpx 0;
+  padding-left: 40rpx;
+  color: #4a4a4a;
+}
+
+:deep(.mp-html li) {
+  margin: 12rpx 0;
+  line-height: 1.8;
+}
+
+/* 表格样式 */
+:deep(.mp-html table) {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 30rpx 0;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  border-radius: 8rpx;
+  overflow: hidden;
+}
+
+:deep(.mp-html th) {
+  padding: 20rpx 16rpx;
+  background: #fafbfc;
+  font-weight: 600;
+  color: #2c3e50;
+  border: 1rpx solid #e8e8e8;
+  text-align: left;
+}
+
+:deep(.mp-html td) {
+  padding: 16rpx;
+  border: 1rpx solid #e8e8e8;
+  color: #4a4a4a;
+}
+
+/* 水平线样式 */
+:deep(.mp-html hr) {
+  border: none;
+  border-top: 1rpx solid #e8e8e8;
+  margin: 50rpx 0;
+  opacity: 0.5;
+}
+
+/* 数学公式占位符样式 */
+:deep(.mp-html .math-inline),
+:deep(.mp-html .math-display),
+:deep(.mp-html .math-block) {
+  color: #8b5cf6;
+  font-family: 'KaTeX_Main', 'Times New Roman', serif;
+  background: #faf5ff;
+  padding: 4rpx 8rpx;
+  border-radius: 4rpx;
+  display: inline-block;
+}
+
+:deep(.mp-html .math-display),
+:deep(.mp-html .math-block) {
+  display: block;
+  margin: 20rpx 0;
+  padding: 16rpx;
+  text-align: center;
+}
+
+/* Mermaid 图表占位符样式 */
+:deep(.mp-html .mermaid) {
+  background: #f0f9ff;
+  padding: 24rpx;
+  border-radius: 8rpx;
+  margin: 30rpx 0;
+  border: 1rpx solid #bae6fd;
+  color: #0369a1;
+  font-family: monospace;
+  overflow-x: auto;
+  white-space: pre;
 }
 </style>

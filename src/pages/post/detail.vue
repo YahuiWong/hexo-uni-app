@@ -42,7 +42,7 @@
         <!-- 标签 -->
         <view v-if="post.tags && post.tags.length" class="tags-section">
           <view v-for="(tag, idx) in post.tags" :key="idx" class="tag-item">
-            <u-icon name="tags"  size="12" color="#007aff" />
+            <u-icon name="tags" size="12" color="#007aff" />
             <text class="tag-text">{{ tag.name || tag }}</text>
           </view>
         </view>
@@ -61,9 +61,14 @@
         <text class="description-text">{{ post.description }}</text>
       </view>
 
-      <!-- 富文本内容 -->
+      <!-- 使用 mp-html 渲染 HTML 内容 -->
       <view class="content-wrapper">
-        <rich-text :nodes="processedContent" class="rich-content" />
+        <mp-html
+          :content="htmlContent"
+          :selectable="true"
+          :show-img-menu="true"
+          @imgtap="handleImageTap"
+        />
       </view>
 
       <!-- 底部信息 -->
@@ -76,6 +81,14 @@
           <text class="footer-label">更新于：</text>
           <text class="footer-value">{{ fullDate(post.updated) }}</text>
         </view>
+
+        <!-- 分享按钮 -->
+        <view class="share-section">
+          <view class="share-btn" @click="showSharePanel = true">
+            <u-icon name="share" size="18" color="#007aff" />
+            <text class="share-btn-text">分享文章</text>
+          </view>
+        </view>
       </view>
     </view>
 
@@ -83,15 +96,19 @@
     <view v-else class="empty">
       <u-icon name="close-circle" size="80" color="#ccc" />
       <text class="empty-text">文章加载失败</text>
-      <u-button
-        type="primary"
-        size="small"
-        @click="retry"
-        style="margin-top: 30rpx"
-      >
+      <u-button type="primary" size="small" @click="retry" style="margin-top: 30rpx">
         重新加载
       </u-button>
     </view>
+
+    <!-- 分享面板 -->
+    <SharePanel
+      v-model:show="showSharePanel"
+      :title="post.title || ''"
+      :url="shareUrl"
+      :content="post.description || post.excerpt || ''"
+      :imageUrl="post.cover"
+    />
   </view>
 </template>
 
@@ -100,73 +117,56 @@ import { ref, computed } from 'vue';
 import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import { getPostShareConfig } from '@/composables/useShare';
+import SharePanel from '@/components/SharePanel.vue';
+import type { PostDetail } from '@/types';
+
+// 导入 mp-html 组件
+// @ts-ignore
+import mpHtml from 'mp-html/dist/uni-app/components/mp-html/mp-html.vue';
 
 // 数据
-const post = ref<any>({});
+const post = ref<PostDetail>({} as PostDetail);
 const loading = ref(true);
 const currentUrl = ref('');
+const showSharePanel = ref(false);
 
 // 配置页面分享
-onShareAppMessage(() => getPostShareConfig({
-  title: post.value.title,
-  url: currentUrl.value,
-  cover: post.value.cover
-}));
+onShareAppMessage(() =>
+  getPostShareConfig({
+    title: post.value.title,
+    url: currentUrl.value,
+    cover: post.value.cover,
+  })
+);
 
-onShareTimeline(() => getPostShareConfig({
-  title: post.value.title,
-  url: currentUrl.value,
-  cover: post.value.cover
-}));
+onShareTimeline(() =>
+  getPostShareConfig({
+    title: post.value.title,
+    url: currentUrl.value,
+    cover: post.value.cover,
+  })
+);
 
-// 处理后的内容
-const processedContent = computed(() => {
+// 分享链接（完整 URL）
+const shareUrl = computed(() => {
+  if (!post.value.url) return '';
+
+  // 如果已经是完整 URL
+  if (post.value.url.startsWith('http')) {
+    return post.value.url;
+  }
+
+  // 拼接完整 URL
+  const url = post.value.url.startsWith('/') ? post.value.url : `/${post.value.url}`;
+  return `https://blog.yahui.wang${url}`;
+});
+
+// HTML 内容（直接使用 post.content）
+const htmlContent = computed(() => {
   if (!post.value.content) return '';
 
-  let content = post.value.content;
-
-  // 处理图片样式
-  content = content.replace(
-    /<img([^>]*?)src="([^"]*?)"([^>]*?)>/gi,
-    '<img$1src="$2"$3 style="width:100%;height:auto;display:block;margin:20rpx 0;border-radius:8rpx;">'
-  );
-
-  // 处理代码块样式
-  content = content.replace(
-    /<pre>/gi,
-    '<pre style="background:#282c34;color:#abb2bf;padding:20rpx;border-radius:8rpx;overflow:auto;margin:20rpx 0;">'
-  );
-
-  // 处理行内代码样式
-  content = content.replace(
-    /<code>/gi,
-    '<code style="background:#f5f5f5;color:#e74c3c;padding:2rpx 8rpx;border-radius:4rpx;font-size:90%;">'
-  );
-
-  // 处理标题样式
-  content = content.replace(/<h1([^>]*?)>/gi, '<h1$1 style="font-size:40rpx;font-weight:bold;margin:40rpx 0 20rpx;line-height:1.4;">');
-  content = content.replace(/<h2([^>]*?)>/gi, '<h2$1 style="font-size:36rpx;font-weight:bold;margin:35rpx 0 18rpx;line-height:1.4;">');
-  content = content.replace(/<h3([^>]*?)>/gi, '<h3$1 style="font-size:32rpx;font-weight:bold;margin:30rpx 0 16rpx;line-height:1.4;">');
-
-  // 处理段落样式
-  content = content.replace(
-    /<p>/gi,
-    '<p style="line-height:1.8;margin:16rpx 0;text-align:justify;">'
-  );
-
-  // 处理引用块样式
-  content = content.replace(
-    /<blockquote>/gi,
-    '<blockquote style="border-left:4rpx solid #007aff;padding:10rpx 20rpx;background:#f9f9f9;margin:20rpx 0;color:#555;">'
-  );
-
-  // 处理链接样式
-  content = content.replace(
-    /<a([^>]*?)>/gi,
-    '<a$1 style="color:#007aff;text-decoration:underline;">'
-  );
-
-  return content;
+  // 直接返回 HTML 内容，mp-html 会自动处理样式
+  return post.value.content;
 });
 
 // 字数统计
@@ -181,6 +181,12 @@ const readingTime = computed(() => {
   if (!wordCount.value) return 0;
   return Math.ceil(wordCount.value / 300);
 });
+
+// 图片点击事件
+const handleImageTap = (e: any) => {
+  const { src } = e.detail;
+  previewImage(src);
+};
 
 // 图片预览
 const previewImage = (src: string) => {
@@ -201,7 +207,6 @@ const getPostPathFromUrl = (url: string): string => {
   let fullUrl = url.trim();
   let pathname = '';
 
-  // 尝试作为完整 URL 解析
   if (/^https?:\/\//i.test(fullUrl) || fullUrl.startsWith('//')) {
     try {
       const urlObj = new URL(fullUrl.startsWith('//') ? 'https:' + fullUrl : fullUrl);
@@ -213,13 +218,11 @@ const getPostPathFromUrl = (url: string): string => {
     pathname = fullUrl;
   }
 
-  // 统一处理路径
   let path = pathname
-    .replace(/^\//, '')     // 去掉开头 /
-    .replace(/\.html$/, '') // 去掉尾部 .html
-    .replace(/\/$/, '');    // 去掉尾部 /
+    .replace(/^\//, '')
+    .replace(/\.html$/, '')
+    .replace(/\/$/, '');
 
-  // 空路径兜底
   if (!path) path = 'index';
 
   return path;
@@ -309,7 +312,7 @@ const fullDate = (dateStr: string) => {
 
 <style scoped>
 .detail-container {
-  background: #f5f5f5;
+  background: #f8f9fa;
   min-height: 100vh;
 }
 
@@ -336,7 +339,7 @@ const fullDate = (dateStr: string) => {
   width: 100%;
   height: 450rpx;
   display: block;
-  background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+  background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
 }
 
 .article-header {
@@ -345,8 +348,8 @@ const fullDate = (dateStr: string) => {
 
 .title {
   font-size: 48rpx;
-  font-weight: bold;
-  color: #000;
+  font-weight: 600;
+  color: #2c3e50;
   line-height: 1.4;
   display: block;
   margin-bottom: 30rpx;
@@ -355,7 +358,7 @@ const fullDate = (dateStr: string) => {
 .meta-info {
   display: flex;
   flex-wrap: wrap;
-  gap: 20rpx;
+  gap: 16rpx;
   margin-bottom: 30rpx;
 }
 
@@ -363,11 +366,14 @@ const fullDate = (dateStr: string) => {
   display: flex;
   align-items: center;
   gap: 6rpx;
+  padding: 8rpx 16rpx;
+  background: #f8f9fa;
+  border-radius: 20rpx;
 }
 
 .meta-text {
   font-size: 24rpx;
-  color: #999;
+  color: #546e7a;
   line-height: 1;
 }
 
@@ -383,13 +389,13 @@ const fullDate = (dateStr: string) => {
   align-items: center;
   gap: 4rpx;
   padding: 8rpx 16rpx;
-  background: #e3f2fd;
+  background: #e7f7ef;
   border-radius: 20rpx;
 }
 
 .tag-text {
   font-size: 24rpx;
-  color: #007aff;
+  color: #42b983;
   line-height: 1;
 }
 
@@ -404,13 +410,13 @@ const fullDate = (dateStr: string) => {
   align-items: center;
   gap: 4rpx;
   padding: 8rpx 16rpx;
-  background: #e8f5e9;
+  background: #e3f2fd;
   border-radius: 20rpx;
 }
 
 .category-text {
   font-size: 24rpx;
-  color: #34c759;
+  color: #3498db;
   line-height: 1;
 }
 
@@ -421,20 +427,14 @@ const fullDate = (dateStr: string) => {
 
 .description-text {
   font-size: 28rpx;
-  color: #666;
+  color: #546e7a;
   line-height: 1.6;
   font-style: italic;
 }
 
 .content-wrapper {
   padding: 30rpx;
-}
-
-.rich-content {
-  font-size: 30rpx;
-  color: #333;
-  line-height: 1.8;
-  word-break: break-word;
+  background: #fff;
 }
 
 .article-footer {
@@ -460,6 +460,38 @@ const fullDate = (dateStr: string) => {
   color: #666;
 }
 
+.share-section {
+  margin-top: 30rpx;
+  padding-top: 30rpx;
+  border-top: 1rpx solid #f0f0f0;
+  display: flex;
+  justify-content: center;
+}
+
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 16rpx 40rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50rpx;
+  box-shadow: 0 4rpx 12rpx rgba(102, 126, 234, 0.3);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.share-btn:active {
+  opacity: 0.8;
+  transform: scale(0.95);
+}
+
+.share-btn-text {
+  font-size: 28rpx;
+  color: #fff;
+  font-weight: 500;
+  line-height: 1;
+}
+
 .empty {
   display: flex;
   flex-direction: column;
@@ -473,5 +505,102 @@ const fullDate = (dateStr: string) => {
   margin-top: 30rpx;
   font-size: 28rpx;
   color: #999;
+}
+
+/* mp-html 自定义样式 */
+:deep(.mp-html) {
+  font-size: 30rpx;
+  line-height: 1.8;
+  color: #4a4a4a;
+}
+
+/* 代码块样式 */
+:deep(.mp-html pre) {
+  background: #f6f8fa;
+  padding: 24rpx;
+  border-radius: 8rpx;
+  overflow-x: auto;
+  margin: 30rpx 0;
+  border: 1rpx solid #e8e8e8;
+}
+
+:deep(.mp-html code) {
+  background: #e7f7ef;
+  color: #42b983;
+  padding: 4rpx 10rpx;
+  border-radius: 4rpx;
+  font-size: 90%;
+  font-family: Consolas, Monaco, monospace;
+}
+
+:deep(.mp-html pre code) {
+  background: transparent;
+  color: #24292f;
+  padding: 0;
+}
+
+/* 标题样式 */
+:deep(.mp-html h1) {
+  font-size: 42rpx;
+  font-weight: 600;
+  margin: 50rpx 0 30rpx;
+  color: #2c3e50;
+  border-bottom: 3rpx solid #42b983;
+  padding-bottom: 16rpx;
+}
+
+:deep(.mp-html h2) {
+  font-size: 38rpx;
+  font-weight: 600;
+  margin: 45rpx 0 25rpx;
+  color: #2c3e50;
+  border-bottom: 2rpx solid #e8e8e8;
+  padding-bottom: 12rpx;
+}
+
+:deep(.mp-html h3) {
+  font-size: 34rpx;
+  font-weight: 600;
+  margin: 40rpx 0 20rpx;
+  color: #2c3e50;
+}
+
+/* 图片样式 */
+:deep(.mp-html img) {
+  max-width: 100%;
+  border-radius: 12rpx;
+  margin: 40rpx 0;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+/* 引用块样式 */
+:deep(.mp-html blockquote) {
+  border-left: 4rpx solid #42b983;
+  padding: 20rpx 24rpx;
+  background: #f9fafb;
+  margin: 30rpx 0;
+  color: #546e7a;
+  border-radius: 0 8rpx 8rpx 0;
+}
+
+/* 表格样式 */
+:deep(.mp-html table) {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 30rpx 0;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+:deep(.mp-html th) {
+  padding: 20rpx 16rpx;
+  background: #fafbfc;
+  font-weight: 600;
+  color: #2c3e50;
+  border: 1rpx solid #e8e8e8;
+}
+
+:deep(.mp-html td) {
+  padding: 16rpx;
+  border: 1rpx solid #e8e8e8;
 }
 </style>

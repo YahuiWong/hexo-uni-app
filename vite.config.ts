@@ -1,12 +1,20 @@
 import { defineConfig } from 'vite';
 import uni from '@dcloudio/vite-plugin-uni';  // UniApp 官方 Vite 插件
 import path from 'path';
+import babel from 'vite-plugin-babel';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     uni(),  // 必须的 UniApp 插件
-    
+    // Babel 插件：转译 marked 库中的 Unicode 正则表达式
+    // 解决 Android 平台不支持 \p{L} \p{N} 等 Unicode 属性转义的问题
+    babel({
+      babelConfig: {
+        plugins: ['babel-plugin-transform-unicode-property-regex'],
+      },
+      filter: /node_modules\/marked/,  // 只转译 marked 库
+    }),
   ],
 
   resolve: {
