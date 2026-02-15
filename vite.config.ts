@@ -54,6 +54,17 @@ export default defineConfig({
         drop_debugger: true,
       },
     },
+    rollupOptions: {
+      // 将 mermaid 和 katex 外部化（不打包），避免依赖问题
+      // 这些库会在 H5 端通过动态导入加载
+      external: (id) => {
+        if (process.env.UNI_PLATFORM === 'h5') {
+          return false; // H5 端允许打包所有依赖
+        }
+        // 其他平台（小程序）不打包 mermaid/katex
+        return id.includes('mermaid') || id.includes('katex');
+      },
+    },
   },
 
   // CSS 配置（可选）

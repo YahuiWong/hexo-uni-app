@@ -120,11 +120,6 @@ import { getPostShareConfig } from '@/composables/useShare';
 import SharePanel from '@/components/SharePanel.vue';
 import type { PostDetail } from '@/types';
 
-// #ifdef H5
-// 仅在 H5 平台导入增强渲染器
-import { renderAll } from '@/utils/content-renderer';
-// #endif
-
 // 导入 mp-html 组件
 // @ts-ignore
 import mpHtml from 'mp-html/dist/uni-app/components/mp-html/mp-html.vue';
@@ -263,6 +258,8 @@ onMounted(() => {
     setTimeout(async () => {
       try {
         console.log('开始渲染 Mermaid 和 KaTeX...');
+        // 动态导入 content-renderer（避免构建时错误）
+        const { renderAll } = await import('@/utils/content-renderer');
         await renderAll();
         console.log('✓ 渲染完成');
       } catch (err) {
