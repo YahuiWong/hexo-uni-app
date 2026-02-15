@@ -113,7 +113,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, nextTick } from 'vue';
+import { ref, computed } from 'vue';
 import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import { md2html } from '@/utils/md2html-safe';
@@ -267,26 +267,6 @@ const loadPost = async (url: string) => {
     loading.value = false;
   }
 };
-
-// 页面挂载后渲染增强内容（仅 H5）
-onMounted(() => {
-  nextTick(async () => {
-    // #ifdef H5
-    // 等待 mp-html 完成渲染
-    setTimeout(async () => {
-      try {
-        console.log('开始渲染 Mermaid 和 KaTeX...');
-        // 动态导入 content-renderer（避免构建时错误）
-        const { renderAll } = await import('@/utils/content-renderer');
-        await renderAll();
-        console.log('✓ 渲染完成');
-      } catch (err) {
-        console.error('渲染增强内容失败:', err);
-      }
-    }, 300); // 延迟 300ms 确保 mp-html 已渲染
-    // #endif
-  });
-});
 
 // 重试
 const retry = () => {
