@@ -113,12 +113,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, nextTick } from 'vue';
 import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import { getPostShareConfig } from '@/composables/useShare';
 import SharePanel from '@/components/SharePanel.vue';
 import type { PostDetail } from '@/types';
+
+// #ifdef H5
+// 仅在 H5 平台导入增强渲染器
+import { renderAll } from '@/utils/content-renderer';
+// #endif
 
 // 导入 mp-html 组件
 // @ts-ignore
@@ -249,6 +254,24 @@ const loadPost = async (url: string) => {
     loading.value = false;
   }
 };
+
+// 页面挂载后渲染增强内容（仅 H5）
+onMounted(() => {
+  nextTick(async () => {
+    // #ifdef H5
+    // 等待 mp-html 完成渲染
+    setTimeout(async () => {
+      try {
+        console.log('开始渲染 Mermaid 和 KaTeX...');
+        await renderAll();
+        console.log('✓ 渲染完成');
+      } catch (err) {
+        console.error('渲染增强内容失败:', err);
+      }
+    }, 300); // 延迟 300ms 确保 mp-html 已渲染
+    // #endif
+  });
+});
 
 // 重试
 const retry = () => {

@@ -106,7 +106,7 @@ export async function renderMermaid() {
     } catch (e) {
       console.error('Mermaid 渲染失败:', e);
       // 渲染失败时显示错误信息
-      element.innerHTML = `<div style="color: red; padding: 20rpx;">
+      element.innerHTML = `<div style="color: red; padding: 10px;">
         Mermaid 渲染失败<br>
         <small>${e instanceof Error ? e.message : '未知错误'}</small>
       </div>`;
