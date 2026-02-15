@@ -2,9 +2,27 @@
  * 安全的 Markdown 转 HTML 工具
  * 避免使用包含 Unicode 正则表达式的库（如 highlight.js 的某些语言定义）
  * 适用于 Android 平台兼容性
+ *
+ * 功能增强：
+ * - 使用 Prism.js 提供黑客风格的代码语法高亮
+ * - 支持 Mermaid 图表占位符
+ * - 支持 KaTeX 数学公式占位符
  */
 
 import { marked } from 'marked';
+import Prism from 'prismjs';
+
+// 导入 Prism 语言支持（避免使用包含 Unicode 正则的语言）
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-typescript';
+import 'prismjs/components/prism-jsx';
+import 'prismjs/components/prism-tsx';
+import 'prismjs/components/prism-css';
+import 'prismjs/components/prism-scss';
+import 'prismjs/components/prism-markup'; // HTML/XML
+import 'prismjs/components/prism-json';
+import 'prismjs/components/prism-bash';
+import 'prismjs/components/prism-sql';
 
 /**
  * 将 Markdown 字符串转换为 HTML
@@ -18,7 +36,7 @@ export function md2html(markdown: string): string {
   // 创建自定义 renderer
   const renderer = new marked.Renderer();
 
-  // 代码块渲染 - 不使用 highlight.js
+  // 代码块渲染 - 使用 Prism.js 语法高亮
   // 注意：marked 的 renderer 方法接收 token 对象，不是字符串
   renderer.code = function (token: any): string {
     const code = token.text || '';  // 代码内容在 token.text 中
@@ -34,7 +52,21 @@ export function md2html(markdown: string): string {
       return `<div class="math-block">$$${escapeHtml(code)}$$</div>`;
     }
 
-    // 3. 普通代码块 - 使用简单的 pre/code 标签，不进行语法高亮
+    // 3. 普通代码块 - 使用 Prism.js 语法高亮
+    // 检查 Prism 是否支持该语言
+    if (Prism.languages[lang]) {
+      try {
+        // 使用 Prism 高亮代码
+        const highlighted = Prism.highlight(code, Prism.languages[lang], lang);
+        return `<pre class="code-block language-${escapeHtml(lang)}"><code class="language-${escapeHtml(lang)}">${highlighted}</code></pre>\n`;
+      } catch (e) {
+        console.error(`Prism 高亮失败 (${lang}):`, e);
+        // 降级：返回未高亮的代码
+        return `<pre class="code-block"><code class="language-${escapeHtml(lang)}">${escapeHtml(code)}</code></pre>\n`;
+      }
+    }
+
+    // 4. 不支持的语言 - 返回未高亮的代码
     return `<pre class="code-block"><code class="language-${escapeHtml(lang)}">${escapeHtml(code)}</code></pre>\n`;
   };
 

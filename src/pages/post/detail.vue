@@ -514,29 +514,104 @@ const fullDate = (dateStr: string) => {
   color: #4a4a4a;
 }
 
-/* 代码块样式 */
+/* ============================================
+   Prism.js Okaidia 黑客风格主题
+   ============================================ */
+
+/* 代码块容器 - 黑客风格背景 */
 :deep(.mp-html pre) {
-  background: #f6f8fa;
+  background: #272822; /* Okaidia 深色背景 */
   padding: 24rpx;
   border-radius: 8rpx;
   overflow-x: auto;
   margin: 30rpx 0;
-  border: 1rpx solid #e8e8e8;
-}
-
-:deep(.mp-html code) {
-  background: #e7f7ef;
-  color: #42b983;
-  padding: 4rpx 10rpx;
-  border-radius: 4rpx;
-  font-size: 90%;
-  font-family: Consolas, Monaco, monospace;
+  border: 1rpx solid #3e3d32;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.3);
 }
 
 :deep(.mp-html pre code) {
   background: transparent;
-  color: #24292f;
+  color: #f8f8f2; /* 浅色文字 */
   padding: 0;
+  font-size: 26rpx;
+  line-height: 1.6;
+  font-family: Consolas, Monaco, 'Courier New', monospace;
+}
+
+/* Prism.js 语法高亮 - Okaidia 主题 */
+:deep(.mp-html .token.comment),
+:deep(.mp-html .token.prolog),
+:deep(.mp-html .token.doctype),
+:deep(.mp-html .token.cdata) {
+  color: #8292a2; /* 灰色注释 */
+}
+
+:deep(.mp-html .token.punctuation) {
+  color: #f8f8f2; /* 标点符号 */
+}
+
+:deep(.mp-html .token.namespace) {
+  opacity: 0.7;
+}
+
+:deep(.mp-html .token.property),
+:deep(.mp-html .token.tag),
+:deep(.mp-html .token.constant),
+:deep(.mp-html .token.symbol),
+:deep(.mp-html .token.deleted) {
+  color: #f92672; /* 粉红色 - 标签/属性 */
+}
+
+:deep(.mp-html .token.boolean),
+:deep(.mp-html .token.number) {
+  color: #ae81ff; /* 紫色 - 布尔值/数字 */
+}
+
+:deep(.mp-html .token.selector),
+:deep(.mp-html .token.attr-name),
+:deep(.mp-html .token.string),
+:deep(.mp-html .token.char),
+:deep(.mp-html .token.builtin),
+:deep(.mp-html .token.inserted) {
+  color: #a6e22e; /* 绿色 - 字符串 */
+}
+
+:deep(.mp-html .token.operator),
+:deep(.mp-html .token.entity),
+:deep(.mp-html .token.url),
+:deep(.mp-html .language-css .token.string),
+:deep(.mp-html .style .token.string),
+:deep(.mp-html .token.variable) {
+  color: #f8f8f2; /* 浅色 - 操作符 */
+}
+
+:deep(.mp-html .token.atrule),
+:deep(.mp-html .token.attr-value),
+:deep(.mp-html .token.function),
+:deep(.mp-html .token.class-name) {
+  color: #e6db74; /* 黄色 - 函数/类名 */
+}
+
+:deep(.mp-html .token.keyword) {
+  color: #66d9ef; /* 青色 - 关键字 */
+}
+
+:deep(.mp-html .token.regex),
+:deep(.mp-html .token.important) {
+  color: #fd971f; /* 橙色 - 正则/重要 */
+}
+
+:deep(.mp-html .token.important),
+:deep(.mp-html .token.bold) {
+  font-weight: bold;
+}
+
+:deep(.mp-html .token.italic) {
+  font-style: italic;
+}
+
+:deep(.mp-html .token.entity) {
+  cursor: help;
 }
 
 /* 标题样式 */
