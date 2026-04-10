@@ -13,8 +13,8 @@ describe('Marked 行为调试', () => {
   it('测试自定义 renderer.code', () => {
     const renderer = new marked.Renderer();
 
-    // 记录被调用的参数
-    renderer.code = function(code, lang) {
+    // @ts-ignore - marked 类型定义有问题
+    renderer.code = function(code: string | undefined, lang: string | undefined) {
       console.log('renderer.code 被调用');
       console.log('  code:', code);
       console.log('  code type:', typeof code);
@@ -33,7 +33,8 @@ describe('Marked 行为调试', () => {
   it('测试行内代码', () => {
     const renderer = new marked.Renderer();
 
-    renderer.codespan = function(code) {
+    // @ts-ignore - marked 类型定义有问题
+    renderer.codespan = function(code: string) {
       console.log('renderer.codespan 被调用');
       console.log('  code:', code);
       console.log('  code type:', typeof code);

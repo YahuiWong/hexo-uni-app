@@ -11,7 +11,7 @@ import type {
   ArchiveYear
 } from '@/types';
 
-const BASE_URL = 'https://blog.yahui.wang/api';  // 开发时走代理，生产时改回真实域名
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://blog.yahui.wang/api';
 
 /**
  * 通用请求封装

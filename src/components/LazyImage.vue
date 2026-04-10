@@ -10,7 +10,7 @@
       v-show="!isLoading"
       ref="imageRef"
       :src="currentSrc"
-      :mode="mode"
+      :mode="mode as any"
       :lazy-load="!disableLazy"
       :class="['lazy-image', { 'lazy-image-loaded': !isLoading }]"
       :style="imageStyle"

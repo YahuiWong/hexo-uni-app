@@ -77,7 +77,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import PostItem from '@/components/PostItem.vue';

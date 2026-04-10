@@ -19,7 +19,7 @@
       @touchend="onTouchEnd"
     >
       <view
-        v-for="(tag, index) in tagItems"
+        v-for="tag in tagItems"
         :key="tag.name"
         class="tag-item"
         :style="tag.style"

@@ -20,7 +20,8 @@ export function md2html(markdown: string): string {
   const renderer = new marked.Renderer();
 
  // 在 renderer.code 里面最开头加防护
-renderer.code = function (code: string | undefined, infostring?: string): string {
+// @ts-ignore - marked 类型定义有问题
+renderer.code = function (code: string, infostring?: string): string {
   // 强制转成字符串 + 兜底空字符串
   const safeCode = typeof code === 'string' ? code : '';
 
@@ -71,7 +72,7 @@ renderer.code = function (code: string | undefined, infostring?: string): string
   });
 
   // 4. 自定义 walkTokens 来处理行内 $...$ 和独立 $$...$$
-  const walkTokens = (token: any) => {
+  const walkTokens = (token: { type: string; text?: string; tokens?: any[]; cells?: any[][] }) => {
     if (token.type === 'text' || token.type === 'paragraph' || token.type === 'heading') {
       if (typeof token.text === 'string') {
         token.text = renderMathInText(token.text);
@@ -83,8 +84,8 @@ renderer.code = function (code: string | undefined, infostring?: string): string
     }
 
     if (token.type === 'table' && token.cells) {
-      token.cells.forEach((row: any[]) => {
-        row.forEach((cell: any) => {
+      token.cells.forEach((row: { tokens?: any[] }[]) => {
+        row.forEach((cell: { tokens?: any[] }) => {
           if (cell.tokens) cell.tokens.forEach(walkTokens);
         });
       });

@@ -131,13 +131,7 @@ const loadStats = async () => {
 
     // 文章数量（从首页获取总数）
     const postsRes = await api.getPosts(1);
-    // 使用分页信息中的总文章数
-    if (postsRes.data?.info) {
-      // 假设每页10篇，总页数 * 10
-      stats.value.posts = (postsRes.data.total || 1) * (postsRes.data.posts?.length || 10);
-    } else {
-      stats.value.posts = postsRes.data?.posts?.length || 0;
-    }
+    stats.value.posts = postsRes.data?.total || postsRes.data?.posts?.length || 0;
   } catch (err) {
     console.error('加载统计信息失败', err);
   }

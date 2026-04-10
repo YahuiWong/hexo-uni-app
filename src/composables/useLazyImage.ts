@@ -4,7 +4,8 @@
  * 提供图片懒加载功能，优化页面性能
  */
 
-import { ref, onMounted, onUnmounted, Ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
+import type { Ref } from 'vue';
 
 export interface LazyImageOptions {
   /**
@@ -156,7 +157,7 @@ export function preloadImagesWithLimit(
     }
 
     const url = urls[currentIndex++];
-    const promise = new Promise<void>((resolve, reject) => {
+    const promise = new Promise<void>((resolve) => {
       const img = new Image();
       img.onload = () => resolve();
       img.onerror = () => {

@@ -99,6 +99,7 @@ import { ref, onMounted, computed } from 'vue';
 import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import { getArchiveShareConfig } from '@/composables/useShare';
+import { formatDate } from '@/utils/date';
 
 // 配置页面分享
 onShareAppMessage(() => getArchiveShareConfig());
@@ -143,8 +144,28 @@ const loadArchives = async () => {
   try {
     const res = await api.getArchives();
     if (res.data && Array.isArray(res.data)) {
+      // 将 ArchiveYear 转换为 YearData
+      const yearDataList = res.data.map((item): YearData => ({
+        year: item.year,
+        api: res.api,
+        data: (item.months || []).map((month): MonthData => ({
+          month: month.month,
+          api: '',
+          posts: month.posts?.map(p => ({
+            title: p.title,
+            slug: p.slug,
+            date: p.date,
+            url: p.url
+          })),
+          expanded: false,
+          loading: false
+        })),
+        expanded: true,
+        totalPosts: 0
+      }));
+
       // 按年份倒序排序（最新年份在前）
-      const sortedData = res.data.sort((a: YearData, b: YearData) => b.year - a.year);
+      const sortedData = yearDataList.sort((a: YearData, b: YearData) => b.year - a.year);
 
       // 默认展开所有年份
       archives.value = sortedData.map((item: YearData) => ({
@@ -265,14 +286,6 @@ const getMonthName = (month: number) => {
     '七月', '八月', '九月', '十月', '十一月', '十二月'
   ];
   return months[month - 1] || `${month}月`;
-};
-
-const formatDate = (dateStr: string) => {
-  if (!dateStr) return '';
-  const date = new Date(dateStr);
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${month}-${day}`;
 };
 </script>
 

@@ -117,6 +117,7 @@ import { ref, computed } from 'vue';
 import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import { md2html } from '@/utils/md2html-safe';
+import { formatDate } from '@/utils/date';
 import { getPostShareConfig } from '@/composables/useShare';
 import SharePanel from '@/components/SharePanel.vue';
 import type { PostDetail } from '@/types';
@@ -290,28 +291,6 @@ onLoad(async (options: any) => {
 
   await loadPost(url);
 });
-
-// 格式化日期（相对时间）
-const formatDate = (dateStr: string) => {
-  if (!dateStr) return '';
-
-  const date = new Date(dateStr);
-  const now = new Date();
-  const diff = now.getTime() - date.getTime();
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-  if (days === 0) return '今天';
-  if (days === 1) return '昨天';
-  if (days < 7) return `${days}天前`;
-  if (days < 30) return `${Math.floor(days / 7)}周前`;
-  if (days < 365) return `${Math.floor(days / 30)}个月前`;
-
-  return date.toLocaleDateString('zh-CN', {
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric',
-  });
-};
 
 // 完整日期
 const fullDate = (dateStr: string) => {

@@ -119,6 +119,50 @@ export interface ArchiveYear {
   year: number;
   count: number;
   months?: ArchiveMonth[];
+  api?: string;
+  data?: YearData[];
+}
+
+/**
+ * 归档年份扩展数据（用于页面状态管理）
+ */
+export interface YearData {
+  year: number;
+  api: string;
+  data: MonthData[];
+  expanded?: boolean;
+  totalPosts?: number;
+}
+
+/**
+ * 归档月份信息
+ */
+export interface ArchiveMonth {
+  month: number;
+  count: number;
+  posts?: PostItem[];
+  api?: string;
+}
+
+/**
+ * 归档月份扩展数据（用于页面状态管理）
+ */
+export interface MonthData {
+  month: number;
+  api: string;
+  posts?: PostData[];
+  expanded?: boolean;
+  loading?: boolean;
+}
+
+/**
+ * 归档文章数据
+ */
+export interface PostData {
+  title: string;
+  slug: string;
+  date: string;
+  url?: string;
 }
 
 /**
