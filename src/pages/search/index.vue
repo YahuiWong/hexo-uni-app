@@ -82,19 +82,25 @@ import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import PostItem from '@/components/PostItem.vue';
 import { getSearchShareConfig } from '@/composables/useShare';
+import type { PostItem as PostItemType } from '@/types';
 
 // 配置页面分享
 onShareAppMessage(() => getSearchShareConfig());
 onShareTimeline(() => getSearchShareConfig());
 
+interface SearchablePost extends PostItemType {
+  excerptText?: string;
+}
+
 const keyword = ref('');
 const searching = ref(false);
 const searched = ref(false);
-const results = ref<any[]>([]);
+const results = ref<SearchablePost[]>([]);
 const searchHistory = ref<string[]>([]);
 
 const HISTORY_KEY = 'search_history';
 const MAX_HISTORY = 10;
+const MAX_SEARCH_PAGES = 3; // 限制搜索加载的页数
 
 onLoad((options: any) => {
   // 加载搜索历史
@@ -201,8 +207,8 @@ const searchPosts = async (kw: string) => {
       allPosts.push(...firstPage.data.posts);
     }
 
-    // 如果有更多页，继续加载（最多加载10页）
-    const maxPages = Math.min(10, firstPage.data?.total || 1);
+    // 限制搜索加载的页数，避免消耗过多内存
+    const maxPages = Math.min(MAX_SEARCH_PAGES, firstPage.data?.total || 1);
     const promises = [];
     for (let i = 2; i <= maxPages; i++) {
       promises.push(api.getPosts(i));

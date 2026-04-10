@@ -9,7 +9,7 @@
     />
     <view class="info">
       <text class="title">{{ post.title }}</text>
-      <text class="excerpt">{{ post.excerpt.replace(/<[^>]*>/g, '') }}</text>
+      <text class="excerpt">{{ post.excerptText || post.excerpt.replace(/<[^>]*>/g, '') }}</text>
 
       <!-- 标签 -->
       <view v-if="post.tags && post.tags.length" class="tags">

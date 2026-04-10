@@ -124,7 +124,10 @@ renderer.code = function (code: string, infostring?: string): string {
   return html;
 }
 
-// 简单 HTML 转义函数（用于 mermaid 代码块等）
+/**
+ * HTML 转义函数（用于防止 XSS 攻击）
+ * 转义常见特殊字符为 HTML 实体
+ */
 function escapeHtml(text: unknown): string {
   // 如果不是字符串 → 转成字符串或返回空
   if (typeof text !== 'string') {
@@ -137,6 +140,11 @@ function escapeHtml(text: unknown): string {
     '>': '&gt;',
     '"': '&quot;',
     "'": '&#039;',
+    '/': '&#x2F;',
+    '`': '&#x60;',
+    '=': '&#x3D;'
   };
-  return text.replace(/[&<>"']/g, (m) => map[m]);
+
+  // 更全面的字符转义
+  return text.replace(/[&<>"'/`=]/g, (m) => map[m]);
 }

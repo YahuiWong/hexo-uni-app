@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 
 /**
  * 真实 API 接口测试
@@ -7,7 +7,8 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
  */
 
 // 判断是否在 CI 环境中
-const IS_CI = process.env.CI === 'true';
+declare const process: any;
+const IS_CI = process.env && process.env.CI === 'true';
 
 // 跳过网络测试的辅助函数
 const skipIfNoNetwork = () => {
@@ -26,7 +27,7 @@ const TEST_CONFIG = {
 };
 
 // 简单的请求封装（用于测试）
-async function testRequest<T>(url: string): Promise<any> {
+async function testRequest(url: string): Promise<any> {
   // 在 Node.js 环境中使用 node-fetch
   if (typeof window === 'undefined' && typeof require !== 'undefined') {
     try {
@@ -43,7 +44,7 @@ async function testRequest<T>(url: string): Promise<any> {
   }
 
   // 在浏览器环境中使用 fetch
-  if (typeof window !== 'undefined' && window.fetch) {
+  if (typeof window !== 'undefined' && typeof window.fetch !== 'undefined') {
     try {
       const response = await fetch(url);
       if (!response.ok) {

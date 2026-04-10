@@ -80,12 +80,20 @@ const colors = [
   '#00c7be', '#ffd60a', '#ff375f', '#bf5af2'
 ];
 
+// 缓存统计值，避免重复计算
+let cachedMaxCount = 1;
+let cachedMinCount = 1;
+
 onMounted(async () => {
   try {
     const res = await api.getTags();
     tags.value = res.data.filter((tag: Tag) => tag.count > 0) || [];
 
     if (tags.value.length > 0) {
+      // 初始化时预先计算统计值
+      const counts = tags.value.map(t => t.count);
+      cachedMaxCount = Math.max(...counts, 1);
+      cachedMinCount = Math.min(...counts, 1);
       initTagCloud();
       startAutoRotate();
     } else {
@@ -144,7 +152,7 @@ const updateTagPositions = () => {
   const radX = (angleX.value * Math.PI) / 180;
   const radY = (angleY.value * Math.PI) / 180;
 
-  tagItems.value = tagItems.value.map((tag, index) => {
+  tagItems.value = tagItems.value.map((tag) => {
     // 旋转变换
     let x = tag.x;
     let y = tag.y;
@@ -162,14 +170,12 @@ const updateTagPositions = () => {
     const scale = (radius + z2) / (2 * radius);
     const opacity = 0.4 + scale * 0.6;
 
-    // 计算标签大小（基于文章数量）
-    const maxCount = Math.max(...tags.value.map(t => t.count), 1);
-    const minCount = Math.min(...tags.value.map(t => t.count), 1);
-    const ratio = (tag.count - minCount) / (maxCount - minCount || 1);
+    // 计算标签大小（基于文章数量），使用缓存的统计值
+    const ratio = (tag.count - cachedMinCount) / (cachedMaxCount - cachedMinCount || 1);
     const fontSize = 14 + ratio * 10; // 14-24px
 
     // 选择颜色
-    const color = colors[index % colors.length];
+    const color = colors[tag.slug.length % colors.length];
 
     const style = {
       transform: `translate(-50%, -50%) translate3d(${x1}px, ${y2}px, ${z2}px) scale(${scale})`,
@@ -224,14 +230,26 @@ const stopAutoRotate = () => {
 };
 
 // 触摸事件处理
-const onTouchStart = (e: any) => {
+interface TouchEventExtra {
+  touches: Array<{
+    clientX: number;
+    clientY: number;
+    pageX?: number;
+    pageY?: number;
+  }>;
+}
+
+const onTouchStart = (e: TouchEventExtra) => {
   autoRotate.value = false;
   const touch = e.touches[0];
-  touchStart.value = { x: touch.clientX, y: touch.clientY };
+  touchStart.value = {
+    x: touch.clientX || touch.pageX || 0,
+    y: touch.clientY || touch.pageY || 0
+  };
   lastAngle.value = { x: angleX.value, y: angleY.value };
 };
 
-const onTouchMove = (e: any) => {
+const onTouchMove = (e: TouchEventExtra) => {
   if (!touchStart.value) return;
 
   const touch = e.touches[0];

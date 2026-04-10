@@ -16,16 +16,30 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://blog.yahui.wang/a
 /**
  * 通用请求封装
  */
+/**
+ * 检查响应数据是否为有效的 ApiResponse 格式
+ */
+function isApiResponse<T>(data: any): data is ApiResponse<T> {
+  return data && typeof data === 'object' && 'data' in data && 'api' in data;
+}
+
+/**
+ * 通用请求封装
+ */
 async function request<T>(url: string, data?: Record<string, any>): Promise<ApiResponse<T>> {
   try {
     const res = await uni.request({
       url,
       data,
-      method: data ? 'GET' : 'GET'
+      method: data ? 'POST' : 'GET'
     });
 
-    // 类型断言：假设后端返回格式正确
-    return res.data as ApiResponse<T>;
+    // 类型守卫：验证 API 响应格式
+    if (isApiResponse<T>(res.data)) {
+      return res.data;
+    } else {
+      throw new Error('API 响应格式错误');
+    }
   } catch (error) {
     console.error('API 请求失败:', error);
     throw error;

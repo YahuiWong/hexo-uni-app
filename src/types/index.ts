@@ -28,6 +28,7 @@ export interface PostItem {
   date: string;
   updated?: string;
   excerpt: string;
+  excerptText?: string;  // 预处理的纯文本摘要（去除HTML标签）
   cover?: string;
   url: string;
   categories?: CategoryItem[];
