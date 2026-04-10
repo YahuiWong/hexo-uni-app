@@ -28,7 +28,7 @@ test.describe('Homepage Tests', () => {
   });
 
   test('应该显示轮播图', async ({ page }) => {
-    const swiper = page.locator('.swiper-container');
+    const swiper = page.locator('.swiper');
     await expect(swiper).toBeVisible({ timeout: 10000 });
   });
 

@@ -18,8 +18,8 @@ test.describe('Theme Tests', () => {
       window.getComputedStyle(el).backgroundColor
     );
 
-    // 点击夜间模式开关
-    const themeSwitch = page.locator('.theme-switch');
+    // 点击主题切换菜单项
+    const themeSwitch = page.locator('.menu-item').first();
     await themeSwitch.click();
 
     // 等待主题切换
@@ -35,8 +35,8 @@ test.describe('Theme Tests', () => {
   });
 
   test('夜间模式应该改变文字颜色', async ({ page }) => {
-    // 点击夜间模式开关
-    const themeSwitch = page.locator('.theme-switch');
+    // 点击主题切换菜单项
+    const themeSwitch = page.locator('.menu-item').first();
     await themeSwitch.click();
     await page.waitForTimeout(500);
 

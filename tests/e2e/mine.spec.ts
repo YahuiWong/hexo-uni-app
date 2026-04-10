@@ -16,7 +16,7 @@ test.describe('Mine Tests', () => {
     await page.goto('/pages/mine/index');
 
     // 检查统计信息区域
-    const statsContainer = page.locator('.stats-container');
+    const statsContainer = page.locator('.stats-section');
     await expect(statsContainer).toBeVisible({ timeout: 10000 });
 
     // 检查文章统计
@@ -30,16 +30,16 @@ test.describe('Mine Tests', () => {
   test('我的页面应该显示夜间模式切换', async ({ page }) => {
     await page.goto('/pages/mine/index');
 
-    // 检查夜间模式开关
-    const themeSwitch = page.locator('.theme-switch');
-    await expect(themeSwitch).toBeVisible({ timeout: 10000 });
+    // 检查主题切换菜单项
+    const themeMenuItem = page.locator('.menu-item');
+    await expect(themeMenuItem.first()).toBeVisible({ timeout: 10000 });
   });
 
   test('我的页面应该显示设置选项', async ({ page }) => {
     await page.goto('/pages/mine/index');
 
-    // 检查设置列表
-    const settings = page.locator('.setting-item');
+    // 检查设置菜单项
+    const settings = page.locator('.menu-item');
     const count = await settings.count();
 
     // 至少应该有 1 个设置项

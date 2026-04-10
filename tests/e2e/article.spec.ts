@@ -38,7 +38,7 @@ test.describe('Article Detail Tests', () => {
     await expect(page.locator('.detail-container')).toBeVisible({ timeout: 10000 });
 
     // 检查内容区域
-    const content = page.locator('.article-content');
+    const content = page.locator('.content-wrapper');
     await expect(content).toBeVisible({ timeout: 10000 });
   });
 

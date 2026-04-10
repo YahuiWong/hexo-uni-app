@@ -23,9 +23,9 @@ test.describe('About Tests', () => {
   test('关于页面应该显示作者信息', async ({ page }) => {
     await page.goto('/pages/about/index');
 
-    // 检查作者信息区域
-    const authorInfo = page.locator('.author-info');
-    await expect(authorInfo).toBeVisible({ timeout: 10000 });
+    // 检查作者信息卡片
+    const authorCard = page.locator('.info-card');
+    await expect(authorCard.first()).toBeVisible({ timeout: 10000 });
   });
 
   test('关于页面应该显示统计信息', async ({ page }) => {

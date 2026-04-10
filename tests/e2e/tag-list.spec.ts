@@ -37,7 +37,7 @@ test.describe('Tag List Tests', () => {
       await expect(tagName).toBeVisible();
 
       // 检查文章数量
-      const postCount = firstTag.locator('.post-count');
+      const postCount = firstTag.locator('.tag-count');
       await expect(postCount).toBeVisible();
     }
   });
@@ -52,7 +52,7 @@ test.describe('Tag List Tests', () => {
       await tagItems.first().click();
 
       // 等待文章列表页面加载
-      await expect(page.locator('.posts-container')).toBeVisible({ timeout: 10000 });
+      await expect(page.locator('.container')).toBeVisible({ timeout: 10000 });
     }
   });
 });

@@ -44,7 +44,7 @@ test.describe('Share Tests', () => {
     await shareBtn.click();
 
     // 检查微信分享选项
-    const weixinOption = page.locator('.share-option-weixin');
+    const weixinOption = page.locator('.share-item').first();
     await expect(weixinOption).toBeVisible({ timeout: 10000 });
   });
 });

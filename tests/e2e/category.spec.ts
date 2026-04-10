@@ -37,7 +37,7 @@ test.describe('Category Tests', () => {
       await expect(categoryName).toBeVisible();
 
       // 检查文章数量
-      const postCount = firstCategory.locator('.post-count');
+      const postCount = firstCategory.locator('.category-count');
       await expect(postCount).toBeVisible();
     }
   });
