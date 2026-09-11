@@ -50,6 +50,11 @@
 
 ## 未发布版本 (Unreleased)
 
+### 🔒 安全改进
+
+- 微信小程序上传密钥改由 GitHub Secrets（`WEIXIN_PRIVATE_KEY`）以环境变量传入，
+  `scripts/upload-weixin.js` 不再落盘 `private.key`；移除本地私钥文件副本
+
 ### 🚧 正在开发
 
 - 环境变量支持
