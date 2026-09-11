@@ -8,6 +8,7 @@
  *
  * 环境变量：
  * - APPID: 微信小程序 AppID
+ * - WEIXIN_PRIVATE_KEY: 上传密钥 PEM 全文（多行字符串，来自 GitHub Secrets）
  * - VERSION: 版本号
  * - DESCRIPTION: 版本描述
  */
@@ -18,26 +19,25 @@ const fs = require('fs');
 
 // 从环境变量获取配置
 const APPID = process.env.APPID;
+const PRIVATE_KEY = process.env.WEIXIN_PRIVATE_KEY;
 const VERSION = process.env.VERSION || '1.0.0';
 const DESCRIPTION = process.env.DESCRIPTION || '自动构建版本';
 
 // 项目路径
 const projectPath = path.join(__dirname, '../dist/build/mp-weixin');
-const privateKeyPath = path.join(__dirname, '../private.key');
 
 // 验证配置
 if (!APPID) {
   console.error('❌ 错误: 缺少 APPID 环境变量');
   process.exit(1);
 }
+if (!PRIVATE_KEY || !PRIVATE_KEY.includes('BEGIN')) {
+  console.error('❌ 错误: 缺少 WEIXIN_PRIVATE_KEY 环境变量（需为完整 PEM 私钥字符串）');
+  process.exit(1);
+}
 console.log('🔑 使用的 AppID:', APPID);
 console.log('🔑 使用的版本号:', VERSION);
 console.log('🔑 使用的版本描述:', DESCRIPTION);
-if (!fs.existsSync(privateKeyPath)) {
-  console.error('❌ 错误: 找不到私钥文件 private.key');
-  console.error('请确保在 GitHub Secrets 中配置了 WEIXIN_PRIVATE_KEY');
-  process.exit(1);
-}
 
 if (!fs.existsSync(projectPath)) {
   console.error('❌ 错误: 找不到构建产物目录:', projectPath);
@@ -45,12 +45,12 @@ if (!fs.existsSync(projectPath)) {
   process.exit(1);
 }
 
-// 创建项目对象
+// 创建项目对象（私钥以字符串形式传入，不落盘）
 const project = new ci.Project({
   appid: APPID,
   type: 'miniProgram',
   projectPath: projectPath,
-  privateKeyPath: privateKeyPath,
+  privateKey: PRIVATE_KEY,
   ignores: ['node_modules/**/*'],
 });
 
@@ -122,7 +122,7 @@ ci.upload({
       console.error('');
       console.error('💡 提示: 私钥错误，请检查：');
       console.error('1. 是否在微信小程序后台下载了上传密钥？');
-      console.error('2. 是否正确配置了 WEIXIN_PRIVATE_KEY？');
+      console.error('2. WEIXIN_PRIVATE_KEY 是否为完整 PEM 字符串（含 BEGIN/END 行）？');
       console.error('');
     } else if (error.message?.includes('appid')) {
       console.error('');

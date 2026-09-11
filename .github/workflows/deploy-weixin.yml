@@ -71,25 +71,17 @@ jobs:
       - name: 构建微信小程序
         run: pnpm run build:mp-weixin
 
-      # 9. 创建上传密钥文件
-      - name: 创建上传密钥
-        run: echo "${{ secrets.WEIXIN_PRIVATE_KEY }}" > private.key
-
-      # 10. 上传到微信小程序
+      # 9. 上传到微信小程序（私钥以环境变量传入，不落盘）
       - name: 上传代码到微信平台
         env:
           APPID: ${{ secrets.WEIXIN_APPID }}
+          WEIXIN_PRIVATE_KEY: ${{ secrets.WEIXIN_PRIVATE_KEY }}
           VERSION: ${{ github.event.inputs.version || '1.0.0' }}
           DESCRIPTION: ${{ github.event.inputs.description || '自动构建版本' }}
         run: |
           node scripts/upload-weixin.js
 
-      # 11. 清理密钥文件
-      - name: 清理密钥文件
-        if: always()
-        run: rm -f private.key
-
-      # 12. 上传构建产物（可选，用于调试）
+      # 10. 上传构建产物（可选，用于调试）
       - name: 上传构建产物
         if: failure()
         uses: actions/upload-artifact@v4
