@@ -77,7 +77,7 @@
     <!-- 版本信息 -->
     <view class="footer">
       <text class="version">版本 v1.0.0</text>
-      <text class="copyright">© 2025 雅珲网</text>
+      <text class="copyright">© {{ siteInfo.title }}</text>
     </view>
   </view>
 </template>

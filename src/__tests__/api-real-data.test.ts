@@ -10,20 +10,24 @@ import { describe, it, expect } from 'vitest';
 declare const process: any;
 const IS_CI = process.env && process.env.CI === 'true';
 
-// 跳过网络测试的辅助函数
+// 测试配置（指向真实 Hexo 站点，需通过环境变量 VITE_API_BASE_URL 提供）
+const TEST_CONFIG = {
+  baseUrl: (process.env && process.env.VITE_API_BASE_URL) || '',
+  testPostPath: '2024/01/01/hello-world', // 测试文章路径
+  testKeyword: '测试', // 测试关键词
+};
+
+// 跳过网络测试的辅助函数：CI 环境或未配置目标地址时跳过
 const skipIfNoNetwork = () => {
   if (IS_CI) {
     console.log('跳过网络测试 (CI 环境)');
     return true;
   }
+  if (!TEST_CONFIG.baseUrl) {
+    console.log('跳过网络测试 (未配置 VITE_API_BASE_URL)');
+    return true;
+  }
   return false;
-};
-
-// 测试配置
-const TEST_CONFIG = {
-  baseUrl: 'https://blog.yahui.wang/api',
-  testPostPath: '2024/01/01/hello-world', // 测试文章路径
-  testKeyword: '测试', // 测试关键词
 };
 
 // 简单的请求封装（用于测试）
@@ -74,7 +78,7 @@ describe('API Real Data Tests', () => {
         expect(data).toHaveProperty('author');
         expect(data).toHaveProperty('url');
         expect(typeof data.title).toBe('string');
-        expect(data.url).toBe('https://blog.yahui.wang');
+        expect(typeof data.url).toBe('string');
       } catch (error) {
         console.error('获取站点信息失败:', error);
         throw error;
@@ -208,9 +212,9 @@ describe('API Real Data Tests', () => {
 describe('API Data Structure Validation', () => {
   // 模拟真实数据快照
   const mockSiteInfo = {
-    title: 'Yahui\'s Blog',
-    author: 'YahuiWong',
-    url: 'https://blog.yahui.wang',
+    title: 'Test Blog',
+    author: 'Test Author',
+    url: 'https://example.com',
     description: '技术博客',
     postCount: 100,
     categoryCount: 10,
@@ -223,7 +227,7 @@ describe('API Data Structure Validation', () => {
         title: '测试文章',
         slug: 'test-post',
         date: '2024-01-01T00:00:00.000Z',
-        url: 'https://blog.yahui.wang/2024/01/01/test-post/',
+        url: 'https://example.com/2024/01/01/test-post/',
         excerpt: '这是文章摘要',
         categories: [{ name: '分类1', slug: 'cat1' }],
         tags: [{ name: '标签1', slug: 'tag1' }]
