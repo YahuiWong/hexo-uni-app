@@ -29,13 +29,13 @@ jobs:
     steps:
       # 1. 检出代码
       - name: 检出代码
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       # 2. 设置 Node.js 环境
       - name: 设置 Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: '18'
+          node-version: '24'
 
       # 3. 设置 pnpm
       - name: 设置 pnpm
