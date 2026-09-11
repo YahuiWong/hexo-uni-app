@@ -1,6 +1,17 @@
 # Hexo UniApp 博客应用
 
-基于 UniApp（Vue3 + TypeScript + uview-plus）的跨平台博客阅读应用，使用 **blog.yahui.wang** 的 OpenAPI 接口。
+基于 UniApp（Vue3 + TypeScript + uview-plus）的跨平台博客阅读应用，对接 Hexo 博客的 OpenAPI 接口。
+
+## 📱 在线体验
+
+作者已部署了一个微信小程序演示版，扫码即可在微信中体验完整功能：
+
+<div align="center">
+  <img src="./docs/qrcode.jpg" alt="小程序码" width="200" />
+  <p><sub>微信扫码 · 体验作者演示版小程序</sub></p>
+</div>
+
+> **默认数据源**：本仓库默认连接作者的示例博客 `blog.yahui.wang`，clone 后即可运行。若要对接你自己的 Hexo 站点，复制 `.env.example` 为 `.env` 并设置 `VITE_API_BASE_URL=https://你的域名/api`；小程序端还需在 `src/manifest.json` 的 `mp-weixin.appid` 填入你自己的 AppID。
 
 ## 功能特性
 
