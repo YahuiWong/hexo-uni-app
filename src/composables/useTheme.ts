@@ -4,7 +4,7 @@
  * 提供主题切换功能，支持浅色和深色模式
  */
 
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 
 export type ThemeMode = 'light' | 'dark';
 
@@ -49,7 +49,7 @@ export const themes = {
     // TabBar
     tabBarBg: '#ffffff',
     tabBarText: '#999999',
-    tabBarActive: '#007aff',
+    tabBarActive: '#007aff'
   },
   dark: {
     // 背景色
@@ -85,7 +85,7 @@ export const themes = {
     // TabBar
     tabBarBg: '#1c1c1e',
     tabBarText: '#8e8e93',
-    tabBarActive: '#0a84ff',
+    tabBarActive: '#0a84ff'
   }
 };
 
@@ -180,11 +180,6 @@ export function useTheme() {
   const isDark = () => {
     return themeMode.value === 'dark';
   };
-
-  // 监听主题变化
-  watch(themeMode, (newTheme) => {
-    console.log('主题已切换为:', newTheme);
-  });
 
   return {
     themeMode,

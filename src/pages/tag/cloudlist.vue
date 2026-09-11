@@ -75,9 +75,18 @@ const lastAngle = ref({ x: 0, y: 0 });
 
 // 颜色方案（更加鲜艳的渐变色）
 const colors = [
-  '#007aff', '#5ac8fa', '#34c759', '#ff9500',
-  '#ff3b30', '#af52de', '#ff2d55', '#5856d6',
-  '#00c7be', '#ffd60a', '#ff375f', '#bf5af2'
+  '#007aff',
+  '#5ac8fa',
+  '#34c759',
+  '#ff9500',
+  '#ff3b30',
+  '#af52de',
+  '#ff2d55',
+  '#5856d6',
+  '#00c7be',
+  '#ffd60a',
+  '#ff375f',
+  '#bf5af2'
 ];
 
 // 缓存统计值，避免重复计算
@@ -91,7 +100,7 @@ onMounted(async () => {
 
     if (tags.value.length > 0) {
       // 初始化时预先计算统计值
-      const counts = tags.value.map(t => t.count);
+      const counts = tags.value.map((t) => t.count);
       cachedMaxCount = Math.max(...counts, 1);
       cachedMinCount = Math.min(...counts, 1);
       initTagCloud();
@@ -154,9 +163,9 @@ const updateTagPositions = () => {
 
   tagItems.value = tagItems.value.map((tag) => {
     // 旋转变换
-    let x = tag.x;
-    let y = tag.y;
-    let z = tag.z;
+    const x = tag.x;
+    const y = tag.y;
+    const z = tag.z;
 
     // 绕Y轴旋转
     const x1 = x * Math.cos(radY) - z * Math.sin(radY);

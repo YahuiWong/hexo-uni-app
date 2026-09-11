@@ -1,0 +1,63 @@
+name: "🐛 Bug 报告"
+description: 报告项目中存在的缺陷或异常行为
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈问题！在提交之前，请先搜索已有 Issues，避免重复提交。
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 问题描述
+      description: 请清晰、具体地描述你遇到的问题
+      placeholder: 例如：在文章详情页点击分享按钮后，小程序端没有弹出分享面板
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: 复现步骤
+      description: 如何一步步触发这个问题
+      placeholder: |
+        1. 打开首页
+        2. 点击某篇文章进入详情页
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望行为
+      description: 你期望发生什么？
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: 平台
+      description: 问题出现在哪个平台？
+      options:
+        - H5（浏览器）
+        - 微信小程序
+        - 其他小程序平台
+        - 不确定 / 多平台
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: 项目版本 / Commit
+      description: 出现问题的版本号或 commit hash（可选）
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 相关日志 / 报错信息
+      description: 如有控制台报错、截图等，请粘贴在此
+      render: shell

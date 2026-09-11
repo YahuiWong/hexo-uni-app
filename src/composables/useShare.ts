@@ -4,11 +4,11 @@ import { ref, computed } from 'vue';
  * 页面分享配置接口
  */
 export interface PageShareConfig {
-  title?: string;          // 分享标题
-  path?: string;           // 分享路径（小程序）
-  imageUrl?: string;       // 分享图片
-  desc?: string;           // 分享描述
-  query?: string;          // 朋友圈分享的查询参数
+  title?: string; // 分享标题
+  path?: string; // 分享路径（小程序）
+  imageUrl?: string; // 分享图片
+  desc?: string; // 分享描述
+  query?: string; // 朋友圈分享的查询参数
 }
 
 /**
@@ -78,7 +78,6 @@ export function useShare(config?: PageShareConfig | (() => PageShareConfig)) {
       shareData.imageUrl = cfg.imageUrl;
     }
 
-    console.log('[分享给好友] 配置:', shareData);
     return shareData;
   };
 
@@ -100,7 +99,6 @@ export function useShare(config?: PageShareConfig | (() => PageShareConfig)) {
       shareData.imageUrl = cfg.imageUrl;
     }
 
-    console.log('[分享到朋友圈] 配置:', shareData);
     return shareData;
   };
 
@@ -110,8 +108,8 @@ export function useShare(config?: PageShareConfig | (() => PageShareConfig)) {
     sharePath,
     shareImage,
     updateShareConfig,
-    getShareConfig,      // 用于 onShareAppMessage
-    getTimelineConfig    // 用于 onShareTimeline
+    getShareConfig, // 用于 onShareAppMessage
+    getTimelineConfig // 用于 onShareTimeline
   };
 }
 
@@ -131,7 +129,9 @@ export function getIndexShareConfig() {
 export function getPostShareConfig(post: { title?: string; url?: string; cover?: string }) {
   const config: any = {
     title: post.title || '文章分享',
-    path: post.url ? `/pages/post/detailraw?url=${encodeURIComponent(post.url)}` : '/pages/index/index'
+    path: post.url
+      ? `/pages/post/detailraw?url=${encodeURIComponent(post.url)}`
+      : '/pages/index/index'
   };
 
   if (post.cover) {

@@ -139,8 +139,14 @@ export const api = {
    * @param month 月份
    * @param page 页码
    */
-  getMonthArchive(year: number, month: number, page: number = 1): Promise<ApiResponse<PaginationData<PostItem>>> {
+  getMonthArchive(
+    year: number,
+    month: number,
+    page: number = 1
+  ): Promise<ApiResponse<PaginationData<PostItem>>> {
     const monthStr = String(month).padStart(2, '0');
-    return request<PaginationData<PostItem>>(`${BASE_URL}/archives/${year}/${monthStr}/page.${page}.json`);
+    return request<PaginationData<PostItem>>(
+      `${BASE_URL}/archives/${year}/${monthStr}/page.${page}.json`
+    );
   }
 };

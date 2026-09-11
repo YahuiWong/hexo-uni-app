@@ -32,7 +32,7 @@ describe('PostItem URL Building Logic', () => {
         title: 'Test Post',
         url: '2024/02/13/docker-install/',
         slug: 'docker-install',
-        date: '2024-02-13T11:06:41.000Z',
+        date: '2024-02-13T11:06:41.000Z'
       };
 
       const result = buildPostUrl(post);
@@ -46,7 +46,7 @@ describe('PostItem URL Building Logic', () => {
         title: '使用docker machine 管理docker主机',
         slug: 'note-docker-compose',
         date: '2025-04-09T14:04:26.000Z',
-        api: 'api/posts/2025/04/09/note-docker-compose.json',
+        api: 'api/posts/2025/04/09/note-docker-compose.json'
       };
 
       const result = buildPostUrl(post);
@@ -57,7 +57,7 @@ describe('PostItem URL Building Logic', () => {
       const post = {
         title: '分布式事务-CAP',
         slug: 'TalkAbout/talkabout-Distributed-Transaction-CAP',
-        api: 'api/posts/2024/02/05/TalkAbout/talkabout-Distributed-Transaction-CAP.json',
+        api: 'api/posts/2024/02/05/TalkAbout/talkabout-Distributed-Transaction-CAP.json'
       };
 
       const result = buildPostUrl(post);
@@ -70,7 +70,7 @@ describe('PostItem URL Building Logic', () => {
       const post = {
         title: 'Test Post',
         slug: 'test-post',
-        date: '2024-12-27T10:00:00.000Z',
+        date: '2024-12-27T10:00:00.000Z'
       };
 
       const result = buildPostUrl(post);
@@ -81,7 +81,7 @@ describe('PostItem URL Building Logic', () => {
       const post = {
         title: 'Test Post',
         slug: 'test-post',
-        date: '2024-01-05T10:00:00.000Z',
+        date: '2024-01-05T10:00:00.000Z'
       };
 
       const result = buildPostUrl(post);
@@ -92,7 +92,7 @@ describe('PostItem URL Building Logic', () => {
       const post = {
         title: 'Design Pattern',
         slug: 'DesignPattern/design-pattern-00-principle',
-        date: '2023-12-10T11:59:01.000Z',
+        date: '2023-12-10T11:59:01.000Z'
       };
 
       const result = buildPostUrl(post);
@@ -104,7 +104,7 @@ describe('PostItem URL Building Logic', () => {
     it('应该在只有 slug 时直接返回 slug', () => {
       const post = {
         title: 'Test Post',
-        slug: 'simple-slug',
+        slug: 'simple-slug'
       };
 
       const result = buildPostUrl(post);
@@ -114,7 +114,7 @@ describe('PostItem URL Building Logic', () => {
     it('应该处理复杂的纯 slug', () => {
       const post = {
         title: 'Complex Post',
-        slug: 'category/subcategory/post-name',
+        slug: 'category/subcategory/post-name'
       };
 
       const result = buildPostUrl(post);
@@ -125,7 +125,7 @@ describe('PostItem URL Building Logic', () => {
   describe('边界情况', () => {
     it('应该在没有任何可用字段时返回 undefined', () => {
       const post = {
-        title: 'Test Post',
+        title: 'Test Post'
       };
 
       const result = buildPostUrl(post);
@@ -137,7 +137,7 @@ describe('PostItem URL Building Logic', () => {
         title: 'Test Post',
         url: '',
         slug: 'test-post',
-        date: '2024-12-27T10:00:00.000Z',
+        date: '2024-12-27T10:00:00.000Z'
       };
 
       const result = buildPostUrl(post);
@@ -151,7 +151,7 @@ describe('PostItem URL Building Logic', () => {
         url: '2024/02/13/custom-url/',
         slug: 'different-slug',
         date: '2024-02-13T11:06:41.000Z',
-        api: 'api/posts/2024/02/13/api-path.json',
+        api: 'api/posts/2024/02/13/api-path.json'
       };
 
       const result = buildPostUrl(post);
@@ -165,7 +165,7 @@ describe('PostItem URL Building Logic', () => {
         title: '使用docker machine 管理docker主机',
         slug: 'note-docker-compose',
         date: '2025-04-09T14:04:26.000Z',
-        updated: '2025-04-11T03:51:08.998Z',
+        updated: '2025-04-11T03:51:08.998Z'
       };
 
       const result = buildPostUrl(post);
@@ -179,7 +179,7 @@ describe('PostItem URL Building Logic', () => {
         date: '2024-02-13T11:06:41.000Z',
         updated: '2024-02-03T08:39:30.421Z',
         url: '2024/02/13/docker-install/',
-        api: 'api/posts/2024/02/13/docker-install.json',
+        api: 'api/posts/2024/02/13/docker-install.json'
       };
 
       const result = buildPostUrl(post);
@@ -193,7 +193,7 @@ describe('PostItem URL Building Logic', () => {
         date: '2024-02-05T04:04:34.000Z',
         updated: '2024-02-05T04:03:22.217Z',
         url: '2024/02/05/TalkAbout/talkabout-Distributed-Transaction-CAP/',
-        api: 'api/posts/2024/02/05/TalkAbout/talkabout-Distributed-Transaction-CAP.json',
+        api: 'api/posts/2024/02/05/TalkAbout/talkabout-Distributed-Transaction-CAP.json'
       };
 
       const result = buildPostUrl(post);

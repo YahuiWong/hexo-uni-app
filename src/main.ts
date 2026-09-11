@@ -4,6 +4,6 @@ import uviewPlus from 'uview-plus';
 
 export function createApp() {
   const app = createSSRApp(App);
-  app.use(uviewPlus);  /* Must call after createSSRApp */
+  app.use(uviewPlus); /* Must call after createSSRApp */
   return { app };
 }

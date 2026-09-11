@@ -13,11 +13,7 @@
         <text class="header-subtitle">共 {{ totalPosts }} 篇文章</text>
       </view>
 
-      <view
-        v-for="(yearItem, yearIndex) in archives"
-        :key="yearItem.year"
-        class="year-section"
-      >
+      <view v-for="(yearItem, yearIndex) in archives" :key="yearItem.year" class="year-section">
         <!-- 年份标题 -->
         <view class="year-header" @click="toggleYear(yearIndex)">
           <view class="year-left">
@@ -25,20 +21,12 @@
             <text class="year-text">{{ yearItem.year }}</text>
             <text class="post-count">{{ yearItem.totalPosts || 0 }} 篇</text>
           </view>
-          <u-icon
-            :name="yearItem.expanded ? 'arrow-down' : 'arrow-right'"
-            size="16"
-            color="#999"
-          />
+          <u-icon :name="yearItem.expanded ? 'arrow-down' : 'arrow-right'" size="16" color="#999" />
         </view>
 
         <!-- 月份和文章列表（可展开） -->
         <view v-if="yearItem.expanded" class="months-wrapper">
-          <view
-            v-for="monthItem in yearItem.data"
-            :key="monthItem.month"
-            class="month-section"
-          >
+          <view v-for="monthItem in yearItem.data" :key="monthItem.month" class="month-section">
             <!-- 月份标题 -->
             <view class="month-header" @click="toggleMonth(yearIndex, monthItem.month)">
               <view class="month-left">
@@ -77,7 +65,10 @@
               </view>
 
               <!-- 无文章 -->
-              <view v-if="!monthItem.loading && (!monthItem.posts || monthItem.posts.length === 0)" class="no-posts">
+              <view
+                v-if="!monthItem.loading && (!monthItem.posts || monthItem.posts.length === 0)"
+                class="no-posts"
+              >
                 <text class="no-posts-text">该月暂无文章</text>
               </view>
             </view>
@@ -145,24 +136,28 @@ const loadArchives = async () => {
     const res = await api.getArchives();
     if (res.data && Array.isArray(res.data)) {
       // 将 ArchiveYear 转换为 YearData
-      const yearDataList = res.data.map((item): YearData => ({
-        year: item.year,
-        api: res.api,
-        data: (item.months || []).map((month): MonthData => ({
-          month: month.month,
-          api: '',
-          posts: month.posts?.map(p => ({
-            title: p.title,
-            slug: p.slug,
-            date: p.date,
-            url: p.url
-          })),
-          expanded: false,
-          loading: false
-        })),
-        expanded: true,
-        totalPosts: 0
-      }));
+      const yearDataList = res.data.map(
+        (item): YearData => ({
+          year: item.year,
+          api: res.api,
+          data: (item.months || []).map(
+            (month): MonthData => ({
+              month: month.month,
+              api: '',
+              posts: month.posts?.map((p) => ({
+                title: p.title,
+                slug: p.slug,
+                date: p.date,
+                url: p.url
+              })),
+              expanded: false,
+              loading: false
+            })
+          ),
+          expanded: true,
+          totalPosts: 0
+        })
+      );
 
       // 按年份倒序排序（最新年份在前）
       const sortedData = yearDataList.sort((a: YearData, b: YearData) => b.year - a.year);
@@ -173,12 +168,14 @@ const loadArchives = async () => {
         expanded: true,
         totalPosts: 0,
         // 每个年份的月份也按倒序排序（12月在前，1月在后）
-        data: item.data.sort((a: MonthData, b: MonthData) => b.month - a.month).map((month: MonthData) => ({
-          ...month,
-          expanded: true, // 默认展开所有月份
-          posts: [],
-          loading: false
-        }))
+        data: item.data
+          .sort((a: MonthData, b: MonthData) => b.month - a.month)
+          .map((month: MonthData) => ({
+            ...month,
+            expanded: true, // 默认展开所有月份
+            posts: [],
+            loading: false
+          }))
       }));
 
       // 加载每个年份的文章数统计和每个月份的文章
@@ -237,7 +234,7 @@ const toggleYear = (index: number) => {
 
 const toggleMonth = async (yearIndex: number, month: number) => {
   const yearItem = archives.value[yearIndex];
-  const monthIndex = yearItem.data.findIndex(m => m.month === month);
+  const monthIndex = yearItem.data.findIndex((m) => m.month === month);
 
   if (monthIndex === -1) return;
 
@@ -282,8 +279,18 @@ const toPost = (post: PostData) => {
 
 const getMonthName = (month: number) => {
   const months = [
-    '一月', '二月', '三月', '四月', '五月', '六月',
-    '七月', '八月', '九月', '十月', '十一月', '十二月'
+    '一月',
+    '二月',
+    '三月',
+    '四月',
+    '五月',
+    '六月',
+    '七月',
+    '八月',
+    '九月',
+    '十月',
+    '十一月',
+    '十二月'
   ];
   return months[month - 1] || `${month}月`;
 };

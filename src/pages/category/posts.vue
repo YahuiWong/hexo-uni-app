@@ -19,11 +19,7 @@
 
     <!-- 文章列表 -->
     <view v-else class="posts-list">
-      <PostItem
-        v-for="post in posts"
-        :key="post.slug"
-        :post="post"
-      />
+      <PostItem v-for="post in posts" :key="post.slug" :post="post" />
 
       <!-- 加载更多提示 -->
       <view v-if="hasMore && !loading" class="load-more" @click="loadMore">
@@ -72,8 +68,6 @@ onLoad((options: any) => {
     categorySlug.value = decodeURIComponent(options.slug);
   }
 
-  console.log('分类文章列表页加载', { name: categoryName.value, slug: categorySlug.value });
-
   loadPosts();
 });
 
@@ -103,8 +97,6 @@ const loadPosts = async () => {
 
     // 更新总数（所有页的文章总数）
     total.value = posts.value.length;
-
-    console.log(`加载第 ${currentPage.value - 1} 页，获取 ${newPosts.length} 篇文章，总页数 ${res.data?.total}`);
   } catch (err: any) {
     console.error('加载分类文章失败', err);
     uni.showToast({

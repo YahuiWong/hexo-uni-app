@@ -1,12 +1,6 @@
 <template>
   <view class="post-item" @click="toDetail">
-    <image
-      v-if="post.cover"
-      :src="post.cover"
-      mode="aspectFill"
-      class="cover"
-      :lazy-load="true"
-    />
+    <image v-if="post.cover" :src="post.cover" mode="aspectFill" class="cover" :lazy-load="true" />
     <view class="info">
       <text class="title">{{ post.title }}</text>
       <text class="excerpt">{{ post.excerptText || post.excerpt.replace(/<[^>]*>/g, '') }}</text>
@@ -77,8 +71,6 @@ const toDetail = () => {
     uni.showToast({ title: '无法打开文章', icon: 'none' });
     return;
   }
-
-  console.log('跳转到详情页，URL:', targetUrl);
 
   // 跳转到详情页
   uni.navigateTo({

@@ -52,11 +52,7 @@
       </view>
 
       <!-- 文章项 -->
-      <PostItemComponent
-        v-for="post in posts"
-        :key="post.slug"
-        :post="post"
-      />
+      <PostItemComponent v-for="post in posts" :key="post.slug" :post="post" />
 
       <!-- 加载更多 -->
       <view v-if="hasMore" @click="loadMore" class="load-more">

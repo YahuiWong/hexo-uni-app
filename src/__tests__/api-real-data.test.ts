@@ -14,7 +14,7 @@ const IS_CI = process.env && process.env.CI === 'true';
 const TEST_CONFIG = {
   baseUrl: (process.env && process.env.VITE_API_BASE_URL) || '',
   testPostPath: '2024/01/01/hello-world', // 测试文章路径
-  testKeyword: '测试', // 测试关键词
+  testKeyword: '测试' // 测试关键词
 };
 
 // 跳过网络测试的辅助函数：CI 环境或未配置目标地址时跳过
@@ -188,7 +188,9 @@ describe('API Real Data Tests', () => {
       if (skipIfNoNetwork()) return;
 
       try {
-        const response = await testRequest(`${TEST_CONFIG.baseUrl}/search.json?keyword=${TEST_CONFIG.testKeyword}`);
+        const response = await testRequest(
+          `${TEST_CONFIG.baseUrl}/search.json?keyword=${TEST_CONFIG.testKeyword}`
+        );
         const data = response.data;
 
         // 搜索返回的是文章数组

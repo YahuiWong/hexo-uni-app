@@ -30,16 +30,16 @@
 import { ref, computed } from 'vue';
 
 interface Props {
-  src: string;                    // 图片地址
-  mode?: string;                  // 图片裁剪模式
-  width?: string | number;        // 宽度
-  height?: string | number;       // 高度
-  radius?: string | number;       // 圆角
-  placeholder?: string;           // 占位图
-  errorImage?: string;            // 错误图片
-  disableLazy?: boolean;          // 禁用懒加载
-  showError?: boolean;            // 显示错误提示
-  fit?: 'contain' | 'cover' | 'fill' | 'none' | 'scale-down';  // 适应方式
+  src: string; // 图片地址
+  mode?: string; // 图片裁剪模式
+  width?: string | number; // 宽度
+  height?: string | number; // 高度
+  radius?: string | number; // 圆角
+  placeholder?: string; // 占位图
+  errorImage?: string; // 错误图片
+  disableLazy?: boolean; // 禁用懒加载
+  showError?: boolean; // 显示错误提示
+  fit?: 'contain' | 'cover' | 'fill' | 'none' | 'scale-down'; // 适应方式
 }
 
 const props = withDefaults(defineProps<Props>(), {

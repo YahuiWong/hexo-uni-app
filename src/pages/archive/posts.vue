@@ -20,11 +20,7 @@
       </view>
 
       <!-- 文章项 -->
-      <PostItem
-        v-for="post in posts"
-        :key="post.slug"
-        :post="post"
-      />
+      <PostItem v-for="post in posts" :key="post.slug" :post="post" />
 
       <!-- 加载更多 -->
       <view v-if="hasMore && !loading" @click="loadMore" class="load-more">
@@ -69,8 +65,18 @@ const archiveTitle = computed(() => {
   if (!year.value) return '归档';
 
   const monthNames = [
-    '一月', '二月', '三月', '四月', '五月', '六月',
-    '七月', '八月', '九月', '十月', '十一月', '十二月'
+    '一月',
+    '二月',
+    '三月',
+    '四月',
+    '五月',
+    '六月',
+    '七月',
+    '八月',
+    '九月',
+    '十月',
+    '十一月',
+    '十二月'
   ];
 
   if (month.value) {

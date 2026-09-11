@@ -19,56 +19,56 @@ export function md2html(markdown: string): string {
   // 创建自定义 renderer
   const renderer = new marked.Renderer();
 
- // 在 renderer.code 里面最开头加防护
-// @ts-ignore - marked 类型定义有问题
-renderer.code = function (code: string, infostring?: string): string {
-  // 强制转成字符串 + 兜底空字符串
-  const safeCode = typeof code === 'string' ? code : '';
+  // 在 renderer.code 里面最开头加防护
+  // @ts-expect-error - marked 类型定义有问题
+  renderer.code = function (code: string, infostring?: string): string {
+    // 强制转成字符串 + 兜底空字符串
+    const safeCode = typeof code === 'string' ? code : '';
 
-  // infostring 处理（保持原样）
-  const langPart = (infostring || '').trim().split(/\s+/)[0].toLowerCase();
-  const lang = langPart || 'plaintext';
+    // infostring 处理（保持原样）
+    const langPart = (infostring || '').trim().split(/\s+/)[0].toLowerCase();
+    const lang = langPart || 'plaintext';
 
-  // 1. Mermaid
-  if (lang === 'mermaid') {
-    return `<div class="mermaid">${escapeHtml(safeCode)}</div>`;
-  }
-
-  // 2. math/latex/katex 块
-  if (['math', 'latex', 'katex'].includes(lang)) {
-    try {
-      const html = katex.renderToString(safeCode, {
-        throwOnError: false,
-        displayMode: true,
-      });
-      return `<div class="katex-block">${html}</div>`;
-    } catch (err) {
-      console.warn('KaTeX block error:', err);
-      return `<pre class="language-text">${escapeHtml(safeCode)}</pre>`;
+    // 1. Mermaid
+    if (lang === 'mermaid') {
+      return `<div class="mermaid">${escapeHtml(safeCode)}</div>`;
     }
-  }
 
-  // 3. 普通代码高亮
-  const useLang = hljs.getLanguage(lang) ? lang : 'plaintext';
+    // 2. math/latex/katex 块
+    if (['math', 'latex', 'katex'].includes(lang)) {
+      try {
+        const html = katex.renderToString(safeCode, {
+          throwOnError: false,
+          displayMode: true
+        });
+        return `<div class="katex-block">${html}</div>`;
+      } catch (err) {
+        console.warn('KaTeX block error:', err);
+        return `<pre class="language-text">${escapeHtml(safeCode)}</pre>`;
+      }
+    }
 
-  try {
-    const result = hljs.highlight(safeCode, {
-      language: useLang,
-      ignoreIllegals: true,
-    });
-    return `<pre><code class="hljs language-${result.language || 'plaintext'}">${result.value}</code></pre>\n`;
-  } catch (err) {
-    console.warn(`Highlight failed for "${useLang}":`, err);
-    return `<pre><code class="language-${useLang}">${escapeHtml(safeCode)}</code></pre>\n`;
-  }
-};
+    // 3. 普通代码高亮
+    const useLang = hljs.getLanguage(lang) ? lang : 'plaintext';
+
+    try {
+      const result = hljs.highlight(safeCode, {
+        language: useLang,
+        ignoreIllegals: true
+      });
+      return `<pre><code class="hljs language-${result.language || 'plaintext'}">${result.value}</code></pre>\n`;
+    } catch (err) {
+      console.warn(`Highlight failed for "${useLang}":`, err);
+      return `<pre><code class="language-${useLang}">${escapeHtml(safeCode)}</code></pre>\n`;
+    }
+  };
 
   // 配置 marked
   marked.use({
     renderer,
     gfm: true,
     breaks: true, // 单个换行也转 <br>
-    pedantic: false,
+    pedantic: false
   });
 
   // 4. 自定义 walkTokens 来处理行内 $...$ 和独立 $$...$$
@@ -97,7 +97,7 @@ renderer.code = function (code: string, infostring?: string): string {
     text = text.replace(/\$\$([\s\S]+?)\$\$/g, (_, expr) => {
       try {
         return katex.renderToString(expr.trim(), { throwOnError: false, displayMode: true });
-      } catch (e) {
+      } catch {
         return `<span class="math-error">$$${escapeHtml(expr)}$$</span>`;
       }
     });
@@ -108,7 +108,7 @@ renderer.code = function (code: string, infostring?: string): string {
       if (expr.includes('$')) return `$${escapeHtml(expr)}$`;
       try {
         return katex.renderToString(expr.trim(), { throwOnError: false, displayMode: false });
-      } catch (e) {
+      } catch {
         return `<span class="math-error">$${escapeHtml(expr)}$</span>`;
       }
     });

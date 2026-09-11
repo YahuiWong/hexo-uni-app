@@ -75,7 +75,7 @@ const updateCurrentIndex = () => {
     const currentPage = pages[pages.length - 1];
     const route = '/' + currentPage.route;
 
-    const index = tabbarList.findIndex(item => item.pagePath === route);
+    const index = tabbarList.findIndex((item) => item.pagePath === route);
     if (index !== -1) {
       currentIndex.value = index;
     }

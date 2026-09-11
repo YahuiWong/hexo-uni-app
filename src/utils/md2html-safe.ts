@@ -39,7 +39,7 @@ export function md2html(markdown: string): string {
   // 代码块渲染 - 使用 Prism.js 语法高亮
   // 注意：marked 的 renderer 方法接收 token 对象，不是字符串
   renderer.code = function (token: any): string {
-    const code = token.text || '';  // 代码内容在 token.text 中
+    const code = token.text || ''; // 代码内容在 token.text 中
     const lang = (token.lang || '').trim().toLowerCase() || 'plaintext';
 
     // 1. Mermaid 图表
@@ -72,7 +72,7 @@ export function md2html(markdown: string): string {
 
   // 行内代码渲染
   renderer.codespan = function (token: any): string {
-    const code = token.text || '';  // 代码内容在 token.text 中
+    const code = token.text || ''; // 代码内容在 token.text 中
     return `<code class="inline-code">${escapeHtml(code)}</code>`;
   };
 
@@ -119,7 +119,7 @@ export function md2html(markdown: string): string {
     gfm: true,
     breaks: true,
     pedantic: false,
-    walkTokens,
+    walkTokens
   }) as string;
 
   return html;
@@ -138,7 +138,7 @@ function escapeHtml(text: unknown): string {
     '<': '&lt;',
     '>': '&gt;',
     '"': '&quot;',
-    "'": '&#039;',
+    "'": '&#039;'
   };
   return text.replace(/[&<>"']/g, (m) => map[m]);
 }

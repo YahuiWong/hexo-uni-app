@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest';
 import { md2html } from '@/utils/md2html-safe';
 
 describe('md2html-safe - Markdown 安全转换', () => {
-
   describe('基础 Markdown 元素', () => {
     it('应该正确转换标题', () => {
       const markdown = '# H1 标题\n## H2 标题\n### H3 标题';
@@ -425,7 +424,9 @@ def hello():
 
   describe('性能测试', () => {
     it('应该能够处理较长的文档', () => {
-      const longMarkdown = Array(100).fill('# 标题\n\n段落内容\n\n```javascript\nconst a = 1;\n```\n').join('\n');
+      const longMarkdown = Array(100)
+        .fill('# 标题\n\n段落内容\n\n```javascript\nconst a = 1;\n```\n')
+        .join('\n');
 
       const startTime = performance.now();
       const html = md2html(longMarkdown);

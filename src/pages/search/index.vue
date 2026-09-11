@@ -60,11 +60,7 @@
       <view class="result-count">
         <text class="count-text">找到 {{ results.length }} 篇相关文章</text>
       </view>
-      <PostItem
-        v-for="post in results"
-        :key="post.slug"
-        :post="post"
-      />
+      <PostItem v-for="post in results" :key="post.slug" :post="post" />
     </view>
 
     <!-- 无结果 -->
@@ -128,7 +124,7 @@ const saveHistory = (kw: string) => {
   if (!kw.trim()) return;
 
   // 移除重复项
-  const history = searchHistory.value.filter(item => item !== kw);
+  const history = searchHistory.value.filter((item) => item !== kw);
 
   // 添加到最前面
   history.unshift(kw);
@@ -185,8 +181,6 @@ const handleSearch = async () => {
 
     // 保存搜索历史
     saveHistory(kw);
-
-    console.log(`搜索"${kw}"，找到 ${res.length} 篇文章`);
   } catch (err) {
     console.error('搜索失败', err);
     uni.showToast({ title: '搜索失败，请重试', icon: 'none' });
@@ -215,7 +209,7 @@ const searchPosts = async (kw: string) => {
     }
 
     const results = await Promise.all(promises);
-    results.forEach(res => {
+    results.forEach((res) => {
       if (res.data?.posts) {
         allPosts.push(...res.data.posts);
       }
@@ -226,7 +220,7 @@ const searchPosts = async (kw: string) => {
 
   // 在标题、摘要中搜索关键词
   const lowerKw = kw.toLowerCase();
-  return allPosts.filter(post => {
+  return allPosts.filter((post) => {
     const title = (post.title || '').toLowerCase();
     const excerpt = (post.excerpt || '').toLowerCase();
     return title.includes(lowerKw) || excerpt.includes(lowerKw);

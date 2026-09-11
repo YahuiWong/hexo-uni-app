@@ -19,11 +19,7 @@
 
     <!-- 文章列表 -->
     <view v-else class="posts-list">
-      <PostItem
-        v-for="post in posts"
-        :key="post.slug"
-        :post="post"
-      />
+      <PostItem v-for="post in posts" :key="post.slug" :post="post" />
 
       <!-- 加载更多提示 -->
       <view v-if="hasMore && !loading" class="load-more" @click="loadMore">
@@ -66,8 +62,14 @@ const total = ref(0);
 
 // 标签颜色（随机选择）
 const colors = [
-  '#007aff', '#5ac8fa', '#34c759', '#ff9500',
-  '#ff3b30', '#af52de', '#ff2d55', '#5856d6'
+  '#007aff',
+  '#5ac8fa',
+  '#34c759',
+  '#ff9500',
+  '#ff3b30',
+  '#af52de',
+  '#ff2d55',
+  '#5856d6'
 ];
 const tagColor = computed(() => {
   const index = tagName.value.length % colors.length;
@@ -81,8 +83,6 @@ onLoad((options: any) => {
   if (options.slug) {
     tagSlug.value = decodeURIComponent(options.slug);
   }
-
-  console.log('标签文章列表页加载', { name: tagName.value, slug: tagSlug.value });
 
   loadPosts();
 });
@@ -113,8 +113,6 @@ const loadPosts = async () => {
 
     // 更新总数（所有页的文章总数）
     total.value = posts.value.length;
-
-    console.log(`加载第 ${currentPage.value - 1} 页，获取 ${newPosts.length} 篇文章，总页数 ${res.data?.total}`);
   } catch (err: any) {
     console.error('加载标签文章失败', err);
     uni.showToast({

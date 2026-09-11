@@ -59,8 +59,14 @@ const tags = ref<Tag[]>([]);
 
 // 颜色方案
 const colors = [
-  '#007aff', '#5ac8fa', '#34c759', '#ff9500',
-  '#ff3b30', '#af52de', '#ff2d55', '#5856d6'
+  '#007aff',
+  '#5ac8fa',
+  '#34c759',
+  '#ff9500',
+  '#ff3b30',
+  '#af52de',
+  '#ff2d55',
+  '#5856d6'
 ];
 
 onMounted(async () => {
@@ -77,8 +83,8 @@ onMounted(async () => {
 
 // 根据文章数量生成标签样式
 const getTagStyle = (count: number) => {
-  const maxCount = Math.max(...tags.value.map(t => t.count), 1);
-  const minCount = Math.min(...tags.value.map(t => t.count), 1);
+  const maxCount = Math.max(...tags.value.map((t) => t.count), 1);
+  const minCount = Math.min(...tags.value.map((t) => t.count), 1);
 
   // 计算标签大小（基于文章数量）
   const sizeRange = 20; // rpx
@@ -98,8 +104,8 @@ const getTagStyle = (count: number) => {
 
 // 根据文章数量调整图标大小
 const getIconSize = (count: number) => {
-  const maxCount = Math.max(...tags.value.map(t => t.count), 1);
-  const minCount = Math.min(...tags.value.map(t => t.count), 1);
+  const maxCount = Math.max(...tags.value.map((t) => t.count), 1);
+  const minCount = Math.min(...tags.value.map((t) => t.count), 1);
   const ratio = (count - minCount) / (maxCount - minCount || 1);
   return 14 + ratio * 6; // 14-20
 };

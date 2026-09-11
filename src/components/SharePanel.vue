@@ -14,11 +14,7 @@
       <view class="share-content">
         <view class="share-options">
           <!-- 微信好友 -->
-          <view
-            v-if="showWeixin"
-            class="share-item"
-            @click="handleShareItem('weixin')"
-          >
+          <view v-if="showWeixin" class="share-item" @click="handleShareItem('weixin')">
             <view class="share-icon weixin-icon">
               <u-icon name="chat" size="32" color="#fff" />
             </view>
@@ -26,11 +22,7 @@
           </view>
 
           <!-- 朋友圈 -->
-          <view
-            v-if="showMoment"
-            class="share-item"
-            @click="handleShareItem('moment')"
-          >
+          <view v-if="showMoment" class="share-item" @click="handleShareItem('moment')">
             <view class="share-icon moment-icon">
               <u-icon name="moments" size="32" color="#fff" />
             </view>
@@ -38,10 +30,7 @@
           </view>
 
           <!-- 复制链接 -->
-          <view
-            class="share-item"
-            @click="handleShareItem('copy')"
-          >
+          <view class="share-item" @click="handleShareItem('copy')">
             <view class="share-icon copy-icon">
               <u-icon name="share-square" size="32" color="#fff" />
             </view>
@@ -49,11 +38,7 @@
           </view>
 
           <!-- 生成海报 -->
-          <view
-            v-if="showPoster"
-            class="share-item"
-            @click="handleShareItem('poster')"
-          >
+          <view v-if="showPoster" class="share-item" @click="handleShareItem('poster')">
             <view class="share-icon poster-icon">
               <u-icon name="photo" size="32" color="#fff" />
             </view>

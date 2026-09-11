@@ -24,7 +24,7 @@ export class ShareUtil {
    * 分享到微信好友（仅小程序）
    * 需要在页面中调用 onShareAppMessage 生命周期
    */
-  static shareToWeixin(_options: ShareOptions): ShareResult {
+  static shareToWeixin(_options?: ShareOptions): ShareResult {
     const platform = this.getPlatform();
 
     if (platform !== 'weixin') {
@@ -47,7 +47,7 @@ export class ShareUtil {
    * 分享到朋友圈（仅小程序）
    * 需要在页面中调用 onShareTimeline 生命周期
    */
-  static shareToMoment(_options: ShareOptions): ShareResult {
+  static shareToMoment(_options?: ShareOptions): ShareResult {
     const platform = this.getPlatform();
 
     if (platform !== 'weixin') {
@@ -96,7 +96,7 @@ export class ShareUtil {
   /**
    * 生成分享海报（暂未实现，返回占位）
    */
-  static generatePoster(_options: ShareOptions): Promise<ShareResult> {
+  static generatePoster(_options?: ShareOptions): Promise<ShareResult> {
     return new Promise((resolve) => {
       uni.showToast({
         title: '功能开发中',
@@ -116,11 +116,12 @@ export class ShareUtil {
     return new Promise((resolve) => {
       // #ifdef H5
       if (navigator.share) {
-        navigator.share({
-          title: options.title,
-          text: options.content || '',
-          url: options.url || window.location.href
-        })
+        navigator
+          .share({
+            title: options.title,
+            text: options.content || '',
+            url: options.url || window.location.href
+          })
           .then(() => {
             resolve({
               success: true,

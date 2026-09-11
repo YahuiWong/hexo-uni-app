@@ -44,7 +44,9 @@
           <text class="card-title">网站</text>
         </view>
         <view class="card-content">
-          <text class="info-link" @click="copyUrl">{{ siteInfo.url || 'https://blog.yahui.wang' }}</text>
+          <text class="info-link" @click="copyUrl">{{
+            siteInfo.url || 'https://blog.yahui.wang'
+          }}</text>
         </view>
       </view>
 
@@ -211,7 +213,7 @@ const loadStats = async () => {
           const lastPagePosts = lastPageRes.data?.posts?.length || 0;
           // 总数 = (总页数 - 1) * 第一页文章数 + 最后一页文章数
           stats.value.posts = (totalPages - 1) * firstPagePosts + lastPagePosts;
-        } catch (err) {
+        } catch {
           // 如果加载失败，使用估算值
           stats.value.posts = totalPages * firstPagePosts;
         }

@@ -122,7 +122,7 @@ import SharePanel from '@/components/SharePanel.vue';
 import type { PostDetail } from '@/types';
 
 // 导入 mp-html 组件
-// @ts-ignore
+// @ts-ignore - mp-html 未提供类型定义
 import mpHtml from 'mp-html/dist/uni-app/components/mp-html/mp-html.vue';
 
 // 数据
@@ -136,7 +136,7 @@ onShareAppMessage(() =>
   getPostShareConfig({
     title: post.value.title,
     url: currentUrl.value,
-    cover: post.value.cover,
+    cover: post.value.cover
   })
 );
 
@@ -144,7 +144,7 @@ onShareTimeline(() =>
   getPostShareConfig({
     title: post.value.title,
     url: currentUrl.value,
-    cover: post.value.cover,
+    cover: post.value.cover
   })
 );
 
@@ -199,13 +199,13 @@ const previewImage = (src: string) => {
 
   uni.previewImage({
     urls,
-    current: src,
+    current: src
   });
 };
 
 // 安全提取文章路径
 const getPostPathFromUrl = (url: string): string => {
-  let fullUrl = url.trim();
+  const fullUrl = url.trim();
   let pathname = '';
 
   if (/^https?:\/\//i.test(fullUrl) || fullUrl.startsWith('//')) {
@@ -235,7 +235,6 @@ const loadPost = async (url: string) => {
 
   try {
     const path = getPostPathFromUrl(url);
-    console.log('文章 API 路径:', path);
 
     const res = await api.getPost(path);
     post.value = res.data || {};
@@ -284,7 +283,7 @@ const fullDate = (dateStr: string) => {
     month: 'long',
     day: 'numeric',
     hour: '2-digit',
-    minute: '2-digit',
+    minute: '2-digit'
   });
 };
 </script>

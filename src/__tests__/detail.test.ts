@@ -83,7 +83,7 @@ describe('API Functions', () => {
       return date.toLocaleDateString('zh-CN', {
         year: 'numeric',
         month: 'numeric',
-        day: 'numeric',
+        day: 'numeric'
       });
     };
 
@@ -232,7 +232,7 @@ describe('Post Data Structure', () => {
       title: '测试文章',
       content: '<p>文章内容</p>',
       date: '2024-01-01',
-      slug: 'test-post',
+      slug: 'test-post'
     };
 
     expect(mockPost).toHaveProperty('title');
@@ -250,7 +250,7 @@ describe('Post Data Structure', () => {
       cover: 'https://example.com/cover.jpg',
       tags: [{ name: 'tag1' }, { name: 'tag2' }],
       categories: [{ name: 'category1' }],
-      description: '文章描述',
+      description: '文章描述'
     };
 
     expect(mockPost.cover).toBeDefined();

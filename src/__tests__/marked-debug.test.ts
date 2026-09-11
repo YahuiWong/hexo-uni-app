@@ -14,7 +14,7 @@ describe('Marked 行为调试', () => {
     const renderer = new marked.Renderer();
 
     // @ts-ignore - marked 类型定义有问题
-    renderer.code = function(code: string | undefined, lang: string | undefined) {
+    renderer.code = function (code: string | undefined, lang: string | undefined) {
       console.log('renderer.code 被调用');
       console.log('  code:', code);
       console.log('  code type:', typeof code);
@@ -34,7 +34,7 @@ describe('Marked 行为调试', () => {
     const renderer = new marked.Renderer();
 
     // @ts-ignore - marked 类型定义有问题
-    renderer.codespan = function(code: string) {
+    renderer.codespan = function (code: string) {
       console.log('renderer.codespan 被调用');
       console.log('  code:', code);
       console.log('  code type:', typeof code);

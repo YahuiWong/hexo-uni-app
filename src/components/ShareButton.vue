@@ -10,15 +10,15 @@ import { share } from '@/utils/share';
 import type { ShareOptions } from '@/types';
 
 interface Props {
-  title: string;           // 分享标题
-  url?: string;           // 分享链接
-  imageUrl?: string;      // 分享图片
-  content?: string;       // 分享描述
-  icon?: string;          // 图标名称
-  iconSize?: string | number;  // 图标大小
-  iconColor?: string;     // 图标颜色
-  text?: string;          // 按钮文字
-  showText?: boolean;     // 是否显示文字
+  title: string; // 分享标题
+  url?: string; // 分享链接
+  imageUrl?: string; // 分享图片
+  content?: string; // 分享描述
+  icon?: string; // 图标名称
+  iconSize?: string | number; // 图标大小
+  iconColor?: string; // 图标颜色
+  text?: string; // 按钮文字
+  showText?: boolean; // 是否显示文字
 }
 
 const props = withDefaults(defineProps<Props>(), {

@@ -28,12 +28,12 @@ export interface PostItem {
   date: string;
   updated?: string;
   excerpt: string;
-  excerptText?: string;  // 预处理的纯文本摘要（去除HTML标签）
+  excerptText?: string; // 预处理的纯文本摘要（去除HTML标签）
   cover?: string;
   url: string;
   categories?: CategoryItem[];
   tags?: TagItem[];
-  api?:string;
+  api?: string;
 }
 
 /**
@@ -44,8 +44,8 @@ export interface PostDetail {
   slug: string;
   date: string;
   updated?: string;
-  content: string;      // HTML 内容
-  raw?: string;         // Markdown 原始内容
+  content: string; // HTML 内容
+  raw?: string; // Markdown 原始内容
   excerpt?: string;
   description?: string;
   cover?: string;
@@ -93,7 +93,7 @@ export interface PaginationData<T> {
   current: number;
   prev?: number;
   next?: number;
-  totalPages?: number;  // 总页数
+  totalPages?: number; // 总页数
 }
 
 /**
@@ -110,7 +110,7 @@ export interface SiteInfo {
   postCount?: number;
   categoryCount?: number;
   tagCount?: number;
-  [key: string]: any;  // 允许其他自定义字段
+  [key: string]: any; // 允许其他自定义字段
 }
 
 /**
@@ -200,11 +200,11 @@ export interface TagCloudItem extends TagItem {
  * 分享配置
  */
 export interface ShareOptions {
-  title: string;         // 分享标题
-  path?: string;         // 分享路径（小程序）
-  imageUrl?: string;     // 分享图片
-  content?: string;      // 分享描述
-  url?: string;          // 分享链接（H5）
+  title: string; // 分享标题
+  path?: string; // 分享路径（小程序）
+  imageUrl?: string; // 分享图片
+  content?: string; // 分享描述
+  url?: string; // 分享链接（H5）
 }
 
 /**
