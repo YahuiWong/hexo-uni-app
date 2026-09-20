@@ -39,3 +39,6 @@ Thumbs.db
 
 # IDE
 .vscode/
+
+# AI 工具本地配置（含会话缓存，勿提交）
+.claude/
