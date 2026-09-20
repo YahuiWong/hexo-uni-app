@@ -148,7 +148,13 @@ pnpm build:mp-weixin    # 微信小程序构建
 - **自动触发**：推送到 `main` 分支（`src/**`、`package.json`、`pnpm-lock.yaml` 变更时）自动构建并上传
 - **手动触发**：在 Actions 页面手动运行，可指定版本号与描述
 
-需在仓库 Settings → Secrets 中配置 `WEIXIN_APPID` 与 `WEIXIN_PRIVATE_KEY`（私钥以环境变量传入 CI，不落盘）。详见 [微信小程序 CI 配置指南](./docs/20-微信小程序CI配置指南.md)。
+部署自己的小程序需完成三步配置（详见 [微信小程序 CI 配置指南](./docs/20-微信小程序CI配置指南.md)）：
+
+1. `src/manifest.json` → `mp-weixin.appid` 填入你自己的 AppID（开源版本中为空）
+2. 微信公众平台「开发设置」中将你的博客域名加入 request 合法域名
+3. 仓库 Settings → Secrets 配置 `WEIXIN_APPID` 与 `WEIXIN_PRIVATE_KEY`（私钥以环境变量传入 CI，不落盘）
+
+上传成功后还需在微信后台「版本管理」中提交审核并设置发布。
 
 ## 📡 API 接口说明
 
