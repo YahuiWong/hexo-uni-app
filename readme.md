@@ -28,17 +28,15 @@
 
 <div align="center">
 
-| 首页 | 文章详情 | 夜间模式 |
-|:---:|:---:|:---:|
-| <sub>（截图待补充）</sub> | <sub>（截图待补充）</sub> | <sub>（截图待补充）</sub> |
+| 首页 | 文章详情 |
+|:---:|:---:|
+| <img src="./docs/ui-index.png" alt="首页" width="200" /> | <img src="./docs/ui-detail.png" alt="文章详情" width="200" /> |
 
-<!--
-补充方式：将手机/H5 截图放到 docs/screenshots/ 目录，例如：
-| 首页 | 文章详情 | 夜间模式 |
-|:---:|:---:|:---:|
-| <img src="./docs/screenshots/home.png" width="200" /> | <img src="./docs/screenshots/detail.png" width="200" /> | <img src="./docs/screenshots/dark.png" width="200" /> |
--->
+</div>
 
+<div align="center">
+  <img src="./docs/tag-cloud.png" alt="3D 标签云" width="200" />
+  <p><sub>3D 标签云 · 按文章数量动态缩放</sub></p>
 </div>
 
 ## ✨ 功能特性
