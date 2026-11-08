@@ -69,7 +69,9 @@ page {
   color: var(--text-primary);
 }
 
-/* H5 导航栏和底栏在页面外面，内联色来自 pages.json，深色时盖掉。 */
+/* H5 导航栏和底栏在页面外面，内联色来自 pages.json，深色时盖掉。
+   小程序不支持属性选择器，这段只留给 H5。底栏文字色仍由 setTabBarStyle 写入。 */
+/* #ifdef H5 */
 html.dark .uni-page-head {
   background-color: #1c1c1e !important;
   color: #ffffff !important;
@@ -87,19 +89,4 @@ html.dark .uni-tabbar {
 html.dark .uni-tabbar-border {
   background-color: rgba(255, 255, 255, 0.33) !important;
 }
-
-html.dark .uni-tabbar__label {
-  color: #8e8e93 !important;
-}
-
-html.dark .uni-tabbar__bd:has(img[src*='-active']) .uni-tabbar__label {
-  color: #0a84ff !important;
-}
-
-html.dark .uni-tabbar__icon img {
-  filter: brightness(0) invert(0.75);
-}
-
-html.dark .uni-tabbar__bd:has(img[src*='-active']) .uni-tabbar__icon img {
-  filter: none;
-}
+/* #endif */
