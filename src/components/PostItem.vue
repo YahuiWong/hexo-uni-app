@@ -1,5 +1,5 @@
 <template>
-  <view class="post-item" @click="toDetail">
+  <view class="post-item" :class="{ dark: isDark }" @click="toDetail">
     <image v-if="post.cover" :src="post.cover" mode="aspectFill" class="cover" :lazy-load="true" />
     <view class="info">
       <text class="title">{{ post.title }}</text>
@@ -15,7 +15,7 @@
 
       <!-- 底部信息 -->
       <view class="meta">
-        <view class="date-info">
+        <view v-if="post.date" class="date-info">
           <u-icon name="clock" size="14" color="#999" />
           <text class="date">{{ formatDate(post.date) }}</text>
         </view>
@@ -29,8 +29,13 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
 import type { PostItem } from '@/types';
 import { formatDate } from '@/utils/date';
+import { useTheme } from '@/composables/useTheme';
+
+const { themeMode } = useTheme();
+const isDark = computed(() => themeMode.value === 'dark');
 
 const props = defineProps<{
   post: PostItem;
@@ -81,7 +86,7 @@ const toDetail = () => {
 
 <style scoped>
 .post-item {
-  background: #fff;
+  background: var(--bg-primary);
   border-radius: 16rpx;
   margin-bottom: 20rpx;
   overflow: hidden;
@@ -97,7 +102,7 @@ const toDetail = () => {
 .cover {
   width: 100%;
   height: 350rpx;
-  background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+  background: var(--bg-tertiary);
   display: block;
 }
 
@@ -111,7 +116,7 @@ const toDetail = () => {
 .title {
   font-size: 34rpx;
   font-weight: bold;
-  color: #333;
+  color: var(--text-primary);
   line-height: 1.5;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -122,7 +127,7 @@ const toDetail = () => {
 
 .excerpt {
   font-size: 28rpx;
-  color: #666;
+  color: var(--text-secondary);
   line-height: 1.6;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -142,13 +147,13 @@ const toDetail = () => {
   align-items: center;
   gap: 4rpx;
   padding: 6rpx 12rpx;
-  background: #f5f5f5;
+  background: var(--bg-tertiary);
   border-radius: 8rpx;
 }
 
 .tag-text {
   font-size: 22rpx;
-  color: #666;
+  color: var(--text-secondary);
   line-height: 1;
 }
 
@@ -157,7 +162,7 @@ const toDetail = () => {
   justify-content: space-between;
   align-items: center;
   padding-top: 12rpx;
-  border-top: 1rpx solid #f0f0f0;
+  border-top: 1rpx solid var(--border-primary);
 }
 
 .date-info,
@@ -169,13 +174,13 @@ const toDetail = () => {
 
 .date {
   font-size: 24rpx;
-  color: #999;
+  color: var(--text-tertiary);
   line-height: 1;
 }
 
 .category {
   font-size: 24rpx;
-  color: #007aff;
+  color: var(--color-primary);
   line-height: 1;
 }
 </style>

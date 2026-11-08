@@ -88,12 +88,12 @@ export interface TagItem {
  */
 export interface PaginationData<T> {
   posts: T[];
+  /** 总页数 */
   total: number;
-  pageSize: number;
-  current: number;
+  /** 当前页码，从 1 开始 */
+  index: number;
   prev?: number;
   next?: number;
-  totalPages?: number; // 总页数
 }
 
 /**
@@ -176,12 +176,17 @@ export interface ArchiveMonth {
 }
 
 /**
- * 搜索结果
+ * search.json 中的一篇文章。标签和分类可能是字符串，也可能是带 name 的对象。
  */
-export interface SearchResult {
-  posts: PostItem[];
-  total: number;
-  keyword: string;
+export interface SearchIndexItem {
+  title: string;
+  slug: string;
+  url: string;
+  content?: string;
+  date?: string;
+  cover?: string;
+  tags?: Array<string | { name?: string; slug?: string }>;
+  categories?: Array<string | { name?: string; slug?: string }>;
 }
 
 /**

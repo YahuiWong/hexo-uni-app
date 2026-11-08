@@ -1,5 +1,5 @@
 <template>
-  <view class="container">
+  <view class="container" :class="{ dark: isDark }">
     <!-- 轮播图 -->
     <swiper
       v-if="swiperList.length"
@@ -42,7 +42,7 @@
     <view class="post-list">
       <view class="list-header">
         <text class="list-title">最新文章</text>
-        <text class="list-count">共 {{ posts.length }} 篇</text>
+        <text class="list-count">已加载 {{ posts.length }} 篇</text>
       </view>
 
       <!-- 加载中 -->
@@ -75,12 +75,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { onReachBottom, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import PostItemComponent from '@/components/PostItem.vue';
 import type { SwiperItem, PostItem } from '@/types';
 import { getIndexShareConfig } from '@/composables/useShare';
+import { useTheme } from '@/composables/useTheme';
+
+const { themeMode } = useTheme();
+const isDark = computed(() => themeMode.value === 'dark');
 
 // 配置页面分享
 onShareAppMessage(() => getIndexShareConfig());
@@ -121,7 +125,7 @@ const loadPosts = async (page: number) => {
       posts.value = [...posts.value, ...newPosts];
     }
 
-    totalPages.value = res.data.total || res.data.totalPages || 1;
+    totalPages.value = typeof res.data.total === 'number' ? res.data.total : 1;
     hasMore.value = page < totalPages.value;
     currentPage.value = page;
   } catch (err) {
@@ -163,13 +167,13 @@ const toTabPage = (url: string) => {
 <style scoped>
 .container {
   min-height: 100vh;
-  background: #f5f5f5;
+  background: var(--bg-secondary);
   padding-bottom: env(safe-area-inset-bottom);
 }
 
 .swiper {
   height: 400rpx;
-  background: #fff;
+  background: var(--bg-primary);
 }
 
 .swiper-item {
@@ -214,7 +218,7 @@ const toTabPage = (url: string) => {
 
 .nav-bar {
   display: flex;
-  background: #fff;
+  background: var(--bg-primary);
   margin: 20rpx;
   border-radius: 16rpx;
   padding: 20rpx;
@@ -233,13 +237,13 @@ const toTabPage = (url: string) => {
 }
 
 .nav-item:active {
-  background: #f5f5f5;
+  background: var(--bg-secondary);
   transform: scale(0.95);
 }
 
 .nav-text {
   font-size: 28rpx;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .post-list {
@@ -256,12 +260,12 @@ const toTabPage = (url: string) => {
 .list-title {
   font-size: 36rpx;
   font-weight: bold;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .list-count {
   font-size: 24rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .loading {
@@ -275,7 +279,7 @@ const toTabPage = (url: string) => {
 .loading-text {
   margin-top: 30rpx;
   font-size: 28rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .load-more {
@@ -283,7 +287,7 @@ const toTabPage = (url: string) => {
   align-items: center;
   justify-content: center;
   padding: 40rpx;
-  background: #fff;
+  background: var(--bg-primary);
   border-radius: 16rpx;
   margin-top: 20rpx;
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
@@ -294,19 +298,19 @@ const toTabPage = (url: string) => {
 }
 
 .load-more-text {
-  color: #007aff;
+  color: var(--color-primary);
   font-size: 28rpx;
 }
 
 .no-more {
   text-align: center;
   padding: 40rpx;
-  color: #999;
+  color: var(--text-tertiary);
   font-size: 28rpx;
 }
 
 .no-more-text {
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .empty {
@@ -320,6 +324,6 @@ const toTabPage = (url: string) => {
 .empty-text {
   margin-top: 30rpx;
   font-size: 28rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 </style>
