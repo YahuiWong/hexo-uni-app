@@ -48,12 +48,6 @@
 			}
 		},
 		{
-			"path": "pages/post/detail",
-			"style": {
-				"navigationBarTitleText": "文章详情"
-			}
-		},
-		{
 			"path": "pages/post/detailraw",
 			"style": {
 				"navigationBarTitleText": "文章详情"

@@ -1,5 +1,5 @@
 <template>
-  <view class="container">
+  <view class="container" :class="{ dark: isDark }">
     <!-- 头部 -->
     <view class="header">
       <image class="avatar" src="/static/logo.png" mode="aspectFill" />
@@ -45,7 +45,7 @@
         </view>
         <view class="card-content">
           <text class="info-link" @click="copyUrl">{{
-            siteInfo.url || 'https://blog.yahui.wang'
+            siteInfo.url || getSiteOrigin()
           }}</text>
         </view>
       </view>
@@ -137,6 +137,13 @@
       </view>
     </view>
 
+    <view class="theme-section">
+      <view class="theme-item" @click="toggleTheme">
+        <u-icon :name="isDark ? 'sun' : 'moon'" size="20" color="#ff9500" />
+        <text class="theme-text">{{ isDark ? '切换到浅色模式' : '切换到深色模式' }}</text>
+      </view>
+    </view>
+
     <!-- 版权信息 -->
     <view class="footer">
       <text class="copyright">© {{ currentYear }} {{ siteInfo.title || '雅珲网' }}</text>
@@ -150,7 +157,12 @@
 import { ref, computed } from 'vue';
 import { onShow, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { api } from '@/api';
+import { getSiteOrigin } from '@/utils/site';
 import { getAboutShareConfig } from '@/composables/useShare';
+import { useTheme } from '@/composables/useTheme';
+
+const { themeMode, toggleTheme: switchTheme } = useTheme();
+const isDark = computed(() => themeMode.value === 'dark');
 
 // 配置页面分享
 onShareAppMessage(() => getAboutShareConfig());
@@ -163,7 +175,7 @@ const siteInfo = ref<any>({
   author: 'Arthur.Wang',
   language: 'zh-CN',
   timezone: 'Asia/Shanghai',
-  url: 'https://blog.yahui.wang'
+  url: getSiteOrigin()
 });
 
 const stats = ref({
@@ -173,6 +185,14 @@ const stats = ref({
 });
 
 const currentYear = computed(() => new Date().getFullYear());
+
+const toggleTheme = () => {
+  switchTheme();
+  uni.showToast({
+    title: isDark.value ? '已切换到深色模式' : '已切换到浅色模式',
+    icon: 'none'
+  });
+};
 
 onShow(() => {
   loadSiteInfo();
@@ -442,6 +462,25 @@ const copyUrl = () => {
 .feature-text {
   font-size: 28rpx;
   color: #666;
+}
+
+.theme-section {
+  margin: 0 30rpx 30rpx;
+}
+
+.theme-item {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 28rpx 30rpx;
+  background: var(--bg-primary);
+  border-radius: 16rpx;
+  border: 1rpx solid var(--border-primary);
+}
+
+.theme-text {
+  font-size: 28rpx;
+  color: var(--text-primary);
 }
 
 .footer {

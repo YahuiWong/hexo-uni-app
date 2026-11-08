@@ -4,7 +4,10 @@
  * @returns 格式化后的日期字符串
  */
 export const formatDate = (dateStr: string): string => {
+  if (!dateStr) return '';
+
   const date = new Date(dateStr);
+  if (Number.isNaN(date.getTime())) return '';
   const now = new Date();
   const diff = now.getTime() - date.getTime();
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
