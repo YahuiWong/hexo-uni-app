@@ -1,5 +1,5 @@
 <template>
-  <view class="container">
+  <view class="container" :class="{ dark: isDark }">
     <!-- 头部 -->
     <view class="header">
       <view class="header-content">
@@ -48,10 +48,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { usePageTheme } from '@/composables/useTheme';
 import { onLoad, onReachBottom } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import PostItem from '@/components/PostItem.vue';
 
+const { isDark } = usePageTheme();
 const categoryName = ref('');
 const categorySlug = ref('');
 const posts = ref<any[]>([]);
@@ -123,12 +125,12 @@ onReachBottom(() => {
 <style scoped>
 .container {
   min-height: 100vh;
-  background: #f5f5f5;
+  background: var(--bg-secondary);
   padding-bottom: 40rpx;
 }
 
 .header {
-  background: #fff;
+  background: var(--bg-primary);
   padding: 30rpx;
   margin-bottom: 20rpx;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
@@ -149,12 +151,12 @@ onReachBottom(() => {
 .category-name {
   font-size: 36rpx;
   font-weight: bold;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .post-count {
   font-size: 24rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .loading {
@@ -168,7 +170,7 @@ onReachBottom(() => {
 .loading-text {
   margin-top: 30rpx;
   font-size: 28rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .posts-list {
@@ -183,7 +185,7 @@ onReachBottom(() => {
 
 .load-more-text {
   font-size: 28rpx;
-  color: #007aff;
+  color: var(--color-primary);
 }
 
 .loading-more {
@@ -196,7 +198,7 @@ onReachBottom(() => {
 
 .loading-more-text {
   font-size: 28rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .no-more {
@@ -206,7 +208,7 @@ onReachBottom(() => {
 
 .no-more-text {
   font-size: 24rpx;
-  color: #ccc;
+  color: var(--text-placeholder);
 }
 
 .empty {
@@ -220,6 +222,6 @@ onReachBottom(() => {
 .empty-text {
   margin-top: 30rpx;
   font-size: 28rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 </style>

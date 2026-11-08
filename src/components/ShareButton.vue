@@ -59,7 +59,7 @@ const handleShare = async () => {
   align-items: center;
   gap: 8rpx;
   padding: 12rpx 24rpx;
-  background: #f0f0f0;
+  background: var(--bg-tertiary);
   border-radius: 50rpx;
   cursor: pointer;
   transition: all 0.3s;
@@ -72,7 +72,7 @@ const handleShare = async () => {
 
 .share-text {
   font-size: 28rpx;
-  color: #333;
+  color: var(--text-primary);
   line-height: 1;
 }
 </style>

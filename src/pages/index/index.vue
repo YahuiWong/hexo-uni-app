@@ -75,16 +75,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { onReachBottom, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import PostItemComponent from '@/components/PostItem.vue';
 import type { SwiperItem, PostItem } from '@/types';
 import { getIndexShareConfig } from '@/composables/useShare';
-import { useTheme } from '@/composables/useTheme';
+import { usePageTheme } from '@/composables/useTheme';
 
-const { themeMode } = useTheme();
-const isDark = computed(() => themeMode.value === 'dark');
+const { isDark } = usePageTheme();
 
 // 配置页面分享
 onShareAppMessage(() => getIndexShareConfig());

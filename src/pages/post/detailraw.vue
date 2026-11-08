@@ -114,7 +114,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { useTheme } from '@/composables/useTheme';
+import { usePageTheme } from '@/composables/useTheme';
 import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import { md2html } from '@/utils/md2html-safe';
@@ -133,8 +133,7 @@ const post = ref<PostDetail>({} as PostDetail);
 const loading = ref(true);
 const currentUrl = ref('');
 const showSharePanel = ref(false);
-const { themeMode } = useTheme();
-const isDark = computed(() => themeMode.value === 'dark');
+const { isDark } = usePageTheme();
 
 // 配置页面分享
 onShareAppMessage(() =>
@@ -637,7 +636,7 @@ const fullDate = (dateStr: string) => {
   font-weight: 600;
   margin: 45rpx 0 25rpx;
   color: var(--text-primary);
-  border-bottom: 2rpx solid #e8e8e8;
+  border-bottom: 2rpx solid var(--border-secondary);
   padding-bottom: 12rpx;
 }
 
@@ -675,7 +674,7 @@ const fullDate = (dateStr: string) => {
 :deep(.mp-html blockquote) {
   border-left: 4rpx solid #42b983;
   padding: 20rpx 24rpx;
-  background: #f9fafb;
+  background: var(--bg-tertiary);
   margin: 30rpx 0;
   color: var(--text-secondary);
   border-radius: 0 8rpx 8rpx 0;
@@ -714,23 +713,23 @@ const fullDate = (dateStr: string) => {
 
 :deep(.mp-html th) {
   padding: 20rpx 16rpx;
-  background: #fafbfc;
+  background: var(--bg-tertiary);
   font-weight: 600;
   color: var(--text-primary);
-  border: 1rpx solid #e8e8e8;
+  border: 1rpx solid var(--border-secondary);
   text-align: left;
 }
 
 :deep(.mp-html td) {
   padding: 16rpx;
-  border: 1rpx solid #e8e8e8;
+  border: 1rpx solid var(--border-secondary);
   color: var(--text-primary);
 }
 
 /* 水平线样式 */
 :deep(.mp-html hr) {
   border: none;
-  border-top: 1rpx solid #e8e8e8;
+  border-top: 1rpx solid var(--border-secondary);
   margin: 50rpx 0;
   opacity: 0.5;
 }
@@ -741,7 +740,7 @@ const fullDate = (dateStr: string) => {
 :deep(.mp-html .math-block) {
   color: #8b5cf6;
   font-family: 'KaTeX_Main', 'Times New Roman', serif;
-  background: #faf5ff;
+  background: var(--bg-tertiary);
   padding: 4rpx 8rpx;
   border-radius: 4rpx;
   display: inline-block;
@@ -757,12 +756,12 @@ const fullDate = (dateStr: string) => {
 
 /* Mermaid 图表占位符样式 */
 :deep(.mp-html .mermaid) {
-  background: #f0f9ff;
+  background: var(--bg-tertiary);
   padding: 24rpx;
   border-radius: 8rpx;
   margin: 30rpx 0;
-  border: 1rpx solid #bae6fd;
-  color: #0369a1;
+  border: 1rpx solid var(--border-secondary);
+  color: var(--text-secondary);
   font-family: monospace;
   overflow-x: auto;
   white-space: pre;

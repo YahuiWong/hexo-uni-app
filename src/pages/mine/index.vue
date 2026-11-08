@@ -1,5 +1,5 @@
 <template>
-  <view class="container">
+  <view class="container" :class="{ dark: isDark }">
     <!-- 头部信息 -->
     <view class="header">
       <view class="avatar-section">
@@ -83,12 +83,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { onShow } from '@dcloudio/uni-app';
 import { api } from '@/api';
-import { useTheme } from '@/composables/useTheme';
+import { usePageTheme } from '@/composables/useTheme';
 
-const { themeMode, toggleTheme: switchTheme } = useTheme();
+const { isDark, toggleTheme: switchTheme } = usePageTheme();
 
 const siteInfo = ref<any>({
   title: '雅珲网',
@@ -100,8 +100,6 @@ const stats = ref({
   categories: 0,
   tags: 0
 });
-
-const isDark = computed(() => themeMode.value === 'dark');
 
 onShow(() => {
   loadSiteInfo();

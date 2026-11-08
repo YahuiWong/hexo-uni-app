@@ -1,5 +1,5 @@
 <template>
-  <view class="container">
+  <view class="container" :class="{ dark: isDark }">
     <!-- 加载中 -->
     <view v-if="loading" class="loading">
       <u-loading-icon mode="spinner" size="40" color="#007aff" />
@@ -35,6 +35,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { usePageTheme } from '@/composables/useTheme';
 import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import { getCategoryShareConfig } from '@/composables/useShare';
@@ -50,6 +51,7 @@ interface Category {
   path?: string;
 }
 
+const { isDark } = usePageTheme();
 const loading = ref(true);
 const categories = ref<Category[]>([]);
 
@@ -76,7 +78,7 @@ const toCategory = (category: Category) => {
 <style scoped>
 .container {
   min-height: 100vh;
-  background: #f5f5f5;
+  background: var(--bg-secondary);
   padding-bottom: env(safe-area-inset-bottom);
 }
 
@@ -91,7 +93,7 @@ const toCategory = (category: Category) => {
 .loading-text {
   margin-top: 30rpx;
   font-size: 28rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .category-list {
@@ -99,7 +101,7 @@ const toCategory = (category: Category) => {
 }
 
 .category-item {
-  background: #fff;
+  background: var(--bg-primary);
   border-radius: 16rpx;
   padding: 30rpx;
   margin-bottom: 20rpx;
@@ -130,13 +132,13 @@ const toCategory = (category: Category) => {
 .category-name {
   font-size: 32rpx;
   font-weight: bold;
-  color: #333;
+  color: var(--text-primary);
   margin-bottom: 8rpx;
 }
 
 .category-count {
   font-size: 24rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .empty {
@@ -150,6 +152,6 @@ const toCategory = (category: Category) => {
 .empty-text {
   margin-top: 30rpx;
   font-size: 28rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 </style>

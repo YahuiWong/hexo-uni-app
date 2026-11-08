@@ -73,17 +73,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import PostItem from '@/components/PostItem.vue';
 import { getSearchShareConfig } from '@/composables/useShare';
-import { useTheme } from '@/composables/useTheme';
+import { usePageTheme } from '@/composables/useTheme';
 import { cacheSearchIndex, filterSearchIndex, getCachedSearchIndex } from '@/utils/search';
 import type { PostItem as PostItemType } from '@/types';
 
-const { themeMode } = useTheme();
-const isDark = computed(() => themeMode.value === 'dark');
+const { isDark } = usePageTheme();
 
 // 配置页面分享
 onShareAppMessage(() => getSearchShareConfig());

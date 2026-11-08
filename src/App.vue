@@ -4,13 +4,16 @@
 @import '@/styles/theme.css'; /* 导入主题样式 */
 </style>
 <script setup lang="ts">
-import { onLaunch } from '@dcloudio/uni-app';
-import { useTheme } from '@/composables/useTheme';
+import { onLaunch, onShow } from '@dcloudio/uni-app';
+import { applyTheme, useTheme } from '@/composables/useTheme';
 
-const { initTheme } = useTheme();
+const { initTheme, themeMode } = useTheme();
 
 onLaunch(() => {
-  // 初始化主题
   initTheme();
+});
+
+onShow(() => {
+  applyTheme(themeMode.value);
 });
 </script>
