@@ -33,7 +33,7 @@ page {
   --shadow-dark: rgba(0, 0, 0, 0.15);
 }
 
-/* 深色主题。H5 把 dark 加在页面节点上，小程序加在页面根 view 上。 */
+/* 深色主题。H5 加在 html / body / 每个页面节点上，小程序加在页面根 view 上。 */
 page.dark,
 .dark {
   /* 背景色 */
@@ -67,4 +67,39 @@ page.dark,
 page {
   background-color: var(--bg-secondary);
   color: var(--text-primary);
+}
+
+/* H5 导航栏和底栏在页面外面，内联色来自 pages.json，深色时盖掉。 */
+html.dark .uni-page-head {
+  background-color: #1c1c1e !important;
+  color: #ffffff !important;
+}
+
+html.dark .uni-page-head__title,
+html.dark .uni-page-head .uni-btn-icon {
+  color: #ffffff !important;
+}
+
+html.dark .uni-tabbar {
+  background-color: #1c1c1e !important;
+}
+
+html.dark .uni-tabbar-border {
+  background-color: rgba(255, 255, 255, 0.33) !important;
+}
+
+html.dark .uni-tabbar__label {
+  color: #8e8e93 !important;
+}
+
+html.dark .uni-tabbar__bd:has(img[src*='-active']) .uni-tabbar__label {
+  color: #0a84ff !important;
+}
+
+html.dark .uni-tabbar__icon img {
+  filter: brightness(0) invert(0.75);
+}
+
+html.dark .uni-tabbar__bd:has(img[src*='-active']) .uni-tabbar__icon img {
+  filter: none;
 }

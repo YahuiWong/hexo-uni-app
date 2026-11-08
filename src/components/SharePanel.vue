@@ -6,7 +6,7 @@
     :closeable="true"
     :safe-area-inset-bottom="true"
   >
-    <view class="share-panel">
+    <view class="share-panel" :class="{ dark: isDark }">
       <view class="share-header">
         <text class="share-title">分享到</text>
       </view>
@@ -60,6 +60,10 @@
 import { computed } from 'vue';
 import { copyLink, ShareUtil } from '@/utils/share';
 import type { ShareOptions, SharePlatform } from '@/types';
+import { useTheme } from '@/composables/useTheme';
+
+const { themeMode } = useTheme();
+const isDark = computed(() => themeMode.value === 'dark');
 
 interface Props {
   show: boolean;
@@ -151,19 +155,19 @@ const handleShareItem = async (platform: SharePlatform) => {
 
 <style scoped>
 .share-panel {
-  background: #fff;
+  background: var(--bg-primary);
   padding: 40rpx 0;
 }
 
 .share-header {
   padding: 0 30rpx 30rpx;
-  border-bottom: 1rpx solid #f0f0f0;
+  border-bottom: 1rpx solid var(--border-primary);
 }
 
 .share-title {
   font-size: 32rpx;
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .share-content {
@@ -218,13 +222,13 @@ const handleShareItem = async (platform: SharePlatform) => {
 
 .share-label {
   font-size: 24rpx;
-  color: #666;
+  color: var(--text-secondary);
   text-align: center;
 }
 
 .share-footer {
   padding: 0 30rpx;
-  border-top: 1rpx solid #f0f0f0;
+  border-top: 1rpx solid var(--border-primary);
   padding-top: 30rpx;
 }
 
@@ -234,7 +238,7 @@ const handleShareItem = async (platform: SharePlatform) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f8f9fa;
+  background: var(--bg-tertiary);
   border-radius: 12rpx;
   cursor: pointer;
 }
@@ -245,6 +249,6 @@ const handleShareItem = async (platform: SharePlatform) => {
 
 .cancel-text {
   font-size: 32rpx;
-  color: #666;
+  color: var(--text-secondary);
 }
 </style>

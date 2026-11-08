@@ -1,5 +1,5 @@
 <template>
-  <view class="container">
+  <view class="container" :class="{ dark: isDark }">
     <!-- 顶部切换按钮 -->
     <view class="header-actions">
       <view class="switch-btn" @click="toCloudView">
@@ -39,6 +39,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { usePageTheme } from '@/composables/useTheme';
 import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import { getTagShareConfig } from '@/composables/useShare';
@@ -54,6 +55,7 @@ interface Tag {
   path?: string;
 }
 
+const { isDark } = usePageTheme();
 const loading = ref(true);
 const tags = ref<Tag[]>([]);
 
@@ -128,7 +130,7 @@ const toCloudView = () => {
 <style scoped>
 .container {
   min-height: 100vh;
-  background: #f5f5f5;
+  background: var(--bg-secondary);
   padding: 30rpx;
   padding-bottom: calc(30rpx + env(safe-area-inset-bottom));
 }
@@ -144,7 +146,7 @@ const toCloudView = () => {
   align-items: center;
   gap: 8rpx;
   padding: 12rpx 24rpx;
-  background: #fff;
+  background: var(--bg-primary);
   border-radius: 50rpx;
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
   transition: all 0.3s;
@@ -172,7 +174,7 @@ const toCloudView = () => {
 .loading-text {
   margin-top: 30rpx;
   font-size: 28rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .tag-list {
@@ -224,6 +226,6 @@ const toCloudView = () => {
 .empty-text {
   margin-top: 30rpx;
   font-size: 28rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 </style>

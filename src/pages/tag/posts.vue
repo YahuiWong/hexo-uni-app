@@ -1,5 +1,5 @@
 <template>
-  <view class="container">
+  <view class="container" :class="{ dark: isDark }">
     <!-- 头部 -->
     <view class="header">
       <view class="header-content">
@@ -51,6 +51,9 @@ import { ref, computed } from 'vue';
 import { onLoad, onReachBottom } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import PostItem from '@/components/PostItem.vue';
+import { usePageTheme } from '@/composables/useTheme';
+
+const { isDark } = usePageTheme();
 
 const tagName = ref('');
 const tagSlug = ref('');
@@ -139,12 +142,12 @@ onReachBottom(() => {
 <style scoped>
 .container {
   min-height: 100vh;
-  background: #f5f5f5;
+  background: var(--bg-secondary);
   padding-bottom: 40rpx;
 }
 
 .header {
-  background: #fff;
+  background: var(--bg-primary);
   padding: 30rpx;
   margin-bottom: 20rpx;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
@@ -165,12 +168,12 @@ onReachBottom(() => {
 .tag-name {
   font-size: 36rpx;
   font-weight: bold;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .post-count {
   font-size: 24rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .loading {
@@ -184,7 +187,7 @@ onReachBottom(() => {
 .loading-text {
   margin-top: 30rpx;
   font-size: 28rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .posts-list {
@@ -212,7 +215,7 @@ onReachBottom(() => {
 
 .loading-more-text {
   font-size: 28rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .no-more {
@@ -222,7 +225,7 @@ onReachBottom(() => {
 
 .no-more-text {
   font-size: 24rpx;
-  color: #ccc;
+  color: var(--text-placeholder);
 }
 
 .empty {
@@ -236,6 +239,6 @@ onReachBottom(() => {
 .empty-text {
   margin-top: 30rpx;
   font-size: 28rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 </style>

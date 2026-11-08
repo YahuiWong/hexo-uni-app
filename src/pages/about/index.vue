@@ -159,10 +159,9 @@ import { onShow, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import { getSiteOrigin } from '@/utils/site';
 import { getAboutShareConfig } from '@/composables/useShare';
-import { useTheme } from '@/composables/useTheme';
+import { usePageTheme } from '@/composables/useTheme';
 
-const { themeMode, toggleTheme: switchTheme } = useTheme();
-const isDark = computed(() => themeMode.value === 'dark');
+const { isDark, toggleTheme: switchTheme } = usePageTheme();
 
 // 配置页面分享
 onShareAppMessage(() => getAboutShareConfig());
@@ -265,7 +264,7 @@ const copyUrl = () => {
 <style scoped>
 .container {
   min-height: 100vh;
-  background: #f5f5f5;
+  background: var(--bg-secondary);
   padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
 }
 
@@ -305,7 +304,7 @@ const copyUrl = () => {
 
 .stats-section {
   display: flex;
-  background: #fff;
+  background: var(--bg-primary);
   margin: -40rpx 30rpx 30rpx;
   border-radius: 16rpx;
   padding: 40rpx 0;
@@ -321,18 +320,18 @@ const copyUrl = () => {
 }
 
 .stat-item:not(:last-child) {
-  border-right: 1rpx solid #f0f0f0;
+  border-right: 1rpx solid var(--border-primary);
 }
 
 .stat-value {
   font-size: 44rpx;
   font-weight: bold;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .stat-label {
   font-size: 24rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .info-section {
@@ -343,7 +342,7 @@ const copyUrl = () => {
 }
 
 .info-card {
-  background: #fff;
+  background: var(--bg-primary);
   border-radius: 16rpx;
   padding: 30rpx;
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
@@ -355,13 +354,13 @@ const copyUrl = () => {
   gap: 12rpx;
   margin-bottom: 20rpx;
   padding-bottom: 20rpx;
-  border-bottom: 1rpx solid #f0f0f0;
+  border-bottom: 1rpx solid var(--border-primary);
 }
 
 .card-title {
   font-size: 32rpx;
   font-weight: bold;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .card-content {
@@ -372,12 +371,12 @@ const copyUrl = () => {
 
 .info-text {
   font-size: 28rpx;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .info-link {
   font-size: 28rpx;
-  color: #007aff;
+  color: var(--color-primary);
   text-decoration: underline;
 }
 
@@ -389,12 +388,12 @@ const copyUrl = () => {
 
 .config-label {
   font-size: 28rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .config-value {
   font-size: 28rpx;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .tech-section,
@@ -412,7 +411,7 @@ const copyUrl = () => {
 .section-title {
   font-size: 32rpx;
   font-weight: bold;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .tech-grid {
@@ -427,7 +426,7 @@ const copyUrl = () => {
   align-items: center;
   gap: 8rpx;
   padding: 30rpx 20rpx;
-  background: #fff;
+  background: var(--bg-primary);
   border-radius: 16rpx;
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
 }
@@ -435,19 +434,19 @@ const copyUrl = () => {
 .tech-name {
   font-size: 26rpx;
   font-weight: bold;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .tech-version {
   font-size: 22rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .features-list {
   display: flex;
   flex-direction: column;
   gap: 16rpx;
-  background: #fff;
+  background: var(--bg-primary);
   border-radius: 16rpx;
   padding: 30rpx;
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
@@ -461,7 +460,7 @@ const copyUrl = () => {
 
 .feature-text {
   font-size: 28rpx;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .theme-section {
@@ -495,6 +494,6 @@ const copyUrl = () => {
 .version,
 .powered {
   font-size: 24rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 </style>

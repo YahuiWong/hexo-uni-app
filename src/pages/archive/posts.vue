@@ -1,5 +1,5 @@
 <template>
-  <view class="container">
+  <view class="container" :class="{ dark: isDark }">
     <!-- 归档头部 -->
     <view class="archive-header">
       <view class="header-content">
@@ -52,6 +52,9 @@ import { ref, computed } from 'vue';
 import { onLoad, onReachBottom } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import PostItem from '@/components/PostItem.vue';
+import { usePageTheme } from '@/composables/useTheme';
+
+const { isDark } = usePageTheme();
 
 const year = ref(0);
 const month = ref(0);
@@ -153,7 +156,7 @@ const loadMore = () => {
 <style scoped>
 .container {
   min-height: 100vh;
-  background: #f5f5f5;
+  background: var(--bg-secondary);
 }
 
 .archive-header {
@@ -199,7 +202,7 @@ const loadMore = () => {
 
 .loading-text {
   font-size: 28rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .load-more {
@@ -207,7 +210,7 @@ const loadMore = () => {
   align-items: center;
   justify-content: center;
   padding: 40rpx;
-  background: #fff;
+  background: var(--bg-primary);
   border-radius: 16rpx;
   margin-top: 20rpx;
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
@@ -220,7 +223,7 @@ const loadMore = () => {
 }
 
 .load-more-text {
-  color: #007aff;
+  color: var(--color-primary);
   font-size: 28rpx;
 }
 
@@ -234,7 +237,7 @@ const loadMore = () => {
 
 .loading-more-text {
   font-size: 28rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .no-more {
@@ -244,7 +247,7 @@ const loadMore = () => {
 
 .no-more-text {
   font-size: 28rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .empty {
@@ -258,6 +261,6 @@ const loadMore = () => {
 
 .empty-text {
   font-size: 28rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <view class="container">
+  <view class="container" :class="{ dark: isDark }">
     <!-- 加载中 -->
     <view v-if="loading && archives.length === 0" class="loading">
       <u-loading-icon mode="spinner" size="40" color="#007aff" />
@@ -91,6 +91,9 @@ import { onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import { getArchiveShareConfig } from '@/composables/useShare';
 import { formatDate } from '@/utils/date';
+import { usePageTheme } from '@/composables/useTheme';
+
+const { isDark } = usePageTheme();
 
 // 配置页面分享
 onShareAppMessage(() => getArchiveShareConfig());
@@ -299,7 +302,7 @@ const getMonthName = (month: number) => {
 <style scoped>
 .container {
   min-height: 100vh;
-  background: #f5f5f5;
+  background: var(--bg-secondary);
   padding-bottom: calc(30rpx + env(safe-area-inset-bottom));
 }
 
@@ -314,7 +317,7 @@ const getMonthName = (month: number) => {
 
 .loading-text {
   font-size: 28rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .archive-timeline {
@@ -332,12 +335,12 @@ const getMonthName = (month: number) => {
 .header-title {
   font-size: 40rpx;
   font-weight: bold;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .header-subtitle {
   font-size: 26rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .year-section {
@@ -360,7 +363,7 @@ const getMonthName = (month: number) => {
   justify-content: space-between;
   align-items: center;
   padding: 24rpx 30rpx;
-  background: #fff;
+  background: var(--bg-primary);
   border-radius: 16rpx;
   margin-bottom: 20rpx;
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
@@ -389,14 +392,14 @@ const getMonthName = (month: number) => {
 .year-text {
   font-size: 36rpx;
   font-weight: bold;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .post-count {
   font-size: 24rpx;
-  color: #999;
+  color: var(--text-tertiary);
   padding: 4rpx 12rpx;
-  background: #f5f5f5;
+  background: var(--bg-secondary);
   border-radius: 12rpx;
 }
 
@@ -418,7 +421,7 @@ const getMonthName = (month: number) => {
   justify-content: space-between;
   align-items: center;
   padding: 20rpx 24rpx;
-  background: #fff;
+  background: var(--bg-primary);
   border-radius: 12rpx;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
   transition: all 0.3s;
@@ -426,7 +429,7 @@ const getMonthName = (month: number) => {
 
 .month-header:active {
   transform: scale(0.98);
-  background: #f8f8f8;
+  background: var(--bg-tertiary);
 }
 
 .month-left {
@@ -445,14 +448,14 @@ const getMonthName = (month: number) => {
 .month-text {
   font-size: 28rpx;
   font-weight: bold;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .month-post-count {
   font-size: 22rpx;
-  color: #999;
+  color: var(--text-tertiary);
   padding: 2rpx 8rpx;
-  background: #f0f0f0;
+  background: var(--bg-tertiary);
   border-radius: 8rpx;
 }
 
@@ -473,7 +476,7 @@ const getMonthName = (month: number) => {
 
 .month-loading-text {
   font-size: 24rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .post-item {
@@ -481,7 +484,7 @@ const getMonthName = (month: number) => {
   align-items: flex-start;
   gap: 12rpx;
   padding: 16rpx 20rpx;
-  background: #fff;
+  background: var(--bg-primary);
   border-radius: 8rpx;
   box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.03);
   transition: all 0.3s;
@@ -489,7 +492,7 @@ const getMonthName = (month: number) => {
 
 .post-item:active {
   transform: translateX(8rpx);
-  background: #f8f8f8;
+  background: var(--bg-tertiary);
 }
 
 .post-dot {
@@ -510,13 +513,13 @@ const getMonthName = (month: number) => {
 
 .post-title {
   font-size: 26rpx;
-  color: #333;
+  color: var(--text-primary);
   line-height: 1.5;
 }
 
 .post-date {
   font-size: 22rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .no-posts {
@@ -526,7 +529,7 @@ const getMonthName = (month: number) => {
 
 .no-posts-text {
   font-size: 24rpx;
-  color: #ccc;
+  color: var(--text-placeholder);
 }
 
 .empty {
@@ -540,6 +543,6 @@ const getMonthName = (month: number) => {
 
 .empty-text {
   font-size: 28rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 </style>

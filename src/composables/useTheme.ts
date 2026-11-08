@@ -4,7 +4,8 @@
  * 提供主题切换功能，支持浅色和深色模式
  */
 
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
+import { onShow } from '@dcloudio/uni-app';
 
 export type ThemeMode = 'light' | 'dark';
 
@@ -89,6 +90,48 @@ export const themes = {
   }
 };
 
+function syncThemeClass(theme: ThemeMode) {
+  // #ifdef H5
+  if (typeof document === 'undefined') return;
+  const nodes: Element[] = [document.documentElement, document.body];
+  document.querySelectorAll('uni-page-body').forEach((el) => nodes.push(el));
+  nodes.forEach((el) => {
+    if (theme === 'dark') el.classList.add('dark');
+    else el.classList.remove('dark');
+  });
+  // #endif
+}
+
+/** 把当前主题写到文档、导航栏和整条 TabBar。切页后需要再调一次。 */
+export function applyTheme(theme: ThemeMode) {
+  const colors = themes[theme];
+  syncThemeClass(theme);
+
+  try {
+    uni.setNavigationBarColor({
+      frontColor: theme === 'dark' ? '#ffffff' : '#000000',
+      backgroundColor: colors.navBarBg,
+      animation: {
+        duration: 300,
+        timingFunc: 'easeInOut'
+      }
+    });
+  } catch (err) {
+    console.warn('设置导航栏颜色失败', err);
+  }
+
+  try {
+    uni.setTabBarStyle({
+      backgroundColor: colors.tabBarBg,
+      color: colors.tabBarText,
+      selectedColor: colors.tabBarActive,
+      borderStyle: theme === 'dark' ? 'white' : 'black'
+    });
+  } catch (err) {
+    console.warn('设置 TabBar 样式失败', err);
+  }
+}
+
 /**
  * 主题管理 Hook
  */
@@ -125,50 +168,7 @@ export function useTheme() {
       console.error('保存主题设置失败', err);
     }
 
-    // 应用主题
     applyTheme(theme);
-  };
-
-  // 应用主题（设置全局样式）
-  const applyTheme = (theme: ThemeMode) => {
-    const colors = themes[theme];
-
-    // 设置 page 元素的 class（用于 CSS 变量）
-    // #ifdef H5
-    const pageEl = document.querySelector('uni-page-body') || document.body;
-    if (theme === 'dark') {
-      pageEl.classList.add('dark');
-    } else {
-      pageEl.classList.remove('dark');
-    }
-    // #endif
-
-    // 设置导航栏样式
-    try {
-      uni.setNavigationBarColor({
-        frontColor: theme === 'dark' ? '#ffffff' : '#000000',
-        backgroundColor: colors.navBarBg,
-        animation: {
-          duration: 300,
-          timingFunc: 'easeInOut'
-        }
-      });
-    } catch (err) {
-      // 某些平台可能不支持动态修改导航栏
-      console.warn('设置导航栏颜色失败', err);
-    }
-
-    // 设置 TabBar 样式（注意：H5 和部分平台支持，小程序可能不支持）
-    try {
-      uni.setTabBarStyle({
-        backgroundColor: colors.tabBarBg,
-        color: colors.tabBarText,
-        selectedColor: colors.tabBarActive,
-        borderStyle: theme === 'dark' ? 'white' : 'black'
-      });
-    } catch (err) {
-      console.warn('设置 TabBar 样式失败', err);
-    }
   };
 
   // 获取当前主题颜色
@@ -188,6 +188,22 @@ export function useTheme() {
     toggleTheme,
     setTheme,
     getCurrentColors,
+    isDark,
+    applyTheme
+  };
+}
+
+/** 页面显示时重新套用导航栏和整条 TabBar，并返回模板用的 isDark。 */
+export function usePageTheme() {
+  const theme = useTheme();
+  const isDark = computed(() => theme.themeMode.value === 'dark');
+
+  onShow(() => {
+    applyTheme(theme.themeMode.value);
+  });
+
+  return {
+    ...theme,
     isDark
   };
 }
