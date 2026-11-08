@@ -1,5 +1,5 @@
 <template>
-  <view class="container">
+  <view class="container" :class="{ dark: isDark }">
     <!-- 搜索框 -->
     <view class="search-bar">
       <view class="search-input-wrapper">
@@ -73,12 +73,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import PostItem from '@/components/PostItem.vue';
 import { getSearchShareConfig } from '@/composables/useShare';
+import { useTheme } from '@/composables/useTheme';
+import { cacheSearchIndex, filterSearchIndex, getCachedSearchIndex } from '@/utils/search';
 import type { PostItem as PostItemType } from '@/types';
+
+const { themeMode } = useTheme();
+const isDark = computed(() => themeMode.value === 'dark');
 
 // 配置页面分享
 onShareAppMessage(() => getSearchShareConfig());
@@ -96,7 +101,6 @@ const searchHistory = ref<string[]>([]);
 
 const HISTORY_KEY = 'search_history';
 const MAX_HISTORY = 10;
-const MAX_SEARCH_PAGES = 3; // 限制搜索加载的页数
 
 onLoad((options: any) => {
   // 加载搜索历史
@@ -173,8 +177,6 @@ const handleSearch = async () => {
   searched.value = false;
 
   try {
-    // 这里使用本地搜索（遍历所有文章）
-    // 因为 API 可能不支持搜索功能
     const res = await searchPosts(kw);
     results.value = res;
     searched.value = true;
@@ -189,42 +191,17 @@ const handleSearch = async () => {
   }
 };
 
-// 本地搜索实现（因为 API 可能不支持）
+const loadSearchIndex = async () => {
+  const cached = getCachedSearchIndex();
+  if (cached) return cached;
+
+  const res = await api.getSearchIndex();
+  return cacheSearchIndex(Array.isArray(res.data) ? res.data : []);
+};
+
 const searchPosts = async (kw: string) => {
-  const allPosts: any[] = [];
-
-  // 获取所有页的文章
-  try {
-    // 先获取第一页，了解总页数
-    const firstPage = await api.getPosts(1);
-    if (firstPage.data?.posts) {
-      allPosts.push(...firstPage.data.posts);
-    }
-
-    // 限制搜索加载的页数，避免消耗过多内存
-    const maxPages = Math.min(MAX_SEARCH_PAGES, firstPage.data?.total || 1);
-    const promises = [];
-    for (let i = 2; i <= maxPages; i++) {
-      promises.push(api.getPosts(i));
-    }
-
-    const results = await Promise.all(promises);
-    results.forEach((res) => {
-      if (res.data?.posts) {
-        allPosts.push(...res.data.posts);
-      }
-    });
-  } catch (err) {
-    console.error('加载文章失败', err);
-  }
-
-  // 在标题、摘要中搜索关键词
-  const lowerKw = kw.toLowerCase();
-  return allPosts.filter((post) => {
-    const title = (post.title || '').toLowerCase();
-    const excerpt = (post.excerpt || '').toLowerCase();
-    return title.includes(lowerKw) || excerpt.includes(lowerKw);
-  });
+  const index = await loadSearchIndex();
+  return filterSearchIndex(index, kw);
 };
 
 const searchFromHistory = (kw: string) => {
@@ -254,7 +231,7 @@ const goBack = () => {
 <style scoped>
 .container {
   min-height: 100vh;
-  background: #f5f5f5;
+  background: var(--bg-secondary);
 }
 
 .search-bar {
@@ -262,8 +239,8 @@ const goBack = () => {
   align-items: center;
   gap: 20rpx;
   padding: 20rpx 30rpx;
-  background: #fff;
-  border-bottom: 1rpx solid #f0f0f0;
+  background: var(--bg-primary);
+  border-bottom: 1rpx solid var(--border-primary);
 }
 
 .search-input-wrapper {
@@ -272,19 +249,19 @@ const goBack = () => {
   align-items: center;
   gap: 12rpx;
   padding: 16rpx 24rpx;
-  background: #f5f5f5;
+  background: var(--bg-secondary);
   border-radius: 40rpx;
 }
 
 .search-input {
   flex: 1;
   font-size: 28rpx;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .cancel-btn {
   font-size: 28rpx;
-  color: #007aff;
+  color: var(--color-primary);
 }
 
 .history-section {
@@ -301,12 +278,12 @@ const goBack = () => {
 .history-title {
   font-size: 28rpx;
   font-weight: bold;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .clear-history {
   font-size: 24rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .history-list {
@@ -320,14 +297,14 @@ const goBack = () => {
   align-items: center;
   gap: 8rpx;
   padding: 12rpx 20rpx;
-  background: #fff;
+  background: var(--bg-primary);
   border-radius: 40rpx;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
 }
 
 .history-text {
   font-size: 26rpx;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .suggestion {
@@ -341,7 +318,7 @@ const goBack = () => {
 
 .suggestion-text {
   font-size: 28rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .loading {
@@ -355,7 +332,7 @@ const goBack = () => {
 
 .loading-text {
   font-size: 28rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .results {
@@ -365,12 +342,12 @@ const goBack = () => {
 .result-count {
   padding: 20rpx 0;
   margin-bottom: 20rpx;
-  border-bottom: 1rpx solid #f0f0f0;
+  border-bottom: 1rpx solid var(--border-primary);
 }
 
 .count-text {
   font-size: 26rpx;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .empty {
@@ -384,7 +361,7 @@ const goBack = () => {
 
 .empty-text {
   font-size: 32rpx;
-  color: #999;
+  color: var(--text-tertiary);
   margin-top: 30rpx;
 }
 

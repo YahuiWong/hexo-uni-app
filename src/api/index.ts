@@ -7,11 +7,12 @@ import type {
   PostDetail,
   CategoryItem,
   TagItem,
-  SearchResult,
+  SearchIndexItem,
   ArchiveYear
 } from '@/types';
+import { getApiBaseUrl } from '@/utils/site';
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://blog.yahui.wang/api';
+const BASE_URL = getApiBaseUrl();
 
 /**
  * 通用请求封装
@@ -26,20 +27,23 @@ function isApiResponse<T>(data: any): data is ApiResponse<T> {
 /**
  * 通用请求封装
  */
-async function request<T>(url: string, data?: Record<string, any>): Promise<ApiResponse<T>> {
+async function request<T>(url: string): Promise<ApiResponse<T>> {
   try {
     const res = await uni.request({
       url,
-      data,
-      method: data ? 'POST' : 'GET'
+      method: 'GET'
     });
 
-    // 类型守卫：验证 API 响应格式
+    const statusCode = res.statusCode ?? 0;
+    if (statusCode < 200 || statusCode >= 300) {
+      throw new Error(`API 请求失败: ${statusCode}`);
+    }
+
     if (isApiResponse<T>(res.data)) {
       return res.data;
-    } else {
-      throw new Error('API 响应格式错误');
     }
+
+    throw new Error('API 响应格式错误');
   } catch (error) {
     console.error('API 请求失败:', error);
     throw error;
@@ -110,11 +114,10 @@ export const api = {
   },
 
   /**
-   * 搜索文章
-   * @param keyword 搜索关键词
+   * 获取全文搜索索引。匹配在客户端完成。
    */
-  search(keyword: string): Promise<ApiResponse<SearchResult>> {
-    return request<SearchResult>(`${BASE_URL}/search.json`, { keyword });
+  getSearchIndex(): Promise<ApiResponse<SearchIndexItem[]>> {
+    return request<SearchIndexItem[]>(`${BASE_URL}/search.json`);
   },
 
   /**

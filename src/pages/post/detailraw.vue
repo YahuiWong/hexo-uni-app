@@ -1,5 +1,5 @@
 <template>
-  <view class="detail-container">
+  <view class="detail-container" :class="{ dark: isDark }">
     <!-- 加载中 -->
     <view v-if="loading" class="loading">
       <u-loading-icon mode="spinner" size="40" color="#007aff" />
@@ -114,10 +114,12 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useTheme } from '@/composables/useTheme';
 import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app';
 import { api } from '@/api';
 import { md2html } from '@/utils/md2html-safe';
 import { formatDate } from '@/utils/date';
+import { getSiteOrigin } from '@/utils/site';
 import { getPostShareConfig } from '@/composables/useShare';
 import SharePanel from '@/components/SharePanel.vue';
 import type { PostDetail } from '@/types';
@@ -131,6 +133,8 @@ const post = ref<PostDetail>({} as PostDetail);
 const loading = ref(true);
 const currentUrl = ref('');
 const showSharePanel = ref(false);
+const { themeMode } = useTheme();
+const isDark = computed(() => themeMode.value === 'dark');
 
 // 配置页面分享
 onShareAppMessage(() =>
@@ -160,7 +164,7 @@ const shareUrl = computed(() => {
 
   // 拼接完整 URL
   const url = post.value.url.startsWith('/') ? post.value.url : `/${post.value.url}`;
-  return `https://blog.yahui.wang${url}`;
+  return `${getSiteOrigin()}${url}`;
 });
 
 // 渲染 Markdown 内容
@@ -306,7 +310,7 @@ const fullDate = (dateStr: string) => {
 
 <style scoped>
 .detail-container {
-  background: #f8f9fa;
+  background: var(--bg-secondary);
   min-height: 100vh;
 }
 
@@ -316,17 +320,17 @@ const fullDate = (dateStr: string) => {
   align-items: center;
   justify-content: center;
   padding: 200rpx 0;
-  background: #fff;
+  background: var(--bg-primary);
 }
 
 .loading-text {
   margin-top: 30rpx;
   font-size: 28rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .article {
-  background: #fff;
+  background: var(--bg-primary);
 }
 
 .hero-cover {
@@ -343,7 +347,7 @@ const fullDate = (dateStr: string) => {
 .title {
   font-size: 48rpx;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text-primary);
   line-height: 1.4;
   display: block;
   margin-bottom: 30rpx;
@@ -361,13 +365,13 @@ const fullDate = (dateStr: string) => {
   align-items: center;
   gap: 6rpx;
   padding: 8rpx 16rpx;
-  background: #f8f9fa;
+  background: var(--bg-tertiary);
   border-radius: 20rpx;
 }
 
 .meta-text {
   font-size: 24rpx;
-  color: #546e7a;
+  color: var(--text-secondary);
   line-height: 1;
 }
 
@@ -416,25 +420,25 @@ const fullDate = (dateStr: string) => {
 
 .description {
   padding: 0 30rpx 30rpx;
-  border-bottom: 1rpx solid #f0f0f0;
+  border-bottom: 1rpx solid var(--border-primary);
 }
 
 .description-text {
   font-size: 28rpx;
-  color: #546e7a;
+  color: var(--text-secondary);
   line-height: 1.6;
   font-style: italic;
 }
 
 .content-wrapper {
   padding: 30rpx;
-  background: #fff;
+  background: var(--bg-primary);
 }
 
 .article-footer {
   padding: 30rpx;
-  border-top: 1rpx solid #f0f0f0;
-  background: #fafafa;
+  border-top: 1rpx solid var(--border-primary);
+  background: var(--bg-tertiary);
 }
 
 .footer-item {
@@ -445,19 +449,19 @@ const fullDate = (dateStr: string) => {
 
 .footer-label {
   font-size: 24rpx;
-  color: #999;
+  color: var(--text-tertiary);
   margin-right: 10rpx;
 }
 
 .footer-value {
   font-size: 24rpx;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .share-section {
   margin-top: 30rpx;
   padding-top: 30rpx;
-  border-top: 1rpx solid #f0f0f0;
+  border-top: 1rpx solid var(--border-primary);
   display: flex;
   justify-content: center;
 }
@@ -492,20 +496,20 @@ const fullDate = (dateStr: string) => {
   align-items: center;
   justify-content: center;
   padding: 200rpx 30rpx;
-  background: #fff;
+  background: var(--bg-primary);
 }
 
 .empty-text {
   margin-top: 30rpx;
   font-size: 28rpx;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 /* mp-html 自定义样式 */
 :deep(.mp-html) {
   font-size: 30rpx;
   line-height: 1.8;
-  color: #4a4a4a;
+  color: var(--text-primary);
 }
 
 /* ============================================
@@ -623,7 +627,7 @@ const fullDate = (dateStr: string) => {
   font-size: 42rpx;
   font-weight: 600;
   margin: 50rpx 0 30rpx;
-  color: #2c3e50;
+  color: var(--text-primary);
   border-bottom: 3rpx solid #42b983;
   padding-bottom: 16rpx;
 }
@@ -632,7 +636,7 @@ const fullDate = (dateStr: string) => {
   font-size: 38rpx;
   font-weight: 600;
   margin: 45rpx 0 25rpx;
-  color: #2c3e50;
+  color: var(--text-primary);
   border-bottom: 2rpx solid #e8e8e8;
   padding-bottom: 12rpx;
 }
@@ -641,21 +645,21 @@ const fullDate = (dateStr: string) => {
   font-size: 34rpx;
   font-weight: 600;
   margin: 40rpx 0 20rpx;
-  color: #2c3e50;
+  color: var(--text-primary);
 }
 
 :deep(.mp-html h4) {
   font-size: 32rpx;
   font-weight: 600;
   margin: 35rpx 0 18rpx;
-  color: #546e7a;
+  color: var(--text-secondary);
 }
 
 /* 段落样式 */
 :deep(.mp-html p) {
   line-height: 1.8;
   margin: 24rpx 0;
-  color: #4a4a4a;
+  color: var(--text-primary);
   text-align: justify;
 }
 
@@ -673,7 +677,7 @@ const fullDate = (dateStr: string) => {
   padding: 20rpx 24rpx;
   background: #f9fafb;
   margin: 30rpx 0;
-  color: #546e7a;
+  color: var(--text-secondary);
   border-radius: 0 8rpx 8rpx 0;
 }
 
@@ -690,7 +694,7 @@ const fullDate = (dateStr: string) => {
 :deep(.mp-html ol) {
   margin: 24rpx 0;
   padding-left: 40rpx;
-  color: #4a4a4a;
+  color: var(--text-primary);
 }
 
 :deep(.mp-html li) {
@@ -712,7 +716,7 @@ const fullDate = (dateStr: string) => {
   padding: 20rpx 16rpx;
   background: #fafbfc;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text-primary);
   border: 1rpx solid #e8e8e8;
   text-align: left;
 }
@@ -720,7 +724,7 @@ const fullDate = (dateStr: string) => {
 :deep(.mp-html td) {
   padding: 16rpx;
   border: 1rpx solid #e8e8e8;
-  color: #4a4a4a;
+  color: var(--text-primary);
 }
 
 /* 水平线样式 */

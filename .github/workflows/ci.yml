@@ -46,5 +46,8 @@ jobs:
       - name: TypeScript 类型检查
         run: pnpm type-check
 
+      - name: ESLint
+        run: pnpm lint
+
       - name: 运行单元测试
         run: pnpm test:run

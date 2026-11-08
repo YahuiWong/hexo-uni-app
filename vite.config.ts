@@ -1,10 +1,15 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import uni from '@dcloudio/vite-plugin-uni';  // UniApp 官方 Vite 插件
 import path from 'path';
 import babel from 'vite-plugin-babel';
+import { siteOriginFromApiBase } from './src/utils/site-origin';
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+  const siteOrigin = siteOriginFromApiBase(env.VITE_API_BASE_URL);
+
+  return {
   plugins: [
     uni(),  // 必须的 UniApp 插件
     // Babel 插件：转译 marked 库中的 Unicode 正则表达式
@@ -36,7 +41,7 @@ export default defineConfig({
     proxy: {
       // 如果你在 H5 端调试，想避免跨域，可以代理到你的博客域名
       '/api-blog': {
-        target: 'https://blog.yahui.wang',
+        target: siteOrigin,
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api-blog/, '/api'),
       },
@@ -75,4 +80,5 @@ export default defineConfig({
       },
     },
   },
+  };
 });

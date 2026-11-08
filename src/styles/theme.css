@@ -33,8 +33,9 @@ page {
   --shadow-dark: rgba(0, 0, 0, 0.15);
 }
 
-/* 深色主题 */
-page.dark {
+/* 深色主题。H5 把 dark 加在页面节点上，小程序加在页面根 view 上。 */
+page.dark,
+.dark {
   /* 背景色 */
   --bg-primary: #1c1c1e;
   --bg-secondary: #2c2c2e;

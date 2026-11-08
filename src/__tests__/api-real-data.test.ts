@@ -236,9 +236,7 @@ describe('API Data Structure Validation', () => {
       }
     ],
     total: 1,
-    pageSize: 10,
-    current: 1,
-    totalPages: 1
+    index: 1
   };
 
   it('站点信息应该包含必需字段', () => {
@@ -258,7 +256,6 @@ describe('API Data Structure Validation', () => {
 
   it('分页信息应该正确', () => {
     expect(mockPostList.total).toBeGreaterThan(0);
-    expect(mockPostList.pageSize).toBeGreaterThan(0);
-    expect(mockPostList.current).toBeGreaterThan(0);
+    expect(mockPostList.index).toBeGreaterThan(0);
   });
 });
