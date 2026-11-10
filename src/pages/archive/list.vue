@@ -134,6 +134,18 @@ onMounted(async () => {
   loading.value = false;
 });
 
+const monthEntries = (item: { months?: Array<{ month: number; posts?: PostData[] }>; data?: unknown }) => {
+  const fromMonths = Array.isArray(item.months) && item.months.length > 0 ? item.months : null;
+  const rawData = Array.isArray(item.data) ? item.data : [];
+  const fromData = rawData.flatMap((entry) => {
+    if (!entry || typeof entry !== 'object' || typeof (entry as { month?: unknown }).month !== 'number') {
+      return [];
+    }
+    return [entry as { month: number; posts?: PostData[] }];
+  });
+  return fromMonths ?? fromData;
+};
+
 const loadArchives = async () => {
   try {
     const res = await api.getArchives();
@@ -143,7 +155,7 @@ const loadArchives = async () => {
         (item): YearData => ({
           year: item.year,
           api: res.api,
-          data: (item.months || []).map(
+          data: monthEntries(item).map(
             (month): MonthData => ({
               month: month.month,
               api: '',
