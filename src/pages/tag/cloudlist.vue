@@ -18,16 +18,18 @@
       @touchmove="onTouchMove"
       @touchend="onTouchEnd"
     >
-      <view
-        v-for="tag in tagItems"
-        :key="tag.name"
-        class="tag-item"
-        :style="tag.style"
-        @click="toTag(tag)"
-      >
-        <text class="tag-name">{{ tag.name }}</text>
-        <text class="tag-count">{{ tag.count }}</text>
-      </view>
+      <tag-cloud-rotator ref="rotatorRef">
+        <view
+          v-for="tag in tagItems"
+          :key="tag.name"
+          class="tag-item"
+          :style="tag.style"
+          @click="toTag(tag)"
+        >
+          <text class="tag-name">{{ tag.name }}</text>
+          <text class="tag-count">{{ tag.count }}</text>
+        </view>
+      </tag-cloud-rotator>
     </view>
 
     <!-- 空状态 -->
@@ -39,8 +41,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { nextTick, ref, onMounted, onUnmounted } from 'vue';
 import { api } from '@/api';
+import TagCloudRotator from './TagCloudRotator.vue';
 
 interface Tag {
   name: string;
@@ -53,25 +56,28 @@ interface TagItem extends Tag {
   x: number;
   y: number;
   z: number;
-  scale: number;
-  opacity: number;
-  style: any;
+  style: Record<string, string>;
 }
 
 const loading = ref(true);
 const tags = ref<Tag[]>([]);
 const tagItems = ref<TagItem[]>([]);
 
-// 3D标签云参数
-const radius = 180; // 球体半径
-const angleX = ref(0); // X轴旋转角度
-const angleY = ref(0); // Y轴旋转角度
-const autoRotate = ref(true); // 是否自动旋转
+// 球面坐标在初始化时写好。旋转只改 DOM，不触发整页重绘。
+let radius = 150;
+let fontFloor = 13;
+let fontSpan = 8;
+let angleX = 0;
+let angleY = 0;
+let autoRotate = true;
+let dirty = true;
+let alive = true;
 let animationFrame: number | null = null;
+let resumeTimer: ReturnType<typeof setTimeout> | null = null;
+const rotatorRef = ref<{ setAngles: (x: number, y: number) => void } | null>(null);
 
-// 触摸交互参数
-const touchStart = ref({ x: 0, y: 0 });
-const lastAngle = ref({ x: 0, y: 0 });
+const touchStart = { x: 0, y: 0 };
+const lastAngle = { x: 0, y: 0 };
 
 // 颜色方案（更加鲜艳的渐变色）
 const colors = [
@@ -99,19 +105,16 @@ onMounted(async () => {
     tags.value = res.data.filter((tag: Tag) => tag.count > 0) || [];
 
     if (tags.value.length > 0) {
-      // 初始化时预先计算统计值
       const counts = tags.value.map((t) => t.count);
       cachedMaxCount = Math.max(...counts, 1);
       cachedMinCount = Math.min(...counts, 1);
       initTagCloud();
-      startAutoRotate();
     } else {
       console.warn('标签列表为空');
     }
   } catch (err: any) {
     console.error('加载标签失败', err);
 
-    // 提供更详细的错误信息
     const errorMsg = err?.errMsg || err?.message || '加载失败，请检查网络';
     uni.showToast({
       title: errorMsg,
@@ -121,106 +124,92 @@ onMounted(async () => {
   } finally {
     loading.value = false;
   }
+  await nextTick();
+  if (!alive) return;
+  dirty = true;
+  startAutoRotate();
 });
 
 onUnmounted(() => {
+  alive = false;
   stopAutoRotate();
 });
 
-// 初始化3D标签云
+const readLayout = () => {
+  const info = uni.getSystemInfoSync();
+  const shortSide = Math.min(info.windowWidth, info.windowHeight);
+  const compact = shortSide < 520;
+  radius = Math.round(Math.min(160, shortSide * (compact ? 0.3 : 0.2)));
+  fontFloor = compact ? 10 : 13;
+  fontSpan = compact ? 4 : 8;
+};
+
 const initTagCloud = () => {
+  readLayout();
   const tagCount = tags.value.length;
   const items: TagItem[] = [];
 
   tags.value.forEach((tag, index) => {
-    // 使用 Fibonacci 球面分布算法，让标签均匀分布在球面上
     const phi = Math.acos(-1 + (2 * index) / tagCount);
     const theta = Math.sqrt(tagCount * Math.PI) * phi;
-
     const x = radius * Math.cos(theta) * Math.sin(phi);
     const y = radius * Math.sin(theta) * Math.sin(phi);
     const z = radius * Math.cos(phi);
+    const ratio = (tag.count - cachedMinCount) / (cachedMaxCount - cachedMinCount || 1);
+    const fontSize = fontFloor + ratio * fontSpan;
+    const color = colors[tag.slug.length % colors.length];
 
     items.push({
       ...tag,
       x,
       y,
       z,
-      scale: 1,
-      opacity: 1,
-      style: {}
+      style: {
+        '--x': `${x}px`,
+        '--y': `${y}px`,
+        '--z': `${z}px`,
+        fontSize: `${fontSize}px`,
+        backgroundColor: color
+      }
     });
   });
 
   tagItems.value = items;
-  updateTagPositions();
 };
 
-// 更新标签位置和样式
-const updateTagPositions = () => {
-  const radX = (angleX.value * Math.PI) / 180;
-  const radY = (angleY.value * Math.PI) / 180;
-
-  tagItems.value = tagItems.value.map((tag) => {
-    // 旋转变换
-    const x = tag.x;
-    const y = tag.y;
-    const z = tag.z;
-
-    // 绕Y轴旋转
-    const x1 = x * Math.cos(radY) - z * Math.sin(radY);
-    const z1 = x * Math.sin(radY) + z * Math.cos(radY);
-
-    // 绕X轴旋转
-    const y2 = y * Math.cos(radX) - z1 * Math.sin(radX);
-    const z2 = y * Math.sin(radX) + z1 * Math.cos(radX);
-
-    // 计算缩放和透明度（近大远小）
-    const scale = (radius + z2) / (2 * radius);
-    const opacity = 0.4 + scale * 0.6;
-
-    // 计算标签大小（基于文章数量），使用缓存的统计值
-    const ratio = (tag.count - cachedMinCount) / (cachedMaxCount - cachedMinCount || 1);
-    const fontSize = 14 + ratio * 10; // 14-24px
-
-    // 选择颜色
-    const color = colors[tag.slug.length % colors.length];
-
-    const style = {
-      transform: `translate(-50%, -50%) translate3d(${x1}px, ${y2}px, ${z2}px) scale(${scale})`,
-      opacity: opacity,
-      zIndex: Math.floor(z2),
-      fontSize: `${fontSize}px`,
-      backgroundColor: color,
-      boxShadow: `0 ${4 * scale}px ${12 * scale}px rgba(0, 0, 0, ${0.3 * opacity})`
-    };
-
-    return {
-      ...tag,
-      x: tag.x,
-      y: tag.y,
-      z: tag.z,
-      scale,
-      opacity,
-      style
-    };
-  });
+const applyFrame = () => {
+  // #ifdef H5
+  const el = document.querySelector('.tag-cloud-rotator') as HTMLElement | null;
+  if (!el) return;
+  el.style.setProperty('--ax', `${angleX}deg`);
+  el.style.setProperty('--ay', `${angleY}deg`);
+  // #endif
+  // #ifndef H5
+  rotatorRef.value?.setAngles(angleX, angleY);
+  // #endif
 };
 
 // 自动旋转
 const startAutoRotate = () => {
   const rotate = () => {
-    if (autoRotate.value) {
-      angleY.value += 0.2;
-      updateTagPositions();
+    if (!alive) return;
+    if (autoRotate) {
+      angleY += 0.25;
+      if (angleY >= 360) angleY -= 360;
+      dirty = true;
     }
-
-    // 小程序兼容性处理
+    if (dirty) {
+      try {
+        applyFrame();
+      } catch (err) {
+        console.error('标签云刷新失败', err);
+      }
+      dirty = false;
+    }
     if (typeof requestAnimationFrame !== 'undefined') {
       animationFrame = requestAnimationFrame(rotate);
     } else {
-      // 降级到 setTimeout（小程序可能不支持 requestAnimationFrame）
-      animationFrame = setTimeout(rotate, 16) as any;
+      animationFrame = setTimeout(rotate, 16) as unknown as number;
     }
   };
   rotate();
@@ -249,35 +238,30 @@ interface TouchEventExtra {
 }
 
 const onTouchStart = (e: TouchEventExtra) => {
-  autoRotate.value = false;
+  autoRotate = false;
+  if (resumeTimer) {
+    clearTimeout(resumeTimer);
+    resumeTimer = null;
+  }
   const touch = e.touches[0];
-  touchStart.value = {
-    x: touch.clientX || touch.pageX || 0,
-    y: touch.clientY || touch.pageY || 0
-  };
-  lastAngle.value = { x: angleX.value, y: angleY.value };
+  touchStart.x = touch.clientX || touch.pageX || 0;
+  touchStart.y = touch.clientY || touch.pageY || 0;
+  lastAngle.x = angleX;
+  lastAngle.y = angleY;
 };
 
 const onTouchMove = (e: TouchEventExtra) => {
-  if (!touchStart.value) return;
-
   const touch = e.touches[0];
-  const deltaX = touch.clientX - touchStart.value.x;
-  const deltaY = touch.clientY - touchStart.value.y;
-
-  angleY.value = lastAngle.value.y + deltaX * 0.5;
-  angleX.value = lastAngle.value.x + deltaY * 0.5;
-
-  // 限制X轴旋转角度
-  angleX.value = Math.max(-90, Math.min(90, angleX.value));
-
-  updateTagPositions();
+  const deltaX = touch.clientX - touchStart.x;
+  const deltaY = touch.clientY - touchStart.y;
+  angleY = lastAngle.y + deltaX * 0.5;
+  angleX = Math.max(-90, Math.min(90, lastAngle.x + deltaY * 0.5));
+  dirty = true;
 };
 
 const onTouchEnd = () => {
-  // 延迟恢复自动旋转
-  setTimeout(() => {
-    autoRotate.value = true;
+  resumeTimer = setTimeout(() => {
+    autoRotate = true;
   }, 3000);
 };
 
@@ -346,8 +330,8 @@ const goBack = () => {
   height: 100vh;
   margin-left: -50vw;
   margin-top: -50vh;
-  perspective: 1200px;
-  transform-style: preserve-3d;
+  perspective: 800px;
+  touch-action: none;
 }
 
 .tag-item {
@@ -356,22 +340,21 @@ const goBack = () => {
   top: 50%;
   display: inline-flex;
   align-items: center;
-  gap: 8rpx;
-  padding: 16rpx 32rpx;
-  border-radius: 50rpx;
+  gap: 0.3em;
+  padding: 0.22em 0.55em;
+  border-radius: 999px;
   color: #fff;
   font-weight: 600;
   white-space: nowrap;
-  transform-style: preserve-3d;
-  transition: all 0.15s ease-out;
+  transform: translate3d(var(--x), var(--y), var(--z)) rotateY(calc(var(--ay) * -1)) rotateX(calc(var(--ax) * -1))
+    translate(-50%, -50%);
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
 }
 
 .tag-item:active {
-  transform: scale(0.9) !important;
-  opacity: 1 !important;
+  opacity: 0.75;
 }
 
 .tag-name {
@@ -383,13 +366,12 @@ const goBack = () => {
 
 .tag-count {
   background: rgba(255, 255, 255, 0.25);
-  padding: 6rpx 14rpx;
-  border-radius: 30rpx;
+  padding: 0.08em 0.35em;
+  border-radius: 999px;
   font-size: 0.8em;
   color: #fff;
   line-height: 1;
   font-weight: 700;
-  backdrop-filter: blur(4px);
 }
 
 .empty {
